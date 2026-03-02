@@ -1285,7 +1285,11 @@
     loadGoing();
     loadFiltersFromURL();
 
-    const artists = new Set(CONCERTS_DATA.map(c => c.artist));
+    const artists = new Set();
+    CONCERTS_DATA.forEach(c => {
+      artists.add(c.artist);
+      if (c.support) c.support.split(',').map(s => s.trim()).filter(Boolean).forEach(name => artists.add(name));
+    });
     const countries = new Set(CONCERTS_DATA.map(c => c.country));
     document.getElementById('totalConcerts').textContent = CONCERTS_DATA.length;
     document.getElementById('totalArtists').textContent = artists.size;
@@ -1462,7 +1466,7 @@
           // Navigate calendar to the nearest concert date
           const today = new Date(); today.setHours(0,0,0,0);
           const todayStr = today.toISOString().slice(0,10);
-          const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistLower));
+          const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistLower) || c.support.toLowerCase().includes(artistLower));
           const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
           const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
           if (nearest) {
@@ -1583,7 +1587,7 @@
     const allBounds = [];
     routeArtists.forEach(artist => {
       const artistConcerts = concertsNoCity
-        .filter(c => c.artist.toLowerCase().includes(artist.name))
+        .filter(c => c.artist.toLowerCase().includes(artist.name) || c.support.toLowerCase().includes(artist.name))
         .sort((a, b) => a.date.localeCompare(b.date));
 
       const points = [];
@@ -1784,7 +1788,7 @@
             // Show colored dots per artist
             const artistsOnDay = new Set();
             matchingFiltered.forEach(c => {
-              const match = searchTerms.find(s => c.artist.toLowerCase().includes(s.name));
+              const match = searchTerms.find(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
               if (match && !artistsOnDay.has(match.name)) {
                 artistsOnDay.add(match.name);
                 const dot = document.createElement('div');
@@ -1965,8 +1969,15 @@
 
     const artistMap = {};
     CONCERTS_DATA.forEach(c => {
-      if (!artistMap[c.artist]) artistMap[c.artist] = { name: c.artist, count: 0 };
+      if (!artistMap[c.artist]) artistMap[c.artist] = { name: c.artist, count: 0, isSupport: false };
       artistMap[c.artist].count++;
+      // Also extract support/opening acts
+      if (c.support) {
+        c.support.split(',').map(s => s.trim()).filter(Boolean).forEach(name => {
+          if (!artistMap[name]) artistMap[name] = { name, count: 0, isSupport: true };
+          artistMap[name].count++;
+        });
+      }
     });
 
     const artists = Object.values(artistMap).sort((a, b) => a.name.localeCompare(b.name));
@@ -2002,7 +2013,7 @@
       // Navigate calendar to nearest future concert
       const today = new Date(); today.setHours(0,0,0,0);
       const todayStr = today.toISOString().slice(0,10);
-      const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistName));
+      const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistName) || c.support.toLowerCase().includes(artistName));
       const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
       const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
       if (nearest) {
@@ -2071,7 +2082,12 @@
 
     // Most touring artists
     const artistCounts = {};
-    CONCERTS_DATA.forEach(c => { artistCounts[c.artist] = (artistCounts[c.artist] || 0) + 1; });
+    CONCERTS_DATA.forEach(c => {
+      artistCounts[c.artist] = (artistCounts[c.artist] || 0) + 1;
+      if (c.support) c.support.split(',').map(s => s.trim()).filter(Boolean).forEach(name => {
+        artistCounts[name] = (artistCounts[name] || 0) + 1;
+      });
+    });
     const topArtists = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
     const maxArtist = topArtists[0]?.[1] || 1;
     let artistHTML = '<div class="stat-block"><h4>Most shows</h4>';
