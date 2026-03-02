@@ -95,27 +95,6 @@
       flex-shrink: 0;
     }
 
-    .mode-toggle {
-      display: flex;
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .mode-btn {
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      background: var(--surface2);
-      color: var(--text-muted);
-      border: none;
-      transition: all 0.2s;
-    }
-
-    .mode-btn.active { background: var(--accent); color: #000; }
-
     .search-wrapper {
       position: relative;
       flex: 1;
@@ -123,7 +102,7 @@
       min-width: 160px;
     }
 
-    .search-box {
+    .artist-select-btn {
       width: 100%;
       padding: 7px 12px;
       background: var(--surface2);
@@ -133,60 +112,83 @@
       font-size: 13px;
       outline: none;
       transition: border-color 0.2s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      text-align: left;
     }
+    .artist-select-btn:hover { border-color: var(--accent); }
+    .artist-select-btn .artist-select-arrow { font-size: 10px; color: var(--text-muted); transition: transform 0.2s; }
+    .artist-dropdown.open + .artist-select-btn .artist-select-arrow,
+    .artist-select-btn.open .artist-select-arrow { transform: rotate(180deg); }
 
-    .search-box:focus { border-color: var(--accent); }
-    .search-box::placeholder { color: var(--text-muted); }
-
-    .search-dropdown {
+    .artist-dropdown {
       position: absolute;
       top: 100%;
       left: 0;
       right: 0;
       background: var(--surface);
       border: 1px solid var(--accent);
-      border-top: none;
-      border-radius: 0 0 6px 6px;
-      max-height: 320px;
-      overflow-y: auto;
+      border-radius: 0 0 8px 8px;
       z-index: 200;
       display: none;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      margin-top: -1px;
+    }
+    .artist-dropdown.open { display: block; }
+
+    .artist-filter-input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--surface2);
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .artist-filter-input::placeholder { color: var(--text-muted); }
+
+    .artist-dropdown-list {
+      max-height: 300px;
+      overflow-y: auto;
     }
 
-    .search-dropdown.open { display: block; }
-
-    .search-dropdown-item {
-      padding: 8px 12px;
+    .artist-dropdown-item {
+      padding: 7px 12px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 8px;
       border-bottom: 1px solid var(--border);
       transition: background 0.1s;
+      font-size: 13px;
     }
+    .artist-dropdown-item:last-child { border-bottom: none; }
+    .artist-dropdown-item:hover { background: var(--surface2); }
+    .artist-dropdown-item.checked { background: var(--accent-bg); }
 
-    .search-dropdown-item:last-child { border-bottom: none; }
-    .search-dropdown-item:hover,
-    .search-dropdown-item.active { background: var(--surface2); }
-
-    .search-dropdown-item .artist-name { font-size: 13px; font-weight: 600; }
-    .search-dropdown-item .artist-name .match { color: var(--accent); }
-
-    .search-dropdown-item .artist-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
+    .artist-dropdown-item input[type="checkbox"] {
+      width: 14px; height: 14px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
     }
-
-    .search-dropdown-item .artist-meta .concert-count {
+    .artist-dropdown-item .artist-name { flex: 1; font-weight: 500; }
+    .artist-dropdown-item .artist-color-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .artist-dropdown-item .artist-count {
       background: var(--accent-bg);
       color: var(--accent);
       padding: 1px 6px;
       border-radius: 8px;
       font-weight: 700;
       font-size: 11px;
+      flex-shrink: 0;
     }
 
     .toolbar-stats {
@@ -396,34 +398,6 @@
     .country-tag:hover { border-color: var(--accent); color: var(--text); }
     .country-tag.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
 
-    /* ===== AVAILABILITY BAR ===== */
-    .availability-bar {
-      background: var(--accent-bg);
-      border-bottom: 1px solid var(--accent);
-      padding: 8px 20px;
-      display: none;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .availability-bar.visible { display: flex; }
-
-    .btn-clear {
-      padding: 3px 10px;
-      background: transparent;
-      border: 1px solid var(--accent);
-      border-radius: 4px;
-      color: var(--accent);
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-clear:hover { background: var(--accent); color: #000; }
-
     /* ===== ACTIVE FILTERS CHIPS ===== */
     .active-filters {
       background: var(--surface);
@@ -520,6 +494,17 @@
     .map-container {
       position: relative;
       flex-shrink: 0;
+      transition: height 0.3s ease, opacity 0.2s ease;
+      overflow: hidden;
+    }
+    .map-container.map-hidden {
+      height: 0 !important;
+      min-height: 0 !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .map-toggle-btn.active {
+      color: var(--accent);
     }
 
     #leafletMap {
@@ -579,6 +564,227 @@
     .leaflet-popup-content .popup-artists { font-size: 11px; color: #888; margin-top: 4px; line-height: 1.4; }
     .leaflet-popup-close-button { color: #888 !important; }
     .leaflet-popup-close-button:hover { color: #6dbf4a !important; }
+
+    /* ===== TOUR ROUTE STEPS ===== */
+    .route-step {
+      background: transparent;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .route-step span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* ===== ROAD TRIP PLANNER ===== */
+    .road-trip-summary {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 500;
+      background: rgba(26, 26, 26, 0.95);
+      border: 1px solid #e67e22;
+      border-radius: 8px;
+      padding: 10px 14px;
+      max-width: 280px;
+      max-height: 200px;
+      overflow-y: auto;
+      backdrop-filter: blur(8px);
+    }
+    [data-theme="light"] .road-trip-summary { background: rgba(255,255,255,0.95); }
+    .road-trip-summary h5 { color: #e67e22; margin: 0 0 6px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+    .road-trip-leg { font-size: 11px; color: var(--text-muted); padding: 2px 0; }
+    .road-trip-leg .leg-dist { color: #e67e22; font-weight: 600; }
+    .road-trip-total { font-size: 12px; color: var(--text); font-weight: 600; margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
+    .route-step-orange span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #e67e22;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+    }
+    .distance-label {
+      background: rgba(230, 126, 34, 0.9);
+      color: #fff;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    /* ===== DATE RANGE FILTER ===== */
+    .date-range-wrapper { position: relative; display: inline-flex; }
+    .date-range-popover {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      z-index: 1000;
+      min-width: 210px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .date-range-popover.visible { display: block; }
+    .date-range-popover label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+    .date-range-popover input[type="date"] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 4px 6px;
+      margin-top: 2px;
+      font-size: 12px;
+    }
+    .date-range-actions { display: flex; gap: 6px; margin-top: 10px; }
+    .date-range-actions button {
+      flex: 1;
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .date-range-actions button:first-child { background: var(--accent); color: #fff; border-color: var(--accent); }
+    #btnDateRange.active { color: var(--accent); border-color: var(--accent); }
+
+    /* ===== I'M GOING ===== */
+    .going-wrapper { position: relative; display: inline-flex; }
+    .going-panel {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 6px;
+      background: var(--surface);
+      border: 1px solid #e74c3c;
+      border-radius: 8px;
+      padding: 0;
+      z-index: 1000;
+      width: 320px;
+      max-height: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      overflow: hidden;
+      display: none;
+    }
+    .going-panel.visible { display: flex; flex-direction: column; }
+    .going-panel-header {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .going-panel-header h4 { margin: 0; font-size: 13px; color: #e74c3c; }
+    .going-panel-actions { display: flex; gap: 6px; }
+    .going-panel-actions button {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .going-panel-actions button.btn-filter-going {
+      background: #e74c3c;
+      color: #fff;
+      border-color: #e74c3c;
+    }
+    .going-panel-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+    .going-panel-empty {
+      padding: 20px 14px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .going-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .going-item:last-child { border-bottom: none; }
+    .going-item:hover { background: var(--surface2); }
+    .going-item-date {
+      flex-shrink: 0;
+      text-align: center;
+      width: 40px;
+    }
+    .going-item-date .gi-month { font-size: 9px; text-transform: uppercase; color: #e74c3c; font-weight: 700; }
+    .going-item-date .gi-day { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.1; }
+    .going-item-info { flex: 1; min-width: 0; }
+    .going-item-info .gi-artist { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .going-item-info .gi-details { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .going-item-remove {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .going-item-remove:hover { color: #e74c3c; background: rgba(231,76,60,0.1); }
+
+
+    .going-badge {
+      font-size: 9px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      min-width: 14px; height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 2px;
+      padding: 0 3px;
+    }
+    .going-badge[data-count="0"] { display: none; }
+    .going-toggle-btn.active { color: #e74c3c !important; border-color: #e74c3c !important; }
+    .btn-going {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      padding: 2px;
+      line-height: 1;
+    }
+    .btn-going:hover { color: #e74c3c; transform: scale(1.2); }
+    .btn-going.active { color: #e74c3c; }
 
     /* ===== DISCLAIMER FOOTER ===== */
     .disclaimer {
@@ -706,6 +912,15 @@
       border-color: var(--accent);
       background: var(--accent-bg);
       box-shadow: 0 0 0 1px var(--accent);
+    }
+    .calendar-day.range-edge {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .calendar-day.in-range {
+      background: var(--accent-bg);
+      border-color: rgba(109, 191, 74, 0.3);
     }
 
     .day-number { font-size: 11px; color: var(--text); }
@@ -920,6 +1135,12 @@
       .country-ribbon { padding: 5px 12px; }
     }
 
+    /* Mobile dropdown fix */
+    @media (max-width: 768px) {
+      .artist-dropdown { min-width: 240px; }
+      .artist-select-btn { font-size: 12px; padding: 6px 10px; }
+    }
+
     /* Mobile */
     @media (max-width: 480px) {
       .tour-carousel { padding: 8px; gap: 10px; }
@@ -927,6 +1148,7 @@
       .tour-slide .slide-label { font-size: 12px; padding: 5px 8px; }
 
       .map-container { display: none; }
+      .map-toggle-btn { display: none; }
       .stats-inner { grid-template-columns: 1fr; padding: 10px 8px; }
       .stat-bar-label { width: 60px; font-size: 10px; }
       .festival-card { padding: 8px; }
@@ -936,7 +1158,6 @@
         gap: 8px;
       }
       .logo-icon { height: 28px; }
-      .mode-toggle button { font-size: 11px; padding: 5px 10px; }
       .search-wrapper {
         flex: 1 1 100%;
         max-width: none;
@@ -947,7 +1168,6 @@
       .country-ribbon { padding: 4px 8px; gap: 4px; }
       .country-tag { font-size: 10px; padding: 2px 7px; }
 
-      .availability-bar { padding: 6px 8px; font-size: 11px; }
       .active-filters { padding: 4px 8px; }
 
       #leafletMap { height: 22vh; min-height: 150px; }
@@ -994,13 +1214,15 @@
     <div class="logo-icon"><img src="https://www.avocadobooking.com/avocms/images/designimages/avocado_logo_new_small.png" alt="Avocado Booking"></div>
   </div>
   <div class="toolbar-sep"></div>
-  <div class="mode-toggle">
-    <button class="mode-btn active" data-mode="browse" onclick="setMode('browse')">Browse</button>
-    <button class="mode-btn" data-mode="availability" onclick="setMode('availability')">My dates</button>
-  </div>
-  <div class="search-wrapper">
-    <input type="text" class="search-box" id="searchArtist" placeholder="Search artist..." autocomplete="off">
-    <div class="search-dropdown" id="searchDropdown"></div>
+  <div class="search-wrapper" id="searchWrapper">
+    <button class="artist-select-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()">
+      <span id="artistSelectLabel">All artists</span>
+      <span class="artist-select-arrow">&#9662;</span>
+    </button>
+    <div class="artist-dropdown" id="artistDropdown">
+      <input type="text" class="artist-filter-input" id="artistFilterInput" placeholder="Filter..." oninput="buildArtistDropdown(this.value)">
+      <div class="artist-dropdown-list" id="artistDropdownList"></div>
+    </div>
   </div>
   <div class="toolbar-stats">
     <span><strong id="totalConcerts">0</strong> concerts</span>
@@ -1009,8 +1231,32 @@
   </div>
   <div class="toolbar-actions">
     <button class="btn-icon" onclick="toggleStats()" title="Statistics">&#128202;</button>
+    <div class="going-wrapper">
+      <button class="btn-icon going-toggle-btn" id="btnGoingFilter" onclick="toggleGoingPanel()" title="My concerts">&#9829;<span id="goingCount" class="going-badge" data-count="0">0</span></button>
+      <div class="going-panel" id="goingPanel">
+        <div class="going-panel-header">
+          <h4>&#9829; My Concerts</h4>
+          <div class="going-panel-actions">
+            <button class="btn-filter-going" onclick="toggleGoingFilter()">Filter view</button>
+            <button onclick="clearAllGoing()">Clear all</button>
+          </div>
+        </div>
+        <div class="going-panel-list" id="goingPanelList"></div>
+      </div>
+    </div>
+    <div class="date-range-wrapper">
+      <button class="btn-icon" id="btnDateRange" onclick="toggleDateRange()" title="Filter by date range">&#128198;</button>
+      <div class="date-range-popover" id="dateRangePopover">
+        <label>From<input type="date" id="dateFrom"></label>
+        <label>To<input type="date" id="dateTo"></label>
+        <div class="date-range-actions">
+          <button onclick="applyDateRange()">Apply</button>
+          <button onclick="clearDateRange()">Clear</button>
+        </div>
+      </div>
+    </div>
     <button class="btn-icon" onclick="shareFilters()" title="Share filtered view">&#128279;</button>
-    <button class="btn-icon" id="btnExportIcs" onclick="exportICS()" title="Export to calendar (.ics)" style="display:none;">&#128197;</button>
+    <button class="btn-icon map-toggle-btn" id="btnMapToggle" onclick="toggleMap()" title="Show/hide map">&#127758;</button>
     <button class="btn-icon" onclick="toggleTheme()" title="Toggle light/dark theme">&#9788;</button>
   </div>
 </div>
@@ -1024,13 +1270,6 @@
 <!-- STATS PANEL -->
 <div class="stats-panel" id="statsPanel">
   <div class="stats-inner" id="statsInner"></div>
-</div>
-
-<!-- AVAILABILITY BAR -->
-<div class="availability-bar" id="availabilityBar">
-  Click on calendar days to mark your availability.
-  <strong><span id="availCount">0</span> day(s)</strong>
-  <button class="btn-clear" onclick="clearAvailability()">Clear</button>
 </div>
 
 <!-- ACTIVE FILTERS -->
@@ -1048,6 +1287,7 @@
       <span id="mapCityLabel"></span>
       <span class="close-city" onclick="selectedCity=null;render();">&times;</span>
     </div>
+    <div class="road-trip-summary" id="roadTripSummary" style="display:none;"></div>
   </div>
 
   <!-- BOTTOM: Calendar + Concert list -->
@@ -1061,7 +1301,6 @@
       <div class="calendar-3months" id="calendar3months"></div>
       <div class="calendar-legend">
         <div><div style="width:5px;height:5px;background:var(--concert-dot);border-radius:50%;"></div> Concert</div>
-        <div><div style="width:12px;height:8px;background:var(--available);border:1px solid var(--available-border);border-radius:2px;"></div> Available</div>
         <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Sold Out</div>
       </div>
     </div>
@@ -1084,21 +1323,23 @@
   const DAYS_FR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const WEEKDAYS_FR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-  let currentYear = 2026;
-  let currentMonth = 1;
-  let selectedDates = new Set();
+  const _now = new Date();
+  let currentYear = _now.getFullYear();
+  let currentMonth = _now.getMonth();
   let activeCountries = new Set();
-  let searchTerm = '';
-  let mode = 'browse';
+  let searchTerms = []; // [{ name: 'artist', color: '#6dbf4a' }]
+  const COMPARE_COLORS = ['#6dbf4a', '#e67e22', '#3498db', '#e74c3c', '#9b59b6'];
   let selectedDay = null;
   let selectedCity = null;
-  let dropdownIndex = -1;
-
-  const saved = localStorage.getItem('avocado_availability');
-  if (saved) selectedDates = new Set(JSON.parse(saved));
+  let goingSet = new Set();
+  let showGoingOnly = false;
+  let dateRangeFrom = '';
+  let dateRangeTo = '';
 
   function init() {
     loadTheme();
+    loadMapPref();
+    loadGoing();
     loadFiltersFromURL();
 
     const artists = new Set(CONCERTS_DATA.map(c => c.artist));
@@ -1127,51 +1368,22 @@
       container.appendChild(tag);
     });
 
-    // Search
-    const searchInput = document.getElementById('searchArtist');
-    const searchDropdown = document.getElementById('searchDropdown');
-
-    searchInput.addEventListener('input', (e) => {
-      const val = e.target.value.trim();
-      searchTerm = val.toLowerCase();
-      dropdownIndex = -1;
-      if (val.length >= 1) showSearchDropdown(val);
-      else closeSearchDropdown();
-      render();
-    });
-
-    searchInput.addEventListener('keydown', (e) => {
-      const items = searchDropdown.querySelectorAll('.search-dropdown-item');
-      if (!items.length) return;
-      if (e.key === 'ArrowDown') { e.preventDefault(); dropdownIndex = Math.min(dropdownIndex + 1, items.length - 1); updateDropdownHighlight(items); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); dropdownIndex = Math.max(dropdownIndex - 1, 0); updateDropdownHighlight(items); }
-      else if (e.key === 'Enter' && dropdownIndex >= 0) { e.preventDefault(); items[dropdownIndex].click(); }
-      else if (e.key === 'Escape') closeSearchDropdown();
-    });
-
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.search-wrapper')) closeSearchDropdown();
+      if (!e.target.closest('#searchWrapper')) closeArtistDropdown();
+      if (!e.target.closest('.going-wrapper')) document.getElementById('goingPanel').classList.remove('visible');
+      if (!e.target.closest('.date-range-wrapper')) document.getElementById('dateRangePopover').classList.remove('visible');
     });
 
-    // First month with concerts
-    const dates = CONCERTS_DATA.map(c => new Date(c.date));
-    const minDate = new Date(Math.min(...dates));
-    currentYear = minDate.getFullYear();
-    currentMonth = minDate.getMonth();
+    // Start calendar on current month
+    const today = new Date();
+    currentYear = today.getFullYear();
+    currentMonth = today.getMonth();
 
     newTours = getNewTours();
 
     initMap();
     render();
     setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 200);
-  }
-
-  function setMode(m) {
-    mode = m;
-    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === m));
-    document.getElementById('availabilityBar').classList.toggle('visible', m === 'availability');
-    document.getElementById('btnExportIcs').style.display = m === 'availability' ? '' : 'none';
-    render();
   }
 
   function getMonthCount() {
@@ -1187,26 +1399,17 @@
     render();
   }
 
-  function toggleDate(dateStr) {
-    if (mode !== 'availability') return;
-    if (selectedDates.has(dateStr)) selectedDates.delete(dateStr);
-    else selectedDates.add(dateStr);
-    localStorage.setItem('avocado_availability', JSON.stringify([...selectedDates]));
-    render();
-  }
-
-  function clearAvailability() {
-    selectedDates.clear();
-    localStorage.removeItem('avocado_availability');
-    render();
-  }
-
   function getFilteredConcerts() {
     return CONCERTS_DATA.filter(c => {
-      if (searchTerm && !c.artist.toLowerCase().includes(searchTerm) && !c.support.toLowerCase().includes(searchTerm)) return false;
+      if (showGoingOnly && !goingSet.has(getConcertKey(c))) return false;
+      if (searchTerms.length > 0) {
+        const match = searchTerms.some(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
+        if (!match) return false;
+      }
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
-      if (mode === 'availability' && selectedDates.size > 0 && !selectedDates.has(c.date)) return false;
       if (selectedCity && c.city !== selectedCity) return false;
+      if (dateRangeFrom && c.date < dateRangeFrom) return false;
+      if (dateRangeTo && c.date > dateRangeTo) return false;
       return true;
     });
   }
@@ -1214,18 +1417,17 @@
   function getDisplayedConcerts() {
     const filtered = getFilteredConcerts();
     if (selectedCity) return filtered;
-    if (searchTerm) return filtered; // Show ALL dates when filtering by artist
-    if (mode === 'browse') {
-      if (selectedDay) return filtered.filter(c => c.date === selectedDay);
-      const visibleMonths = new Set();
-      for (let i = 0; i < getMonthCount(); i++) {
-        let m = currentMonth + i, y = currentYear;
-        if (m > 11) { m -= 12; y++; }
-        visibleMonths.add(`${y}-${String(m + 1).padStart(2, '0')}`);
-      }
-      return filtered.filter(c => visibleMonths.has(c.date.substring(0, 7)));
+    if (searchTerms.length > 0) return filtered; // Show ALL dates when filtering by artist
+    if (showGoingOnly) return filtered; // Show ALL going concerts
+    if (dateRangeFrom || dateRangeTo) return filtered; // Show ALL concerts in date range
+    if (selectedDay) return filtered.filter(c => c.date === selectedDay);
+    const visibleMonths = new Set();
+    for (let i = 0; i < getMonthCount(); i++) {
+      let m = currentMonth + i, y = currentYear;
+      if (m > 11) { m -= 12; y++; }
+      visibleMonths.add(`${y}-${String(m + 1).padStart(2, '0')}`);
     }
-    return filtered;
+    return filtered.filter(c => visibleMonths.has(c.date.substring(0, 7)));
   }
 
   function getConcertsForDate(dateStr) {
@@ -1238,14 +1440,24 @@
     renderMap();
     renderConcertList();
     renderActiveFilters();
-    document.getElementById('availCount').textContent = selectedDates.size;
+    const gc = document.getElementById('goingCount');
+    gc.textContent = goingSet.size;
+    gc.setAttribute('data-count', goingSet.size);
+    if (document.getElementById('goingPanel').classList.contains('visible')) renderGoingPanel();
   }
 
   function renderActiveFilters() {
     const bar = document.getElementById('activeFilters');
     const chips = [];
-    if (searchTerm) {
-      chips.push({ label: `"${searchTerm}"`, clear: () => { searchTerm = ''; document.getElementById('searchArtist').value = ''; render(); }});
+    if (searchTerms.length > 0) {
+      searchTerms.forEach(s => {
+        chips.push({ label: `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${s.color};margin-right:4px;"></span>${s.name}`, clear: () => {
+          searchTerms = searchTerms.filter(x => x.name !== s.name);
+          updateArtistSelectLabel();
+          buildArtistDropdown(document.getElementById('artistFilterInput').value);
+          render();
+        }});
+      });
     }
     if (selectedCity) {
       chips.push({ label: selectedCity, clear: () => { selectedCity = null; render(); }});
@@ -1253,6 +1465,14 @@
     if (selectedDay) {
       const d = new Date(selectedDay);
       chips.push({ label: `${d.getDate()} ${MONTHS_FR[d.getMonth()]}`, clear: () => { selectedDay = null; render(); }});
+    }
+    if (showGoingOnly) {
+      chips.push({ label: `My concerts (${goingSet.size})`, clear: () => { showGoingOnly = false; document.getElementById('btnGoingFilter').classList.remove('active'); render(); }});
+    }
+    if (dateRangeFrom || dateRangeTo) {
+      const from = dateRangeFrom || '...';
+      const to = dateRangeTo || '...';
+      chips.push({ label: `${from} → ${to}`, clear: () => clearDateRange() });
     }
     if (chips.length === 0) { bar.classList.remove('visible'); return; }
     bar.classList.add('visible');
@@ -1279,8 +1499,10 @@
     TOUR_IMAGES.forEach(t => {
       const slide = document.createElement('div');
       slide.className = 'tour-slide';
-      if (searchTerm && t.artist.toLowerCase().includes(searchTerm)) {
+      const artistMatch = searchTerms.find(s => t.artist.toLowerCase().includes(s.name));
+      if (artistMatch) {
         slide.classList.add('active');
+        slide.style.borderColor = artistMatch.color;
       }
       slide.innerHTML = `
         <img src="${t.imageUrl}" alt="${t.artist}" loading="lazy">
@@ -1289,12 +1511,15 @@
       `;
       slide.onclick = () => {
         const artistLower = t.artist.toLowerCase();
-        if (searchTerm === artistLower) {
-          searchTerm = '';
-          document.getElementById('searchArtist').value = '';
-        } else {
-          searchTerm = artistLower;
-          document.getElementById('searchArtist').value = t.artist;
+        const existIdx = searchTerms.findIndex(s => s.name === artistLower);
+        if (existIdx >= 0) {
+          // Remove this artist
+          searchTerms.splice(existIdx, 1);
+        } else if (searchTerms.length < COMPARE_COLORS.length) {
+          // Add this artist with next available color
+          const usedColors = new Set(searchTerms.map(s => s.color));
+          const color = COMPARE_COLORS.find(c => !usedColors.has(c)) || COMPARE_COLORS[0];
+          searchTerms.push({ name: artistLower, color });
           // Navigate calendar to the nearest concert date
           const today = new Date(); today.setHours(0,0,0,0);
           const todayStr = today.toISOString().slice(0,10);
@@ -1307,6 +1532,8 @@
             currentYear = d.getFullYear();
           }
         }
+        updateArtistSelectLabel();
+        buildArtistDropdown(document.getElementById('artistFilterInput').value);
         selectedDay = null;
         render();
       };
@@ -1329,6 +1556,7 @@
   // ===== LEAFLET MAP =====
   let leafletMap = null;
   let markersLayer = null;
+  let routeLayer = null;
 
   function initMap() {
     leafletMap = L.map('leafletMap', {
@@ -1342,16 +1570,20 @@
     L.tileLayer(tiles, { subdomains: 'abcd' }).addTo(leafletMap);
     L.control.zoom({ position: 'topright' }).addTo(leafletMap);
     markersLayer = L.layerGroup().addTo(leafletMap);
+    routeLayer = L.layerGroup().addTo(leafletMap);
   }
 
   function renderMap() {
     if (!leafletMap) return;
     markersLayer.clearLayers();
+    routeLayer.clearLayers();
 
     const concertsNoCity = CONCERTS_DATA.filter(c => {
-      if (searchTerm && !c.artist.toLowerCase().includes(searchTerm) && !c.support.toLowerCase().includes(searchTerm)) return false;
+      if (searchTerms.length > 0) {
+        const match = searchTerms.some(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
+        if (!match) return false;
+      }
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
-      if (mode === 'availability' && selectedDates.size > 0 && !selectedDates.has(c.date)) return false;
       return true;
     });
 
@@ -1405,6 +1637,125 @@
       });
       circle.addTo(markersLayer);
     });
+
+    // Draw tour routes when filtering by artist(s)
+    const routeArtists = searchTerms;
+
+    const allBounds = [];
+    routeArtists.forEach(artist => {
+      const artistConcerts = concertsNoCity
+        .filter(c => c.artist.toLowerCase().includes(artist.name))
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      const points = [];
+      artistConcerts.forEach(c => {
+        const coords = CITY_COORDS[c.city];
+        if (coords) points.push(coords);
+      });
+
+      const uniquePoints = points.filter((p, i) =>
+        i === 0 || p[0] !== points[i - 1][0] || p[1] !== points[i - 1][1]
+      );
+
+      if (uniquePoints.length >= 2) {
+        const line = L.polyline(uniquePoints, {
+          color: artist.color, weight: 2.5, opacity: 0.6, dashArray: '8, 6'
+        });
+        line.addTo(routeLayer);
+        allBounds.push(line.getBounds());
+
+        uniquePoints.forEach((p, i) => {
+          L.marker(p, {
+            icon: L.divIcon({
+              className: 'route-step',
+              html: `<span style="background:${artist.color}">${i + 1}</span>`,
+              iconSize: [20, 20]
+            })
+          }).addTo(routeLayer);
+        });
+      }
+    });
+
+    if (allBounds.length > 0) {
+      let combinedBounds = allBounds[0];
+      for (let i = 1; i < allBounds.length; i++) combinedBounds.extend(allBounds[i]);
+      leafletMap.fitBounds(combinedBounds, { padding: [30, 30] });
+    }
+
+    // Road trip planner (when "I'm going" filter is active)
+    const tripPanel = document.getElementById('roadTripSummary');
+    if (showGoingOnly && goingSet.size >= 2) {
+      const goingConcerts = CONCERTS_DATA
+        .filter(c => goingSet.has(getConcertKey(c)))
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      const tripPoints = [];
+      const tripCities = [];
+      goingConcerts.forEach(c => {
+        const coords = CITY_COORDS[c.city];
+        if (coords) {
+          // Skip if same city as previous
+          if (tripPoints.length === 0 || tripPoints[tripPoints.length - 1][0] !== coords[0] || tripPoints[tripPoints.length - 1][1] !== coords[1]) {
+            tripPoints.push(coords);
+            tripCities.push({ city: c.city, date: c.date, artist: c.artist });
+          }
+        }
+      });
+
+      if (tripPoints.length >= 2) {
+        const tripLine = L.polyline(tripPoints, {
+          color: '#e67e22', weight: 3, opacity: 0.8
+        });
+        tripLine.addTo(routeLayer);
+
+        tripPoints.forEach((p, i) => {
+          L.marker(p, {
+            icon: L.divIcon({ className: 'route-step-orange', html: `<span>${i + 1}</span>`, iconSize: [22, 22] })
+          }).addTo(routeLayer);
+        });
+
+        // Distance labels between legs
+        let totalDist = 0;
+        const legs = [];
+        for (let i = 0; i < tripPoints.length - 1; i++) {
+          const dist = haversineKm(tripPoints[i][0], tripPoints[i][1], tripPoints[i + 1][0], tripPoints[i + 1][1]);
+          totalDist += dist;
+          legs.push({ from: tripCities[i], to: tripCities[i + 1], dist: Math.round(dist) });
+
+          const midLat = (tripPoints[i][0] + tripPoints[i + 1][0]) / 2;
+          const midLng = (tripPoints[i][1] + tripPoints[i + 1][1]) / 2;
+          L.marker([midLat, midLng], {
+            icon: L.divIcon({ className: 'distance-label', html: `${Math.round(dist)} km`, iconSize: [50, 16] }),
+            interactive: false
+          }).addTo(routeLayer);
+        }
+
+        // Summary panel
+        let html = `<h5>&#128663; Road Trip</h5>`;
+        legs.forEach((leg, i) => {
+          html += `<div class="road-trip-leg">${i + 1}. ${leg.from.city} → ${leg.to.city} <span class="leg-dist">${leg.dist} km</span></div>`;
+        });
+        html += `<div class="road-trip-total">${tripPoints.length} stops &middot; ${Math.round(totalDist)} km total</div>`;
+        tripPanel.innerHTML = html;
+        tripPanel.style.display = 'block';
+
+        if (allBounds.length === 0) {
+          leafletMap.fitBounds(tripLine.getBounds(), { padding: [30, 30] });
+        }
+      } else {
+        tripPanel.style.display = 'none';
+      }
+    } else {
+      tripPanel.style.display = 'none';
+    }
+  }
+
+  function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   // ===== CALENDAR =====
@@ -1461,21 +1812,46 @@
         const matchingFiltered = filtered.filter(c => c.date === dateStr);
         const isToday = new Date(dateStr).getTime() === today.getTime();
         const isPast = new Date(dateStr) < today;
-        const isAvailable = selectedDates.has(dateStr);
         const hasFiltered = matchingFiltered.length > 0;
         const hasAnyConcerts = allConcerts.length > 0;
 
         let classes = ['calendar-day'];
         if (isToday) classes.push('today');
         if (isPast) classes.push('past');
-        if (isAvailable) classes.push('available');
         if (hasFiltered) classes.push('has-concerts');
         if (selectedDay === dateStr) classes.push('selected-day');
+        if (dateRangeFrom && dateStr === dateRangeFrom) classes.push('range-edge');
+        if (dateRangeTo && dateStr === dateRangeTo) classes.push('range-edge');
+        if (dateRangeFrom && dateRangeTo && dateStr > dateRangeFrom && dateStr < dateRangeTo) classes.push('in-range');
+        if (dateRangeFrom && !dateRangeTo && dateStr === dateRangeFrom) classes.push('range-edge');
         cell.className = classes.join(' ');
 
         cell.onclick = () => {
-          if (mode === 'availability') toggleDate(dateStr);
-          else { selectedDay = (selectedDay === dateStr) ? null : dateStr; render(); }
+          // Date range selection via calendar clicks
+          if (!dateRangeFrom || (dateRangeFrom && dateRangeTo)) {
+            // Start new range
+            dateRangeFrom = dateStr;
+            dateRangeTo = '';
+            document.getElementById('dateFrom').value = dateStr;
+            document.getElementById('dateTo').value = '';
+          } else {
+            // Set end of range
+            if (dateStr < dateRangeFrom) {
+              dateRangeTo = dateRangeFrom;
+              dateRangeFrom = dateStr;
+            } else if (dateStr === dateRangeFrom) {
+              // Click same date = clear range
+              dateRangeFrom = '';
+              dateRangeTo = '';
+            } else {
+              dateRangeTo = dateStr;
+            }
+            document.getElementById('dateFrom').value = dateRangeFrom;
+            document.getElementById('dateTo').value = dateRangeTo;
+          }
+          document.getElementById('btnDateRange').classList.toggle('active', !!(dateRangeFrom || dateRangeTo));
+          selectedDay = null;
+          render();
         };
 
         const num = document.createElement('div');
@@ -1486,11 +1862,26 @@
         if (hasFiltered) {
           const dots = document.createElement('div');
           dots.className = 'concert-dots';
-          const maxDots = Math.min(matchingFiltered.length, 4);
-          for (let i = 0; i < maxDots; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'concert-dot filtered';
-            dots.appendChild(dot);
+          if (searchTerms.length > 0) {
+            // Show colored dots per artist
+            const artistsOnDay = new Set();
+            matchingFiltered.forEach(c => {
+              const match = searchTerms.find(s => c.artist.toLowerCase().includes(s.name));
+              if (match && !artistsOnDay.has(match.name)) {
+                artistsOnDay.add(match.name);
+                const dot = document.createElement('div');
+                dot.className = 'concert-dot filtered';
+                dot.style.background = match.color;
+                dots.appendChild(dot);
+              }
+            });
+          } else {
+            const maxDots = Math.min(matchingFiltered.length, 4);
+            for (let i = 0; i < maxDots; i++) {
+              const dot = document.createElement('div');
+              dot.className = 'concert-dot filtered';
+              dots.appendChild(dot);
+            }
           }
           cell.appendChild(dots);
         }
@@ -1512,7 +1903,7 @@
 
     let title = 'Concerts';
     if (selectedCity) title = selectedCity;
-    else if (mode === 'browse') {
+    else {
       if (selectedDay) {
         const d = new Date(selectedDay);
         title = `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
@@ -1531,7 +1922,7 @@
     document.getElementById('concertCount').textContent = displayed.length;
 
     if (displayed.length === 0) {
-      list.innerHTML = `<div class="no-results"><p>No concerts for this selection.</p><p style="font-size:11px;">${mode === 'availability' ? 'Select days on the calendar.' : 'Change the period or adjust your filters.'}</p></div>`;
+      list.innerHTML = `<div class="no-results"><p>No concerts for this selection.</p><p style="font-size:11px;">Change the period or adjust your filters.</p></div>`;
       return;
     }
 
@@ -1567,9 +1958,12 @@
             ${countdown}
           </div>
           <div class="festival-meta">${c.city}, ${c.country} &middot; ${mn[d.getMonth()]} ${d.getDate()}</div>
-          <div class="festival-lineup">${group.map(g =>
-            `<span class="lineup-chip">${g.artist}</span>`
-          ).join('')}</div>
+          <div class="festival-lineup">${group.map(g => {
+            const fKey = getConcertKey(g);
+            const fGoing = goingSet.has(fKey);
+            const fSafe = fKey.replace(/'/g, "\\'");
+            return `<span class="lineup-chip">${g.artist} <button class="btn-going ${fGoing ? 'active' : ''}" onclick="event.stopPropagation();toggleGoing('${fSafe}')" style="font-size:13px;">${fGoing ? '&#9829;' : '&#9825;'}</button></span>`;
+          }).join('')}</div>
         `;
         if (group[0].ticketUrl) {
           fCard.innerHTML += `<div style="margin-top:6px;"><a href="${group[0].ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a></div>`;
@@ -1600,6 +1994,9 @@
     card.className = 'concert-card' + (c.soldOut ? ' sold-out' : '');
     const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const countdown = getCountdownBadge(c.date);
+    const key = getConcertKey(c);
+    const isGoing = goingSet.has(key);
+    const safeKey = key.replace(/'/g, "\\'");
     card.innerHTML = `
       <div class="concert-date">
         <div class="month">${mn[d.getMonth()]}</div>
@@ -1613,6 +2010,7 @@
         ${c.support ? `<div class="support">w/ ${c.support}</div>` : ''}
       </div>
       <div class="concert-actions">
+        <button class="btn-going ${isGoing ? 'active' : ''}" onclick="toggleGoing('${safeKey}')" title="I'm going">${isGoing ? '&#9829;' : '&#9825;'}</button>
         ${countdown}
         <a href="https://open.spotify.com/search/${encodeURIComponent(c.artist)}" target="_blank" rel="noopener" class="btn-spotify">&#9654; Spotify</a>
         ${c.soldOut ? '<span class="badge-sold-out">Sold Out</span>' : ''}
@@ -1622,63 +2020,96 @@
     return card;
   }
 
-  // ===== SEARCH DROPDOWN =====
-  function showSearchDropdown(query) {
-    const q = query.toLowerCase();
-    const dropdown = document.getElementById('searchDropdown');
-    dropdown.innerHTML = '';
+  // ===== ARTIST DROPDOWN =====
+  function toggleArtistDropdown() {
+    const dd = document.getElementById('artistDropdown');
+    const btn = document.getElementById('artistSelectBtn');
+    if (dd.classList.contains('open')) {
+      closeArtistDropdown();
+    } else {
+      dd.classList.add('open');
+      btn.classList.add('open');
+      buildArtistDropdown('');
+      document.getElementById('artistFilterInput').value = '';
+      setTimeout(() => document.getElementById('artistFilterInput').focus(), 50);
+    }
+  }
+
+  function closeArtistDropdown() {
+    document.getElementById('artistDropdown').classList.remove('open');
+    document.getElementById('artistSelectBtn').classList.remove('open');
+  }
+
+  function buildArtistDropdown(filter) {
+    const q = (filter || '').toLowerCase();
+    const list = document.getElementById('artistDropdownList');
+    list.innerHTML = '';
 
     const artistMap = {};
     CONCERTS_DATA.forEach(c => {
-      if (c.artist.toLowerCase().includes(q) || c.support.toLowerCase().includes(q)) {
-        if (!artistMap[c.artist]) artistMap[c.artist] = { name: c.artist, count: 0 };
-        artistMap[c.artist].count++;
-      }
+      if (!artistMap[c.artist]) artistMap[c.artist] = { name: c.artist, count: 0 };
+      artistMap[c.artist].count++;
     });
 
-    const supportBands = {};
-    CONCERTS_DATA.forEach(c => {
-      if (!c.support) return;
-      c.support.split(',').map(s => s.trim()).filter(s => s.toLowerCase().includes(q)).forEach(band => {
-        if (!supportBands[band]) supportBands[band] = { name: band, count: 0, isSupport: true };
-        supportBands[band].count++;
-      });
-    });
+    const artists = Object.values(artistMap).sort((a, b) => a.name.localeCompare(b.name));
+    const filtered = q ? artists.filter(a => a.name.toLowerCase().includes(q)) : artists;
 
-    const results = Object.values(artistMap).sort((a, b) => b.count - a.count).slice(0, 6);
-    const supportResults = Object.values(supportBands).filter(s => !artistMap[s.name]).sort((a, b) => b.count - a.count).slice(0, 3);
-    const allResults = [...results, ...supportResults];
-
-    if (!allResults.length) { dropdown.classList.remove('open'); return; }
-
-    allResults.forEach(r => {
+    filtered.forEach(a => {
+      const nameLower = a.name.toLowerCase();
+      const selected = searchTerms.find(s => s.name === nameLower);
       const item = document.createElement('div');
-      item.className = 'search-dropdown-item';
-      const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      const highlighted = r.name.replace(regex, '<span class="match">$1</span>');
+      item.className = 'artist-dropdown-item' + (selected ? ' checked' : '');
       item.innerHTML = `
-        <div class="artist-name">${highlighted}${r.isSupport ? ' <span style="font-size:10px;color:var(--text-muted)">(support)</span>' : ''}</div>
-        <div class="artist-meta"><span class="concert-count">${r.count}</span> concert${r.count > 1 ? 's' : ''}</div>
+        <input type="checkbox" ${selected ? 'checked' : ''} tabindex="-1">
+        <span class="artist-color-dot" style="background:${selected ? selected.color : 'transparent'}"></span>
+        <span class="artist-name">${a.name}</span>
+        <span class="artist-count">${a.count}</span>
       `;
-      item.onclick = () => {
-        document.getElementById('searchArtist').value = r.name;
-        searchTerm = r.name.toLowerCase();
-        closeSearchDropdown();
-        render();
+      item.onclick = (e) => {
+        e.stopPropagation();
+        toggleArtistSelection(nameLower);
       };
-      dropdown.appendChild(item);
+      list.appendChild(item);
     });
-    dropdown.classList.add('open');
   }
 
-  function closeSearchDropdown() {
-    document.getElementById('searchDropdown').classList.remove('open');
-    dropdownIndex = -1;
+  function toggleArtistSelection(artistName) {
+    const existIdx = searchTerms.findIndex(s => s.name === artistName);
+    if (existIdx >= 0) {
+      searchTerms.splice(existIdx, 1);
+    } else if (searchTerms.length < COMPARE_COLORS.length) {
+      const usedColors = new Set(searchTerms.map(s => s.color));
+      const color = COMPARE_COLORS.find(c => !usedColors.has(c)) || COMPARE_COLORS[0];
+      searchTerms.push({ name: artistName, color });
+      // Navigate calendar to nearest future concert
+      const today = new Date(); today.setHours(0,0,0,0);
+      const todayStr = today.toISOString().slice(0,10);
+      const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistName));
+      const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
+      const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
+      if (nearest) {
+        const d = new Date(nearest.date);
+        currentMonth = d.getMonth();
+        currentYear = d.getFullYear();
+      }
+    }
+    updateArtistSelectLabel();
+    buildArtistDropdown(document.getElementById('artistFilterInput').value);
+    selectedDay = null;
+    render();
   }
 
-  function updateDropdownHighlight(items) {
-    items.forEach((item, i) => item.classList.toggle('active', i === dropdownIndex));
-    if (dropdownIndex >= 0) items[dropdownIndex].scrollIntoView({ block: 'nearest' });
+  function updateArtistSelectLabel() {
+    const label = document.getElementById('artistSelectLabel');
+    if (searchTerms.length === 0) {
+      label.textContent = 'All artists';
+    } else if (searchTerms.length === 1) {
+      label.textContent = searchTerms[0].name;
+    } else if (searchTerms.length === 2) {
+      label.textContent = searchTerms.map(s => s.name).join(', ');
+    } else {
+      label.textContent = `${searchTerms.length} artists`;
+    }
   }
 
   // ===== STATISTICS DASHBOARD =====
@@ -1701,8 +2132,8 @@
     const maxMonth = Math.max(...sortedMonths.map(e => e[1]));
     let monthHTML = '<div class="stat-block"><h4>Concerts per month</h4>';
     sortedMonths.forEach(([m, count]) => {
-      const d = new Date(m + '-01');
-      const label = MONTHS_FR[d.getMonth()].substring(0, 3) + ' ' + d.getFullYear().toString().slice(2);
+      const [yr, mo] = m.split('-');
+      const label = MONTHS_FR[parseInt(mo) - 1].substring(0, 3) + ' ' + yr;
       const pct = (count / maxMonth * 100).toFixed(0);
       monthHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${label}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
     });
@@ -1792,10 +2223,147 @@
     if (saved) document.documentElement.setAttribute('data-theme', saved);
   }
 
+  // ===== MAP TOGGLE =====
+  function toggleMap() {
+    const container = document.querySelector('.map-container');
+    const btn = document.getElementById('btnMapToggle');
+    const hidden = container.classList.toggle('map-hidden');
+    btn.classList.toggle('active', !hidden);
+    localStorage.setItem('avocado_map_hidden', hidden ? '1' : '0');
+    if (!hidden && leafletMap) {
+      setTimeout(() => leafletMap.invalidateSize(), 350);
+    }
+  }
+
+  function loadMapPref() {
+    const hidden = localStorage.getItem('avocado_map_hidden') === '1';
+    if (hidden) {
+      document.querySelector('.map-container').classList.add('map-hidden');
+      document.getElementById('btnMapToggle').classList.remove('active');
+    } else {
+      document.getElementById('btnMapToggle').classList.add('active');
+    }
+  }
+
+  // ===== DATE RANGE FILTER =====
+  function toggleDateRange() {
+    const pop = document.getElementById('dateRangePopover');
+    pop.classList.toggle('visible');
+  }
+
+  function applyDateRange() {
+    dateRangeFrom = document.getElementById('dateFrom').value;
+    dateRangeTo = document.getElementById('dateTo').value;
+    document.getElementById('dateRangePopover').classList.remove('visible');
+    document.getElementById('btnDateRange').classList.toggle('active', !!(dateRangeFrom || dateRangeTo));
+    if (dateRangeFrom) {
+      const d = new Date(dateRangeFrom + 'T00:00:00');
+      currentMonth = d.getMonth();
+      currentYear = d.getFullYear();
+    }
+    render();
+  }
+
+  function clearDateRange() {
+    dateRangeFrom = '';
+    dateRangeTo = '';
+    document.getElementById('dateFrom').value = '';
+    document.getElementById('dateTo').value = '';
+    document.getElementById('dateRangePopover').classList.remove('visible');
+    document.getElementById('btnDateRange').classList.remove('active');
+    render();
+  }
+
+  // ===== I'M GOING =====
+  function getConcertKey(c) {
+    return `${c.date}|${c.artist}|${c.city}`;
+  }
+
+  function toggleGoing(key) {
+    if (goingSet.has(key)) {
+      goingSet.delete(key);
+    } else {
+      goingSet.add(key);
+    }
+    localStorage.setItem('avocado_going', JSON.stringify([...goingSet]));
+    render();
+  }
+
+  function toggleGoingPanel() {
+    const panel = document.getElementById('goingPanel');
+    panel.classList.toggle('visible');
+    if (panel.classList.contains('visible')) renderGoingPanel();
+  }
+
+  function toggleGoingFilter() {
+    showGoingOnly = !showGoingOnly;
+    document.getElementById('btnGoingFilter').classList.toggle('active', showGoingOnly);
+    document.getElementById('goingPanel').classList.remove('visible');
+    render();
+  }
+
+  function renderGoingPanel() {
+    const list = document.getElementById('goingPanelList');
+    if (goingSet.size === 0) {
+      list.innerHTML = '<div class="going-panel-empty">No concerts saved yet.<br>Click &#9825; on a concert to add it here.</div>';
+      return;
+    }
+    const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const concerts = CONCERTS_DATA
+      .filter(c => goingSet.has(getConcertKey(c)))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    list.innerHTML = '';
+    concerts.forEach(c => {
+      const d = new Date(c.date + 'T00:00:00');
+      const key = getConcertKey(c).replace(/'/g, "\\'");
+      const item = document.createElement('div');
+      item.className = 'going-item';
+      item.innerHTML = `
+        <div class="going-item-date">
+          <div class="gi-month">${mn[d.getMonth()]}</div>
+          <div class="gi-day">${d.getDate()}</div>
+        </div>
+        <div class="going-item-info">
+          <div class="gi-artist">${c.artist}</div>
+          <div class="gi-details">${c.venue} — ${c.city}, ${c.country}</div>
+        </div>
+        <button class="going-item-remove" onclick="event.stopPropagation();toggleGoing('${key}')" title="Remove">&#10005;</button>
+      `;
+      item.onclick = () => {
+        document.getElementById('goingPanel').classList.remove('visible');
+        const dt = new Date(c.date + 'T00:00:00');
+        currentMonth = dt.getMonth();
+        currentYear = dt.getFullYear();
+        selectedDay = c.date;
+        render();
+      };
+      list.appendChild(item);
+    });
+  }
+
+  function clearAllGoing() {
+    goingSet.clear();
+    localStorage.removeItem('avocado_going');
+    showGoingOnly = false;
+    document.getElementById('btnGoingFilter').classList.remove('active');
+    document.getElementById('goingPanel').classList.remove('visible');
+    render();
+  }
+
+
+
+  function loadGoing() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('avocado_going') || '[]');
+      goingSet = new Set(saved);
+    } catch { goingSet = new Set(); }
+  }
+
   // ===== SHARE FILTERS VIA URL =====
   function shareFilters() {
     const params = new URLSearchParams();
-    if (searchTerm) params.set('artist', searchTerm);
+    if (searchTerms.length > 0) params.set('artists', searchTerms.map(s => s.name).join(','));
     if (selectedCity) params.set('city', selectedCity);
     if (activeCountries.size > 0) params.set('countries', [...activeCountries].join(','));
     const url = window.location.origin + window.location.pathname + (params.toString() ? '?' + params.toString() : '');
@@ -1809,9 +2377,16 @@
 
   function loadFiltersFromURL() {
     const params = new URLSearchParams(window.location.search);
-    if (params.has('artist')) {
-      searchTerm = params.get('artist').toLowerCase();
-      document.getElementById('searchArtist').value = params.get('artist');
+    if (params.has('artists')) {
+      const names = params.get('artists').split(',');
+      names.forEach((name, i) => {
+        searchTerms.push({ name: name.toLowerCase(), color: COMPARE_COLORS[i % COMPARE_COLORS.length] });
+      });
+      updateArtistSelectLabel();
+    } else if (params.has('artist')) {
+      const name = params.get('artist').toLowerCase();
+      searchTerms.push({ name, color: COMPARE_COLORS[0] });
+      updateArtistSelectLabel();
     }
     if (params.has('city')) {
       selectedCity = params.get('city');
@@ -1823,7 +2398,7 @@
 
   // ===== EXPORT ICS =====
   function exportICS() {
-    const concertsOnDates = CONCERTS_DATA.filter(c => selectedDates.has(c.date));
+    const concertsOnDates = CONCERTS_DATA.filter(c => goingSet.has(getConcertKey(c)));
     if (!concertsOnDates.length) return;
 
     let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//AvocadoBookingCalendar//EN\r\n';
@@ -1851,6 +2426,7 @@
 
 <footer class="disclaimer">
   <p>This is a free, unofficial tool designed to help discover concerts. All concert data is sourced from <a href="http://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. This site is not affiliated with, endorsed by, or officially connected to Avocado Booking in any way. All trademarks, logos, and concert information remain the property of their respective owners. If you are a rights holder and wish to have content removed, please <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+  <p style="margin-top:4px;font-size:10px;color:#555;">v1.5.0</p>
 </footer>
 
 </body>
