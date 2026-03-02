@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avocado Booking - Calendrier des concerts</title>
+  <title>Avocado Booking - Concert Calendar</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
@@ -763,32 +763,32 @@
   </div>
   <div class="toolbar-sep"></div>
   <div class="mode-toggle">
-    <button class="mode-btn active" data-mode="browse" onclick="setMode('browse')">Parcourir</button>
-    <button class="mode-btn" data-mode="availability" onclick="setMode('availability')">Mes dispos</button>
+    <button class="mode-btn active" data-mode="browse" onclick="setMode('browse')">Browse</button>
+    <button class="mode-btn" data-mode="availability" onclick="setMode('availability')">My dates</button>
   </div>
   <div class="search-wrapper">
-    <input type="text" class="search-box" id="searchArtist" placeholder="Rechercher un artiste..." autocomplete="off">
+    <input type="text" class="search-box" id="searchArtist" placeholder="Search artist..." autocomplete="off">
     <div class="search-dropdown" id="searchDropdown"></div>
   </div>
   <div class="toolbar-stats">
     <span><strong id="totalConcerts">0</strong> concerts</span>
-    <span><strong id="totalArtists">0</strong> artistes</span>
-    <span><strong id="totalCountries">0</strong> pays</span>
+    <span><strong id="totalArtists">0</strong> artists</span>
+    <span><strong id="totalCountries">0</strong> countries</span>
 
   </div>
 </div>
 
 <!-- COUNTRY RIBBON -->
 <div class="country-ribbon">
-  <span class="country-ribbon-label">Pays</span>
+  <span class="country-ribbon-label">Countries</span>
   <div id="countryFilters" style="display:contents;"></div>
 </div>
 
 <!-- AVAILABILITY BAR -->
 <div class="availability-bar" id="availabilityBar">
-  Cliquez sur les jours du calendrier pour indiquer vos disponibilites.
-  <strong><span id="availCount">0</span> jour(s)</strong>
-  <button class="btn-clear" onclick="clearAvailability()">Effacer</button>
+  Click on calendar days to mark your availability.
+  <strong><span id="availCount">0</span> day(s)</strong>
+  <button class="btn-clear" onclick="clearAvailability()">Clear</button>
 </div>
 
 <!-- ACTIVE FILTERS -->
@@ -816,8 +816,8 @@
       <div class="calendar-3months" id="calendar3months"></div>
       <div class="calendar-legend">
         <div><div style="width:5px;height:5px;background:var(--concert-dot);border-radius:50%;"></div> Concert</div>
-        <div><div style="width:12px;height:8px;background:var(--available);border:1px solid var(--available-border);border-radius:2px;"></div> Dispo</div>
-        <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Complet</div>
+        <div><div style="width:12px;height:8px;background:var(--available);border:1px solid var(--available-border);border-radius:2px;"></div> Available</div>
+        <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Sold Out</div>
       </div>
     </div>
 
@@ -835,9 +835,9 @@
 <script src="concerts.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  const MONTHS_FR = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  const DAYS_FR = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-  const WEEKDAYS_FR = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const MONTHS_FR = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS_FR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const WEEKDAYS_FR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
   let currentYear = 2026;
   let currentMonth = 1;
@@ -1002,7 +1002,7 @@
     }
     if (chips.length === 0) { bar.classList.remove('visible'); return; }
     bar.classList.add('visible');
-    bar.innerHTML = '<span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Filtres</span>';
+    bar.innerHTML = '<span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Filters</span>';
     chips.forEach(c => {
       const chip = document.createElement('span');
       chip.className = 'filter-chip';
@@ -1216,7 +1216,7 @@
     document.getElementById('concertCount').textContent = displayed.length;
 
     if (displayed.length === 0) {
-      list.innerHTML = `<div class="no-results"><p>Aucun concert pour cette selection.</p><p style="font-size:11px;">${mode === 'availability' ? 'Selectionnez des jours sur le calendrier.' : 'Changez de periode ou modifiez vos filtres.'}</p></div>`;
+      list.innerHTML = `<div class="no-results"><p>No concerts for this selection.</p><p style="font-size:11px;">${mode === 'availability' ? 'Select days on the calendar.' : 'Change the period or adjust your filters.'}</p></div>`;
       return;
     }
 
@@ -1240,7 +1240,7 @@
     const d = new Date(c.date);
     const card = document.createElement('div');
     card.className = 'concert-card' + (c.soldOut ? ' sold-out' : '');
-    const mn = ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Aou','Sep','Oct','Nov','Dec'];
+    const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     card.innerHTML = `
       <div class="concert-date">
         <div class="month">${mn[d.getMonth()]}</div>
@@ -1254,8 +1254,8 @@
         ${c.support ? `<div class="support">w/ ${c.support}</div>` : ''}
       </div>
       <div class="concert-actions">
-        ${c.soldOut ? '<span class="badge-sold-out">Complet</span>' : ''}
-        ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Billets</a>` : ''}
+        ${c.soldOut ? '<span class="badge-sold-out">Sold Out</span>' : ''}
+        ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a>` : ''}
       </div>
     `;
     return card;
@@ -1296,7 +1296,7 @@
       const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
       const highlighted = r.name.replace(regex, '<span class="match">$1</span>');
       item.innerHTML = `
-        <div class="artist-name">${highlighted}${r.isSupport ? ' <span style="font-size:10px;color:var(--text-muted)">(1re partie)</span>' : ''}</div>
+        <div class="artist-name">${highlighted}${r.isSupport ? ' <span style="font-size:10px;color:var(--text-muted)">(support)</span>' : ''}</div>
         <div class="artist-meta"><span class="concert-count">${r.count}</span> concert${r.count > 1 ? 's' : ''}</div>
       `;
       item.onclick = () => {
@@ -1324,7 +1324,7 @@
 </script>
 
 <footer class="disclaimer">
-  <p>Ceci est un outil gratuit et non officiel permettant de decouvrir des concerts. Toutes les donnees proviennent de <a href="http://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. Ce site n'est ni affilie, ni approuve, ni officiellement lie a Avocado Booking. Toutes les marques, logos et informations sur les concerts restent la propriete de leurs detenteurs respectifs. Si vous etes titulaire de droits et souhaitez un retrait de contenu, veuillez <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">ouvrir un ticket</a>.</p>
+  <p>This is a free, unofficial tool designed to help discover concerts. All concert data is sourced from <a href="http://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. This site is not affiliated with, endorsed by, or officially connected to Avocado Booking in any way. All trademarks, logos, and concert information remain the property of their respective owners. If you are a rights holder and wish to have content removed, please <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">open an issue</a>.</p>
 </footer>
 
 </body>
