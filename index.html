@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avocado Booking - Calendrier des Concerts 2026</title>
+  <title>Avocado Booking - Calendrier des concerts</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root {
@@ -774,6 +774,7 @@
     <span><strong id="totalConcerts">0</strong> concerts</span>
     <span><strong id="totalArtists">0</strong> artistes</span>
     <span><strong id="totalCountries">0</strong> pays</span>
+
   </div>
 </div>
 
@@ -816,13 +817,14 @@
       <div class="calendar-legend">
         <div><div style="width:5px;height:5px;background:var(--concert-dot);border-radius:50%;"></div> Concert</div>
         <div><div style="width:12px;height:8px;background:var(--available);border:1px solid var(--available-border);border-radius:2px;"></div> Dispo</div>
-        <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Sold Out</div>
+        <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Complet</div>
       </div>
     </div>
 
     <div class="concert-area">
       <div class="concerts-header">
         <h2 id="concertTitle">Concerts</h2>
+
         <span class="count" id="concertCount">0</span>
       </div>
       <div class="concert-list" id="concertList"></div>
@@ -1200,9 +1202,14 @@
         const d = new Date(selectedDay);
         title = `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
       } else {
-        let endM = currentMonth + 2, endY = currentYear;
-        if (endM > 11) { endM -= 12; endY++; }
-        title = `${MONTHS_FR[currentMonth]} — ${MONTHS_FR[endM]}`;
+        const mc = getMonthCount();
+        if (mc === 1) {
+          title = MONTHS_FR[currentMonth];
+        } else {
+          let endM = currentMonth + mc - 1, endY = currentYear;
+          if (endM > 11) { endM -= 12; endY++; }
+          title = `${MONTHS_FR[currentMonth]} — ${MONTHS_FR[endM]}`;
+        }
       }
     }
     document.getElementById('concertTitle').textContent = title;
@@ -1247,8 +1254,8 @@
         ${c.support ? `<div class="support">w/ ${c.support}</div>` : ''}
       </div>
       <div class="concert-actions">
-        ${c.soldOut ? '<span class="badge-sold-out">Sold Out</span>' : ''}
-        ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a>` : ''}
+        ${c.soldOut ? '<span class="badge-sold-out">Complet</span>' : ''}
+        ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Billets</a>` : ''}
       </div>
     `;
     return card;
@@ -1289,8 +1296,8 @@
       const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
       const highlighted = r.name.replace(regex, '<span class="match">$1</span>');
       item.innerHTML = `
-        <div class="artist-name">${highlighted}${r.isSupport ? ' <span style="font-size:10px;color:var(--text-muted)">(support)</span>' : ''}</div>
-        <div class="artist-meta"><span class="concert-count">${r.count}</span> show${r.count > 1 ? 's' : ''}</div>
+        <div class="artist-name">${highlighted}${r.isSupport ? ' <span style="font-size:10px;color:var(--text-muted)">(1re partie)</span>' : ''}</div>
+        <div class="artist-meta"><span class="concert-count">${r.count}</span> concert${r.count > 1 ? 's' : ''}</div>
       `;
       item.onclick = () => {
         document.getElementById('searchArtist').value = r.name;
@@ -1317,7 +1324,7 @@
 </script>
 
 <footer class="disclaimer">
-  <p>This is a free, unofficial tool designed to help discover concerts. All concert data is sourced from <a href="http://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. This site is not affiliated with, endorsed by, or officially connected to Avocado Booking in any way. All trademarks, logos, and concert information remain the property of their respective owners. If you are a rights holder and wish to have content removed, please <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+  <p>Ceci est un outil gratuit et non officiel permettant de decouvrir des concerts. Toutes les donnees proviennent de <a href="http://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. Ce site n'est ni affilie, ni approuve, ni officiellement lie a Avocado Booking. Toutes les marques, logos et informations sur les concerts restent la propriete de leurs detenteurs respectifs. Si vous etes titulaire de droits et souhaitez un retrait de contenu, veuillez <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">ouvrir un ticket</a>.</p>
 </footer>
 
 </body>
