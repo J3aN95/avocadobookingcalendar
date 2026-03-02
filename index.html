@@ -671,12 +671,80 @@
     .no-results p { margin-bottom: 6px; }
 
     /* ===== Responsive ===== */
+
+    /* Tablet landscape / small desktop */
     @media (max-width: 1000px) {
+      body { height: auto; min-height: 100dvh; overflow-y: auto; }
+      .main-content { overflow: visible; }
       .bottom-panel { grid-template-columns: 1fr; }
-      .concert-area { border-left: none; border-top: 1px solid var(--border); max-height: 40vh; }
+      .concert-area { border-left: none; border-top: 1px solid var(--border); max-height: 50vh; }
       .calendar-3months { grid-template-columns: 1fr; }
       #leafletMap { height: 30vh; }
       .toolbar { flex-wrap: wrap; }
+    }
+
+    /* Tablet portrait */
+    @media (max-width: 768px) {
+      .toolbar { padding: 8px 12px; gap: 10px; }
+      .toolbar-sep { display: none; }
+      .search-wrapper { max-width: 240px; min-width: 120px; }
+      .toolbar-stats { font-size: 11px; gap: 10px; }
+      #leafletMap { height: 25vh; min-height: 180px; }
+      .calendar-day { min-height: 36px; font-size: 12px; }
+      .day-header { font-size: 10px; }
+      .btn-ticket { padding: 7px 14px; font-size: 12px; }
+      .concert-date .day { font-size: 18px; }
+      .country-ribbon { padding: 5px 12px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .toolbar {
+        padding: 8px 10px;
+        gap: 8px;
+      }
+      .logo-icon { height: 28px; }
+      .mode-toggle button { font-size: 11px; padding: 5px 10px; }
+      .search-wrapper {
+        flex: 1 1 100%;
+        max-width: none;
+        order: 10;
+      }
+      .toolbar-stats { display: none; }
+
+      .country-ribbon { padding: 4px 8px; gap: 4px; }
+      .country-tag { font-size: 10px; padding: 2px 7px; }
+
+      .availability-bar { padding: 6px 8px; font-size: 11px; }
+      .active-filters { padding: 4px 8px; }
+
+      #leafletMap { height: 22vh; min-height: 150px; }
+      .map-city-filter { font-size: 11px; padding: 4px 10px; }
+
+      .calendar-area { padding: 8px; }
+      .calendar-3months { gap: 12px; }
+      .month-block h3 { font-size: 12px; }
+      .calendar-nav button { width: 26px; height: 26px; font-size: 14px; }
+      .calendar-day { min-height: 40px; font-size: 13px; padding: 4px 2px; }
+      .day-header { font-size: 10px; }
+      .day-dot { width: 4px; height: 4px; }
+
+      .concert-area { padding: 10px 8px; max-height: none; }
+      .concert-card { grid-template-columns: 42px 1fr; gap: 8px; }
+      .concert-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: flex-end;
+        margin-top: 2px;
+      }
+      .concert-date .day { font-size: 17px; }
+      .concert-date .month, .concert-date .weekday { font-size: 9px; }
+      .concert-info h3 { font-size: 13px; }
+      .concert-info .details { font-size: 11px; }
+      .btn-ticket { padding: 8px 16px; font-size: 12px; }
+
+      .disclaimer { padding: 6px 8px; }
+      .disclaimer p { font-size: 10px; }
     }
 
     /* ===== Scrollbar ===== */
