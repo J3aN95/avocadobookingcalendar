@@ -628,47 +628,6 @@
       white-space: nowrap;
     }
 
-    /* ===== DATE RANGE FILTER ===== */
-    .date-range-wrapper { position: relative; display: inline-flex; }
-    .date-range-popover {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      margin-top: 6px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      z-index: 1000;
-      min-width: 210px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    }
-    .date-range-popover.visible { display: block; }
-    .date-range-popover label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-    .date-range-popover input[type="date"] {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 4px;
-      padding: 4px 6px;
-      margin-top: 2px;
-      font-size: 12px;
-    }
-    .date-range-actions { display: flex; gap: 6px; margin-top: 10px; }
-    .date-range-actions button {
-      flex: 1;
-      padding: 5px 8px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text);
-      cursor: pointer;
-      font-size: 11px;
-    }
-    .date-range-actions button:first-child { background: var(--accent); color: #fff; border-color: var(--accent); }
-    #btnDateRange.active { color: var(--accent); border-color: var(--accent); }
 
     /* ===== I'M GOING ===== */
     .going-wrapper { position: relative; display: inline-flex; }
@@ -913,14 +872,10 @@
       background: var(--accent-bg);
       box-shadow: 0 0 0 1px var(--accent);
     }
-    .calendar-day.range-edge {
+    .calendar-day.date-selected {
       border-color: var(--accent);
       background: var(--accent-bg);
       box-shadow: 0 0 0 1px var(--accent);
-    }
-    .calendar-day.in-range {
-      background: var(--accent-bg);
-      border-color: rgba(109, 191, 74, 0.3);
     }
 
     .day-number { font-size: 11px; color: var(--text); }
@@ -1244,17 +1199,6 @@
         <div class="going-panel-list" id="goingPanelList"></div>
       </div>
     </div>
-    <div class="date-range-wrapper">
-      <button class="btn-icon" id="btnDateRange" onclick="toggleDateRange()" title="Filter by date range">&#128198;</button>
-      <div class="date-range-popover" id="dateRangePopover">
-        <label>From<input type="date" id="dateFrom"></label>
-        <label>To<input type="date" id="dateTo"></label>
-        <div class="date-range-actions">
-          <button onclick="applyDateRange()">Apply</button>
-          <button onclick="clearDateRange()">Clear</button>
-        </div>
-      </div>
-    </div>
     <button class="btn-icon" onclick="shareFilters()" title="Share filtered view">&#128279;</button>
     <button class="btn-icon map-toggle-btn" id="btnMapToggle" onclick="toggleMap()" title="Show/hide map">&#127758;</button>
     <button class="btn-icon" onclick="toggleTheme()" title="Toggle light/dark theme">&#9788;</button>
@@ -1333,8 +1277,7 @@
   let selectedCity = null;
   let goingSet = new Set();
   let showGoingOnly = false;
-  let dateRangeFrom = '';
-  let dateRangeTo = '';
+  let selectedDates = new Set();
 
   function init() {
     loadTheme();
@@ -1371,7 +1314,6 @@
     document.addEventListener('click', (e) => {
       if (!e.target.closest('#searchWrapper')) closeArtistDropdown();
       if (!e.target.closest('.going-wrapper')) document.getElementById('goingPanel').classList.remove('visible');
-      if (!e.target.closest('.date-range-wrapper')) document.getElementById('dateRangePopover').classList.remove('visible');
     });
 
     // Start calendar on current month
@@ -1408,8 +1350,7 @@
       }
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
       if (selectedCity && c.city !== selectedCity) return false;
-      if (dateRangeFrom && c.date < dateRangeFrom) return false;
-      if (dateRangeTo && c.date > dateRangeTo) return false;
+      if (selectedDates.size > 0 && !selectedDates.has(c.date)) return false;
       return true;
     });
   }
@@ -1419,7 +1360,7 @@
     if (selectedCity) return filtered;
     if (searchTerms.length > 0) return filtered; // Show ALL dates when filtering by artist
     if (showGoingOnly) return filtered; // Show ALL going concerts
-    if (dateRangeFrom || dateRangeTo) return filtered; // Show ALL concerts in date range
+    if (selectedDates.size > 0) return filtered; // Show ALL concerts on selected dates
     if (selectedDay) return filtered.filter(c => c.date === selectedDay);
     const visibleMonths = new Set();
     for (let i = 0; i < getMonthCount(); i++) {
@@ -1469,10 +1410,8 @@
     if (showGoingOnly) {
       chips.push({ label: `My concerts (${goingSet.size})`, clear: () => { showGoingOnly = false; document.getElementById('btnGoingFilter').classList.remove('active'); render(); }});
     }
-    if (dateRangeFrom || dateRangeTo) {
-      const from = dateRangeFrom || '...';
-      const to = dateRangeTo || '...';
-      chips.push({ label: `${from} → ${to}`, clear: () => clearDateRange() });
+    if (selectedDates.size > 0) {
+      chips.push({ label: `${selectedDates.size} date${selectedDates.size > 1 ? 's' : ''} selected`, clear: () => { selectedDates.clear(); render(); }});
     }
     if (chips.length === 0) { bar.classList.remove('visible'); return; }
     bar.classList.add('visible');
@@ -1820,36 +1759,15 @@
         if (isPast) classes.push('past');
         if (hasFiltered) classes.push('has-concerts');
         if (selectedDay === dateStr) classes.push('selected-day');
-        if (dateRangeFrom && dateStr === dateRangeFrom) classes.push('range-edge');
-        if (dateRangeTo && dateStr === dateRangeTo) classes.push('range-edge');
-        if (dateRangeFrom && dateRangeTo && dateStr > dateRangeFrom && dateStr < dateRangeTo) classes.push('in-range');
-        if (dateRangeFrom && !dateRangeTo && dateStr === dateRangeFrom) classes.push('range-edge');
+        if (selectedDates.has(dateStr)) classes.push('date-selected');
         cell.className = classes.join(' ');
 
         cell.onclick = () => {
-          // Date range selection via calendar clicks
-          if (!dateRangeFrom || (dateRangeFrom && dateRangeTo)) {
-            // Start new range
-            dateRangeFrom = dateStr;
-            dateRangeTo = '';
-            document.getElementById('dateFrom').value = dateStr;
-            document.getElementById('dateTo').value = '';
+          if (selectedDates.has(dateStr)) {
+            selectedDates.delete(dateStr);
           } else {
-            // Set end of range
-            if (dateStr < dateRangeFrom) {
-              dateRangeTo = dateRangeFrom;
-              dateRangeFrom = dateStr;
-            } else if (dateStr === dateRangeFrom) {
-              // Click same date = clear range
-              dateRangeFrom = '';
-              dateRangeTo = '';
-            } else {
-              dateRangeTo = dateStr;
-            }
-            document.getElementById('dateFrom').value = dateRangeFrom;
-            document.getElementById('dateTo').value = dateRangeTo;
+            selectedDates.add(dateStr);
           }
-          document.getElementById('btnDateRange').classList.toggle('active', !!(dateRangeFrom || dateRangeTo));
           selectedDay = null;
           render();
         };
@@ -2243,35 +2161,6 @@
     } else {
       document.getElementById('btnMapToggle').classList.add('active');
     }
-  }
-
-  // ===== DATE RANGE FILTER =====
-  function toggleDateRange() {
-    const pop = document.getElementById('dateRangePopover');
-    pop.classList.toggle('visible');
-  }
-
-  function applyDateRange() {
-    dateRangeFrom = document.getElementById('dateFrom').value;
-    dateRangeTo = document.getElementById('dateTo').value;
-    document.getElementById('dateRangePopover').classList.remove('visible');
-    document.getElementById('btnDateRange').classList.toggle('active', !!(dateRangeFrom || dateRangeTo));
-    if (dateRangeFrom) {
-      const d = new Date(dateRangeFrom + 'T00:00:00');
-      currentMonth = d.getMonth();
-      currentYear = d.getFullYear();
-    }
-    render();
-  }
-
-  function clearDateRange() {
-    dateRangeFrom = '';
-    dateRangeTo = '';
-    document.getElementById('dateFrom').value = '';
-    document.getElementById('dateTo').value = '';
-    document.getElementById('dateRangePopover').classList.remove('visible');
-    document.getElementById('btnDateRange').classList.remove('active');
-    render();
   }
 
   // ===== I'M GOING =====
