@@ -191,6 +191,14 @@ async function parseTourPage(tourPath) {
     tourName = artist;
   }
 
+  // Extract tour poster image
+  let imageUrl = '';
+  const posterImg = $('img[src*="cache/com_zoo/images"]').first();
+  if (posterImg.length) {
+    const src = posterImg.attr('src');
+    imageUrl = src.startsWith('http') ? src : `${BASE_URL}${src}`;
+  }
+
   // Extract support acts from h3
   let defaultSupport = '';
   const h3 = $('h3').first().text().trim();
@@ -269,12 +277,12 @@ async function parseTourPage(tourPath) {
     concerts.push(concert);
   });
 
-  console.log(`  ${artist}: ${concerts.length} concerts`);
-  return concerts;
+  console.log(`  ${artist}: ${concerts.length} concerts${imageUrl ? ' (poster found)' : ''}`);
+  return { concerts, tourInfo: { artist, tour: tourName, imageUrl } };
 }
 
 // Generate concerts.js content
-function generateConcertsJS(allConcerts, cityCoords) {
+function generateConcertsJS(allConcerts, cityCoords, tourImages) {
   // Sort concerts by date, then by artist
   allConcerts.sort((a, b) => {
     const da = a.date.localeCompare(b.date);
@@ -308,7 +316,14 @@ function generateConcertsJS(allConcerts, cityCoords) {
     const [lat, lng] = cityCoords[city];
     js += `  "${city}": [${lat}, ${lng}],\n`;
   }
-  js += '};\n';
+  js += '};\n\n';
+
+  // Write TOUR_IMAGES
+  js += 'const TOUR_IMAGES = [\n';
+  for (const t of tourImages) {
+    js += `  ${JSON.stringify(t)},\n`;
+  }
+  js += '];\n';
 
   return js;
 }
@@ -326,11 +341,15 @@ async function main() {
 
   // Parse each tour page
   const allConcerts = [];
+  const tourImages = [];
   for (const link of tourLinks) {
     try {
       await sleep(500); // Be polite with requests
-      const concerts = await parseTourPage(link);
+      const { concerts, tourInfo } = await parseTourPage(link);
       allConcerts.push(...concerts);
+      if (tourInfo.imageUrl) {
+        tourImages.push(tourInfo);
+      }
     } catch (err) {
       console.error(`  ERROR parsing ${link}: ${err.message}`);
     }
@@ -378,10 +397,10 @@ async function main() {
   }
 
   // Generate and write concerts.js
-  const output = generateConcertsJS(allConcerts, cleanCoords);
+  const output = generateConcertsJS(allConcerts, cleanCoords, tourImages);
   writeFileSync(CONCERTS_PATH, output, 'utf-8');
   console.log(`Written ${CONCERTS_PATH}`);
-  console.log(`  ${allConcerts.length} concerts, ${Object.keys(cleanCoords).length} cities`);
+  console.log(`  ${allConcerts.length} concerts, ${Object.keys(cleanCoords).length} cities, ${tourImages.length} tour images`);
 }
 
 main().catch(err => {

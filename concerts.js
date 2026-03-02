@@ -471,3 +471,27 @@ const CITY_COORDS = {
   "Ysselsteyn": [51.53, 5.94],
   "Zurich": [47.38, 8.54],
 };
+
+const TOUR_IMAGES = [
+  {"artist":"Bodysnatcher","tour":"THE HELL IS HERE, HELL IS HOME TOUR","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/BODYSNATCHER-EU2026-HEADER-alt_e9d4c97f6d63ae34a61510b3ec4eb644.jpg"},
+  {"artist":"Crystal Lake & Miss May I","tour":"European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/CL-MMI-HEADER_26_c6da583237a9bac1bae33a4c823f5226.jpg"},
+  {"artist":"Hands Like Houses & Broadside","tour":"EUROPEAN CO-HEADLINE TOUR 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Broadside-HLH_Header_c903823cf577f7d3aa3d251ad5c19646.jpg"},
+  {"artist":"Man With A Mission","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/MWAM_FullTour_EU26_Header_93a3db6a7fba55f9ee51e856a89ce410.jpg"},
+  {"artist":"Paledusk","tour":"EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Paledusk-Europe2026-HEADER_94c247d7026d655e5bc8c40329a12804.jpg"},
+  {"artist":"Rivers Of Nihil","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/RON-EU_Header_65d9a567148c1609bd987cca63557e86.jpg"},
+  {"artist":"Spaced","tour":"UK and Ireland 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Spaced26_Header_645ae3d42149023506fc6de0e3b0c3c5.jpg"},
+  {"artist":"Thrown","tour":"Baltics & Finland Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Thrown-26_Banner_62aa02c418ad6b587db93354548497de.jpg"},
+  {"artist":"Contention","tour":"Nuclear Summer Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Contention_Header_73eab93d9f6c86d17291f0c7c2138b52.jpg"},
+  {"artist":"Fit For A King","tour":"Lonely God European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/FFAK_EUSping26-Banner-981_596195d95e85e760a4ee4349575e48df.jpg"},
+  {"artist":"Kublai Khan TX","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/KKTX_Banner_298038ecec4e1fa839dca709556894b2.jpg"},
+  {"artist":"Morning Again","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/MorningAgain2026-Header_7a367f10427ff3a29daca3ab0dddbea1.jpg"},
+  {"artist":"Queensrÿche","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Queensryche-2026_Banner_a054852653db27e680077fb5a1b9bdd7.jpg"},
+  {"artist":"Shai Hulud","tour":"EUROPE SUMMER 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ShaiHulud-26_Header_88ef1dbc268ff041e34f268966d96d19.jpg"},
+  {"artist":"The Amity Affliction","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAA-FB_Banner-26_ca6943210d103c881e0fae8681c2a16e.jpg"},
+  {"artist":"Converge","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_2026_poster_621d2ee28c62a5d799028d8c27f03e56.jpg"},
+  {"artist":"French Police","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/FrenchPolice2026-HEADER-981_ec4075a27de6bb2ba848406afbcb12ae.jpg"},
+  {"artist":"Lost Society","tour":"Tour Is A State Of Mind","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/LostSociety_Banner_acd39ca05b23d06b43205ee19e19a5ea.jpg"},
+  {"artist":"Rain City Drive","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/RCD-EU2026_BANNER_3a2836e4996fe4ebe2b34fd177b88271.jpg"},
+  {"artist":"Silent Planet","tour":"EU/UK Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SilentPlanet_EUJune26_Banner_54db5edb0665040e9ecbde14c1006f72.jpg"},
+  {"artist":"The Plot In You","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TPIY-26_Banner_ffea523c834a6d65c29bca8ac868ce75.jpg"},
+];

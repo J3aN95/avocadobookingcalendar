@@ -293,6 +293,55 @@
       overflow: hidden;
     }
 
+    /* ===== TOUR CAROUSEL ===== */
+    .tour-carousel {
+      display: flex;
+      gap: 10px;
+      padding: 8px 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      flex-shrink: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .tour-carousel::-webkit-scrollbar { height: 0; }
+
+    .tour-slide {
+      flex-shrink: 0;
+      width: 180px;
+      height: 100px;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      scroll-snap-align: start;
+      border: 2px solid transparent;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .tour-slide:hover { transform: scale(1.03); border-color: var(--accent); }
+    .tour-slide.active { border-color: var(--accent); box-shadow: 0 0 10px rgba(109,191,74,0.4); }
+
+    .tour-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .tour-slide .slide-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 4px 8px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     /* ===== MAP ===== */
     .map-container {
       position: relative;
@@ -699,6 +748,10 @@
 
     /* Mobile */
     @media (max-width: 480px) {
+      .tour-carousel { padding: 6px 8px; gap: 8px; }
+      .tour-slide { width: 140px; height: 80px; }
+      .tour-slide .slide-label { font-size: 10px; padding: 3px 6px; }
+
       .toolbar {
         padding: 8px 10px;
         gap: 8px;
@@ -793,6 +846,9 @@
 
 <!-- ACTIVE FILTERS -->
 <div class="active-filters" id="activeFilters"></div>
+
+<!-- TOUR CAROUSEL -->
+<div class="tour-carousel" id="tourCarousel"></div>
 
 <!-- MAIN CONTENT -->
 <div class="main-content">
@@ -980,6 +1036,7 @@
   }
 
   function render() {
+    renderCarousel();
     renderCalendar();
     renderMap();
     renderConcertList();
@@ -1010,6 +1067,51 @@
       chip.querySelector('.chip-remove').onclick = c.clear;
       bar.appendChild(chip);
     });
+  }
+
+  // ===== TOUR CAROUSEL =====
+  let carouselInterval = null;
+
+  function renderCarousel() {
+    const container = document.getElementById('tourCarousel');
+    if (!container || typeof TOUR_IMAGES === 'undefined' || !TOUR_IMAGES.length) return;
+    container.innerHTML = '';
+
+    TOUR_IMAGES.forEach(t => {
+      const slide = document.createElement('div');
+      slide.className = 'tour-slide';
+      if (searchTerm && t.artist.toLowerCase().includes(searchTerm)) {
+        slide.classList.add('active');
+      }
+      slide.innerHTML = `
+        <img src="${t.imageUrl}" alt="${t.artist}" loading="lazy">
+        <div class="slide-label">${t.artist}</div>
+      `;
+      slide.onclick = () => {
+        const artistLower = t.artist.toLowerCase();
+        if (searchTerm === artistLower) {
+          searchTerm = '';
+          document.getElementById('searchArtist').value = '';
+        } else {
+          searchTerm = artistLower;
+          document.getElementById('searchArtist').value = t.artist;
+        }
+        render();
+      };
+      container.appendChild(slide);
+    });
+
+    // Auto-scroll
+    if (carouselInterval) clearInterval(carouselInterval);
+    carouselInterval = setInterval(() => {
+      if (container.matches(':hover')) return;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (container.scrollLeft >= maxScroll - 10) {
+        container.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        container.scrollBy({ left: 190, behavior: 'smooth' });
+      }
+    }, 3000);
   }
 
   // ===== LEAFLET MAP =====
