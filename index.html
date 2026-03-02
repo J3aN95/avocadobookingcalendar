@@ -23,6 +23,23 @@
       --today: rgba(255, 255, 255, 0.08);
     }
 
+    [data-theme="light"] {
+      --bg: #f5f5f5;
+      --surface: #ffffff;
+      --surface2: #eaeaea;
+      --border: #ddd;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --accent: #4a9e2f;
+      --accent-hover: #3d8526;
+      --accent-bg: rgba(74, 158, 47, 0.1);
+      --available: rgba(74, 158, 47, 0.18);
+      --available-border: #4a9e2f;
+      --concert-dot: #4a9e2f;
+      --sold-out: #d32f2f;
+      --today: rgba(0, 0, 0, 0.05);
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -182,6 +199,40 @@
     }
 
     .toolbar-stats strong { color: var(--accent); }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+    .badge-countdown {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .badge-countdown.today { background: var(--accent); color: #000; }
+    .badge-countdown.tomorrow { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
+    .badge-countdown.soon { background: var(--surface2); color: var(--text-muted); }
 
     /* ===== COUNTRY RIBBON ===== */
     .country-ribbon {
@@ -829,7 +880,11 @@
     <span><strong id="totalConcerts">0</strong> concerts</span>
     <span><strong id="totalArtists">0</strong> artists</span>
     <span><strong id="totalCountries">0</strong> countries</span>
-
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn-icon" onclick="shareFilters()" title="Share filtered view">&#128279;</button>
+    <button class="btn-icon" id="btnExportIcs" onclick="exportICS()" title="Export to calendar (.ics)" style="display:none;">&#128197;</button>
+    <button class="btn-icon" onclick="toggleTheme()" title="Toggle light/dark theme">&#9788;</button>
   </div>
 </div>
 
@@ -911,6 +966,9 @@
   if (saved) selectedDates = new Set(JSON.parse(saved));
 
   function init() {
+    loadTheme();
+    loadFiltersFromURL();
+
     const artists = new Set(CONCERTS_DATA.map(c => c.artist));
     const countries = new Set(CONCERTS_DATA.map(c => c.country));
     document.getElementById('totalConcerts').textContent = CONCERTS_DATA.length;
@@ -923,6 +981,7 @@
       const tag = document.createElement('span');
       tag.className = 'country-tag';
       tag.textContent = country;
+      if (activeCountries.has(country)) tag.classList.add('active');
       tag.onclick = () => {
         if (activeCountries.has(country)) {
           activeCountries.delete(country);
@@ -977,6 +1036,7 @@
     mode = m;
     document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === m));
     document.getElementById('availabilityBar').classList.toggle('visible', m === 'availability');
+    document.getElementById('btnExportIcs').style.display = m === 'availability' ? '' : 'none';
     render();
   }
 
@@ -1138,7 +1198,11 @@
       center: [50, 10], zoom: 4, minZoom: 3, maxZoom: 8,
       zoomControl: false, attributionControl: false
     });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd' }).addTo(leafletMap);
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const tiles = theme === 'light'
+      ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    L.tileLayer(tiles, { subdomains: 'abcd' }).addTo(leafletMap);
     L.control.zoom({ position: 'topright' }).addTo(leafletMap);
     markersLayer = L.layerGroup().addTo(leafletMap);
   }
@@ -1350,11 +1414,24 @@
     list.scrollTop = 0;
   }
 
+  function getCountdownBadge(dateStr) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const concert = new Date(dateStr); concert.setHours(0,0,0,0);
+    const diff = Math.round((concert - today) / 86400000);
+    if (diff < 0) return '';
+    if (diff === 0) return '<span class="badge-countdown today">Today!</span>';
+    if (diff === 1) return '<span class="badge-countdown tomorrow">Tomorrow</span>';
+    if (diff <= 7) return `<span class="badge-countdown soon">In ${diff} days</span>`;
+    if (diff <= 30) return `<span class="badge-countdown soon">In ${diff} days</span>`;
+    return '';
+  }
+
   function createConcertCard(c) {
     const d = new Date(c.date);
     const card = document.createElement('div');
     card.className = 'concert-card' + (c.soldOut ? ' sold-out' : '');
     const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const countdown = getCountdownBadge(c.date);
     card.innerHTML = `
       <div class="concert-date">
         <div class="month">${mn[d.getMonth()]}</div>
@@ -1368,6 +1445,7 @@
         ${c.support ? `<div class="support">w/ ${c.support}</div>` : ''}
       </div>
       <div class="concert-actions">
+        ${countdown}
         ${c.soldOut ? '<span class="badge-sold-out">Sold Out</span>' : ''}
         ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a>` : ''}
       </div>
@@ -1432,6 +1510,82 @@
   function updateDropdownHighlight(items) {
     items.forEach((item, i) => item.classList.toggle('active', i === dropdownIndex));
     if (dropdownIndex >= 0) items[dropdownIndex].scrollIntoView({ block: 'nearest' });
+  }
+
+  // ===== THEME TOGGLE =====
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('avocado_theme', next);
+    // Update Leaflet tiles for light/dark
+    if (leafletMap) {
+      leafletMap.eachLayer(l => { if (l._url) leafletMap.removeLayer(l); });
+      const tiles = next === 'light'
+        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      L.tileLayer(tiles, { subdomains: 'abcd' }).addTo(leafletMap);
+    }
+  }
+
+  function loadTheme() {
+    const saved = localStorage.getItem('avocado_theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  }
+
+  // ===== SHARE FILTERS VIA URL =====
+  function shareFilters() {
+    const params = new URLSearchParams();
+    if (searchTerm) params.set('artist', searchTerm);
+    if (selectedCity) params.set('city', selectedCity);
+    if (activeCountries.size > 0) params.set('countries', [...activeCountries].join(','));
+    const url = window.location.origin + window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.querySelector('.toolbar-actions .btn-icon[title*="Share"]');
+      if (btn) { const orig = btn.innerHTML; btn.innerHTML = '&#10003;'; setTimeout(() => btn.innerHTML = orig, 1500); }
+    }).catch(() => {
+      prompt('Copy this link:', url);
+    });
+  }
+
+  function loadFiltersFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('artist')) {
+      searchTerm = params.get('artist').toLowerCase();
+      document.getElementById('searchArtist').value = params.get('artist');
+    }
+    if (params.has('city')) {
+      selectedCity = params.get('city');
+    }
+    if (params.has('countries')) {
+      params.get('countries').split(',').forEach(c => activeCountries.add(c));
+    }
+  }
+
+  // ===== EXPORT ICS =====
+  function exportICS() {
+    const concertsOnDates = CONCERTS_DATA.filter(c => selectedDates.has(c.date));
+    if (!concertsOnDates.length) return;
+
+    let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//AvocadoBookingCalendar//EN\r\n';
+    concertsOnDates.forEach(c => {
+      const d = c.date.replace(/-/g, '');
+      const summary = `${c.artist} - ${c.venue}`;
+      const location = `${c.venue}, ${c.city}, ${c.country}`;
+      const desc = c.support ? `Tour: ${c.tour}\\nw/ ${c.support}` : `Tour: ${c.tour}`;
+      ics += `BEGIN:VEVENT\r\nDTSTART;VALUE=DATE:${d}\r\nDTEND;VALUE=DATE:${d}\r\nSUMMARY:${summary}\r\nLOCATION:${location}\r\nDESCRIPTION:${desc}\r\n`;
+      if (c.ticketUrl) ics += `URL:${c.ticketUrl}\r\n`;
+      ics += `END:VEVENT\r\n`;
+    });
+    ics += 'END:VCALENDAR\r\n';
+
+    const blob = new Blob([ics], { type: 'text/calendar' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'avocado-concerts.ics';
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   init();
