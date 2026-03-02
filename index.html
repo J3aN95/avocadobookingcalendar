@@ -808,9 +808,9 @@
   <div class="bottom-panel">
     <div class="calendar-area">
       <div class="calendar-nav">
-        <button class="nav-btn" onclick="changeMonth(-3)">&#9664;</button>
+        <button class="nav-btn" onclick="changeMonth(-1)">&#9664;</button>
         <h2 id="currentMonth"></h2>
-        <button class="nav-btn" onclick="changeMonth(3)">&#9654;</button>
+        <button class="nav-btn" onclick="changeMonth(1)">&#9654;</button>
       </div>
       <div class="calendar-3months" id="calendar3months"></div>
       <div class="calendar-legend">
@@ -920,8 +920,13 @@
     render();
   }
 
+  function getMonthCount() {
+    return window.innerWidth <= 480 ? 1 : 3;
+  }
+
   function changeMonth(delta) {
-    currentMonth += delta;
+    const step = delta > 0 ? getMonthCount() : -getMonthCount();
+    currentMonth += step;
     while (currentMonth > 11) { currentMonth -= 12; currentYear++; }
     while (currentMonth < 0) { currentMonth += 12; currentYear--; }
     selectedDay = null;
@@ -958,7 +963,7 @@
     if (mode === 'browse') {
       if (selectedDay) return filtered.filter(c => c.date === selectedDay);
       const visibleMonths = new Set();
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < getMonthCount(); i++) {
         let m = currentMonth + i, y = currentYear;
         if (m > 11) { m -= 12; y++; }
         visibleMonths.add(`${y}-${String(m + 1).padStart(2, '0')}`);
@@ -1090,11 +1095,16 @@
     const filteredDates = new Set(filtered.map(c => c.date));
     const today = new Date(); today.setHours(0, 0, 0, 0);
 
-    let endMonth = currentMonth + 2, endYear = currentYear;
-    if (endMonth > 11) { endMonth -= 12; endYear++; }
-    document.getElementById('currentMonth').textContent = `${MONTHS_FR[currentMonth]} — ${MONTHS_FR[endMonth]} ${endYear}`;
+    const monthCount = getMonthCount();
+    if (monthCount === 1) {
+      document.getElementById('currentMonth').textContent = `${MONTHS_FR[currentMonth]} ${currentYear}`;
+    } else {
+      let endMonth = currentMonth + monthCount - 1, endYear = currentYear;
+      if (endMonth > 11) { endMonth -= 12; endYear++; }
+      document.getElementById('currentMonth').textContent = `${MONTHS_FR[currentMonth]} — ${MONTHS_FR[endMonth]} ${endYear}`;
+    }
 
-    for (let offset = 0; offset < 3; offset++) {
+    for (let offset = 0; offset < monthCount; offset++) {
       let m = currentMonth + offset, y = currentYear;
       if (m > 11) { m -= 12; y++; }
 
