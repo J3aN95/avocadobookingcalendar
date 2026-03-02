@@ -234,6 +234,129 @@
     .badge-countdown.tomorrow { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
     .badge-countdown.soon { background: var(--surface2); color: var(--text-muted); }
 
+    .btn-spotify {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: #1db954;
+      color: #fff;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-spotify:hover { opacity: 0.85; }
+
+    .badge-new {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--sold-out);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .festival-card {
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .festival-card .festival-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .festival-card .festival-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .festival-card .festival-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .festival-card .festival-lineup {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .festival-card .lineup-chip {
+      font-size: 11px;
+      padding: 2px 8px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      color: var(--text);
+    }
+
+    .stats-panel {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.3s ease;
+      flex-shrink: 0;
+    }
+    .stats-panel.open { max-height: 300px; }
+    .stats-inner {
+      padding: 12px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .stat-block h4 {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .stat-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+      font-size: 11px;
+    }
+    .stat-bar-label {
+      width: 80px;
+      text-align: right;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+    }
+    .stat-bar {
+      flex: 1;
+      height: 12px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .stat-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+    .stat-bar-value {
+      width: 24px;
+      font-size: 10px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
     /* ===== COUNTRY RIBBON ===== */
     .country-ribbon {
       background: var(--surface);
@@ -804,6 +927,9 @@
       .tour-slide .slide-label { font-size: 12px; padding: 5px 8px; }
 
       .map-container { display: none; }
+      .stats-inner { grid-template-columns: 1fr; padding: 10px 8px; }
+      .stat-bar-label { width: 60px; font-size: 10px; }
+      .festival-card { padding: 8px; }
 
       .toolbar {
         padding: 8px 10px;
@@ -882,6 +1008,7 @@
     <span><strong id="totalCountries">0</strong> countries</span>
   </div>
   <div class="toolbar-actions">
+    <button class="btn-icon" onclick="toggleStats()" title="Statistics">&#128202;</button>
     <button class="btn-icon" onclick="shareFilters()" title="Share filtered view">&#128279;</button>
     <button class="btn-icon" id="btnExportIcs" onclick="exportICS()" title="Export to calendar (.ics)" style="display:none;">&#128197;</button>
     <button class="btn-icon" onclick="toggleTheme()" title="Toggle light/dark theme">&#9788;</button>
@@ -892,6 +1019,11 @@
 <div class="country-ribbon">
   <span class="country-ribbon-label">Countries</span>
   <div id="countryFilters" style="display:contents;"></div>
+</div>
+
+<!-- STATS PANEL -->
+<div class="stats-panel" id="statsPanel">
+  <div class="stats-inner" id="statsInner"></div>
 </div>
 
 <!-- AVAILABILITY BAR -->
@@ -1027,6 +1159,8 @@
     currentYear = minDate.getFullYear();
     currentMonth = minDate.getMonth();
 
+    newTours = getNewTours();
+
     initMap();
     render();
     setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 200);
@@ -1135,6 +1269,8 @@
   // ===== TOUR CAROUSEL =====
   let carouselInterval = null;
 
+  let newTours = new Set();
+
   function renderCarousel() {
     const container = document.getElementById('tourCarousel');
     if (!container || typeof TOUR_IMAGES === 'undefined' || !TOUR_IMAGES.length) return;
@@ -1149,6 +1285,7 @@
       slide.innerHTML = `
         <img src="${t.imageUrl}" alt="${t.artist}" loading="lazy">
         <div class="slide-label">${t.artist}</div>
+        ${newTours.has(t.artist) ? '<span class="badge-new">NEW</span>' : ''}
       `;
       slide.onclick = () => {
         const artistLower = t.artist.toLowerCase();
@@ -1398,10 +1535,17 @@
       return;
     }
 
+    // Detect festivals (multiple artists, same date + venue)
+    const festivalGroups = detectFestivals(displayed);
+    const renderedFestivals = new Set();
+
     let currentGroup = '';
     displayed.forEach(c => {
+      const festKey = `${c.date}|${c.venue}`;
+      const group = festivalGroups[festKey];
       const d = new Date(c.date);
       const dayStr = `${WEEKDAYS_FR[d.getDay()]} ${d.getDate()} ${MONTHS_FR[d.getMonth()]}`;
+
       if (dayStr !== currentGroup) {
         currentGroup = dayStr;
         const sep = document.createElement('div');
@@ -1409,7 +1553,31 @@
         sep.textContent = dayStr;
         list.appendChild(sep);
       }
-      list.appendChild(createConcertCard(c));
+
+      // If this is a festival (2+ artists same venue same day), render grouped card
+      if (group && group.length >= 2 && !renderedFestivals.has(festKey)) {
+        renderedFestivals.add(festKey);
+        const fCard = document.createElement('div');
+        fCard.className = 'festival-card';
+        const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const countdown = getCountdownBadge(c.date);
+        fCard.innerHTML = `
+          <div class="festival-header">
+            <span class="festival-name">&#127926; ${c.venue}</span>
+            ${countdown}
+          </div>
+          <div class="festival-meta">${c.city}, ${c.country} &middot; ${mn[d.getMonth()]} ${d.getDate()}</div>
+          <div class="festival-lineup">${group.map(g =>
+            `<span class="lineup-chip">${g.artist}</span>`
+          ).join('')}</div>
+        `;
+        if (group[0].ticketUrl) {
+          fCard.innerHTML += `<div style="margin-top:6px;"><a href="${group[0].ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a></div>`;
+        }
+        list.appendChild(fCard);
+      } else if (!group || group.length < 2) {
+        list.appendChild(createConcertCard(c));
+      }
     });
     list.scrollTop = 0;
   }
@@ -1446,6 +1614,7 @@
       </div>
       <div class="concert-actions">
         ${countdown}
+        <a href="https://open.spotify.com/search/${encodeURIComponent(c.artist)}" target="_blank" rel="noopener" class="btn-spotify">&#9654; Spotify</a>
         ${c.soldOut ? '<span class="badge-sold-out">Sold Out</span>' : ''}
         ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a>` : ''}
       </div>
@@ -1510,6 +1679,95 @@
   function updateDropdownHighlight(items) {
     items.forEach((item, i) => item.classList.toggle('active', i === dropdownIndex));
     if (dropdownIndex >= 0) items[dropdownIndex].scrollIntoView({ block: 'nearest' });
+  }
+
+  // ===== STATISTICS DASHBOARD =====
+  function toggleStats() {
+    document.getElementById('statsPanel').classList.toggle('open');
+    if (document.getElementById('statsPanel').classList.contains('open')) renderStats();
+  }
+
+  function renderStats() {
+    const inner = document.getElementById('statsInner');
+    inner.innerHTML = '';
+
+    // Concerts per month
+    const monthCounts = {};
+    CONCERTS_DATA.forEach(c => {
+      const key = c.date.substring(0, 7);
+      monthCounts[key] = (monthCounts[key] || 0) + 1;
+    });
+    const sortedMonths = Object.entries(monthCounts).sort((a, b) => a[0].localeCompare(b[0]));
+    const maxMonth = Math.max(...sortedMonths.map(e => e[1]));
+    let monthHTML = '<div class="stat-block"><h4>Concerts per month</h4>';
+    sortedMonths.forEach(([m, count]) => {
+      const d = new Date(m + '-01');
+      const label = MONTHS_FR[d.getMonth()].substring(0, 3) + ' ' + d.getFullYear().toString().slice(2);
+      const pct = (count / maxMonth * 100).toFixed(0);
+      monthHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${label}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
+    });
+    monthHTML += '</div>';
+
+    // Top cities
+    const cityCounts = {};
+    CONCERTS_DATA.forEach(c => { cityCounts[c.city] = (cityCounts[c.city] || 0) + 1; });
+    const topCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const maxCity = topCities[0]?.[1] || 1;
+    let cityHTML = '<div class="stat-block"><h4>Top cities</h4>';
+    topCities.forEach(([city, count]) => {
+      const pct = (count / maxCity * 100).toFixed(0);
+      cityHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${city}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
+    });
+    cityHTML += '</div>';
+
+    // Most touring artists
+    const artistCounts = {};
+    CONCERTS_DATA.forEach(c => { artistCounts[c.artist] = (artistCounts[c.artist] || 0) + 1; });
+    const topArtists = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const maxArtist = topArtists[0]?.[1] || 1;
+    let artistHTML = '<div class="stat-block"><h4>Most shows</h4>';
+    topArtists.forEach(([artist, count]) => {
+      const pct = (count / maxArtist * 100).toFixed(0);
+      artistHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${artist}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
+    });
+    artistHTML += '</div>';
+
+    // Country distribution
+    const countryCounts = {};
+    CONCERTS_DATA.forEach(c => { countryCounts[c.country] = (countryCounts[c.country] || 0) + 1; });
+    const topCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const maxCountry = topCountries[0]?.[1] || 1;
+    let countryHTML = '<div class="stat-block"><h4>By country</h4>';
+    topCountries.forEach(([country, count]) => {
+      const pct = (count / maxCountry * 100).toFixed(0);
+      countryHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${country}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
+    });
+    countryHTML += '</div>';
+
+    inner.innerHTML = monthHTML + cityHTML + artistHTML + countryHTML;
+  }
+
+  // ===== NEW TOUR DETECTION =====
+  function getNewTours() {
+    if (typeof TOUR_IMAGES === 'undefined') return new Set();
+    const key = 'avocado_known_tours';
+    const known = JSON.parse(localStorage.getItem(key) || '[]');
+    const knownSet = new Set(known);
+    const currentTours = TOUR_IMAGES.map(t => t.artist);
+    const newTours = new Set(currentTours.filter(a => !knownSet.has(a)));
+    localStorage.setItem(key, JSON.stringify(currentTours));
+    return newTours;
+  }
+
+  // ===== FESTIVAL GROUPING =====
+  function detectFestivals(concerts) {
+    const groups = {};
+    concerts.forEach(c => {
+      const key = `${c.date}|${c.venue}`;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(c);
+    });
+    return groups;
   }
 
   // ===== THEME TOGGLE =====
