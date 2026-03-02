@@ -1018,6 +1018,7 @@
   function getDisplayedConcerts() {
     const filtered = getFilteredConcerts();
     if (selectedCity) return filtered;
+    if (searchTerm) return filtered; // Show ALL dates when filtering by artist
     if (mode === 'browse') {
       if (selectedDay) return filtered.filter(c => c.date === selectedDay);
       const visibleMonths = new Set();
@@ -1095,7 +1096,19 @@
         } else {
           searchTerm = artistLower;
           document.getElementById('searchArtist').value = t.artist;
+          // Navigate calendar to the nearest concert date
+          const today = new Date(); today.setHours(0,0,0,0);
+          const todayStr = today.toISOString().slice(0,10);
+          const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistLower));
+          const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
+          const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
+          if (nearest) {
+            const d = new Date(nearest.date);
+            currentMonth = d.getMonth();
+            currentYear = d.getFullYear();
+          }
         }
+        selectedDay = null;
         render();
       };
       container.appendChild(slide);
