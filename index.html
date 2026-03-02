@@ -357,6 +357,26 @@
     .leaflet-popup-close-button { color: #888 !important; }
     .leaflet-popup-close-button:hover { color: #6dbf4a !important; }
 
+    /* ===== DISCLAIMER FOOTER ===== */
+    .disclaimer {
+      padding: 8px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .disclaimer p {
+      font-size: 11px;
+      color: #666;
+      margin: 0;
+      line-height: 1.4;
+    }
+    .disclaimer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .disclaimer a:hover { text-decoration: underline; }
+
     /* ===== BOTTOM PANEL: Calendar + Concert List ===== */
     .bottom-panel {
       flex: 1;
@@ -1217,6 +1237,10 @@
 
   init();
 </script>
+
+<footer class="disclaimer">
+  <p>This is a free, unofficial tool designed to help discover concerts. All concert data is sourced from <a href="http://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. This site is not affiliated with, endorsed by, or officially connected to Avocado Booking in any way. All trademarks, logos, and concert information remain the property of their respective owners. If you are a rights holder and wish to have content removed, please <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+</footer>
 
 </body>
 </html>
