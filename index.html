@@ -1256,18 +1256,19 @@
       for (let d = 1; d <= lastDay.getDate(); d++) {
         const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const cell = document.createElement('div');
-        const concerts = getConcertsForDate(dateStr);
+        const allConcerts = getConcertsForDate(dateStr);
+        const matchingFiltered = filtered.filter(c => c.date === dateStr);
         const isToday = new Date(dateStr).getTime() === today.getTime();
         const isPast = new Date(dateStr) < today;
         const isAvailable = selectedDates.has(dateStr);
-        const hasConcerts = concerts.length > 0;
-        const hasFilteredConcerts = filteredDates.has(dateStr);
+        const hasFiltered = matchingFiltered.length > 0;
+        const hasAnyConcerts = allConcerts.length > 0;
 
         let classes = ['calendar-day'];
         if (isToday) classes.push('today');
         if (isPast) classes.push('past');
         if (isAvailable) classes.push('available');
-        if (hasConcerts) classes.push('has-concerts');
+        if (hasFiltered) classes.push('has-concerts');
         if (selectedDay === dateStr) classes.push('selected-day');
         cell.className = classes.join(' ');
 
@@ -1281,17 +1282,13 @@
         num.textContent = d;
         cell.appendChild(num);
 
-        if (hasConcerts) {
+        if (hasFiltered) {
           const dots = document.createElement('div');
           dots.className = 'concert-dots';
-          const maxDots = Math.min(concerts.length, 4);
+          const maxDots = Math.min(matchingFiltered.length, 4);
           for (let i = 0; i < maxDots; i++) {
             const dot = document.createElement('div');
-            dot.className = 'concert-dot';
-            if (hasFilteredConcerts) {
-              const matchingFiltered = filtered.filter(c => c.date === dateStr);
-              if (i < matchingFiltered.length) dot.classList.add('filtered');
-            }
+            dot.className = 'concert-dot filtered';
             dots.appendChild(dot);
           }
           cell.appendChild(dots);
