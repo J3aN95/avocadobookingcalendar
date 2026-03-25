@@ -92,7 +92,7 @@ const CONCERTS_DATA = [
   {"date":"2026-04-11","artist":"Thrown","support":"Half Me","city":"Helsinki","country":"Finland","venue":"","tour":"Baltics & Finland Tour 2026","ticketUrl":"https://lnk.to/thrown-helsinki"},
 
   // === MORNING AGAIN - EUROPE 2026 ===
-  {"date":"2026-04-08","artist":"Morning Again","support":"","city":"Antwerp","country":"Belgium","venue":"Kavka","tour":"Europe 2026","ticketUrl":"https://lnk.to/MA-Antwerp26"},
+  {"date":"2026-04-08","artist":"Morning Again","support":"","city":"Antwerp","country":"Belgium","venue":"Kavka","tour":"Europe 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-04-09","artist":"Morning Again","support":"","city":"Dordrecht","country":"Netherlands","venue":"Bibelot","tour":"Europe 2026","ticketUrl":"https://lnk.to/MA-Dordrecht26"},
   {"date":"2026-04-10","artist":"Morning Again","support":"","city":"Paris","country":"France","venue":"United We Stand Fest","tour":"Europe 2026","ticketUrl":"https://lnk.to/MA-Paris26"},
   {"date":"2026-04-11","artist":"Morning Again","support":"","city":"Moers","country":"Germany","venue":"Break Down The Walls","tour":"Europe 2026","ticketUrl":"https://lnk.to/MA-BDTW26"},
@@ -303,7 +303,7 @@ const CONCERTS_DATA = [
   {"date":"2026-07-02","artist":"Shai Hulud","support":"","city":"Neunkirchen","country":"Germany","venue":"Stummsche Reithalle","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-NEUNKIRCHEN26"},
   {"date":"2026-07-03","artist":"Shai Hulud","support":"","city":"Tours","country":"France","venue":"RIIP Fest","tour":"EUROPE SUMMER 2026","ticketUrl":"https://www.helloasso.com/associations/riipost-association/evenements/riipfest-x"},
   {"date":"2026-07-04","artist":"Shai Hulud","support":"","city":"Ypres","country":"Belgium","venue":"Ieper Fest","tour":"EUROPE SUMMER 2026","ticketUrl":"https://shop.ticket.monster/event/ieperfest-2026-4ykvwm"},
-  {"date":"2026-07-05","artist":"Shai Hulud","support":"","city":"Southampton","country":"UK","venue":"The Brook","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-SOUTHAMPTON26"},
+  {"date":"2026-07-05","artist":"Shai Hulud","support":"","city":"Southampton","country":"UK","venue":"Heartbreakers","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-SOUTHAMPTON26"},
   {"date":"2026-07-06","artist":"Shai Hulud","support":"","city":"Leeds","country":"UK","venue":"Boom","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-LEEDS26"},
   {"date":"2026-07-07","artist":"Shai Hulud","support":"","city":"Liverpool","country":"UK","venue":"Jacaranda","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-LIVERPOOL26"},
   {"date":"2026-07-08","artist":"Shai Hulud","support":"","city":"Bridgend","country":"UK","venue":"The Black Cat","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-BRIDGEND26"},
