@@ -63,12 +63,6 @@ const CONCERTS_DATA = [
   {"date":"2026-04-11","artist":"Fit For A King","support":"Memphis May Fire, Acres, 156/Silence","city":"Stockholm","country":"Sweden","venue":"Fållan","tour":"Lonely God European Tour 2026","ticketUrl":"https://lnk.to/FFAK-STOCKHOLM26"},
   {"date":"2026-04-13","artist":"Fit For A King","support":"Memphis May Fire, Acres, 156/Silence","city":"Helsinki","country":"Finland","venue":"Kulttuuritalo","tour":"Lonely God European Tour 2026","ticketUrl":"https://lnk.to/FFAK-HELSINKI26"},
 
-  // === THROWN - BALTICS & FINLAND TOUR 2026 ===
-  {"date":"2026-04-07","artist":"Thrown","support":"Half Me","city":"Riga","country":"Latvia","venue":"","tour":"Baltics & Finland Tour 2026","ticketUrl":"https://lnk.to/thrown-riga"},
-  {"date":"2026-04-08","artist":"Thrown","support":"Half Me","city":"Tallinn","country":"Estonia","venue":"","tour":"Baltics & Finland Tour 2026","ticketUrl":"https://lnk.to/thrown-tallinn"},
-  {"date":"2026-04-10","artist":"Thrown","support":"Half Me","city":"Tampere","country":"Finland","venue":"","tour":"Baltics & Finland Tour 2026","ticketUrl":"https://lnk.to/thrown-tampere"},
-  {"date":"2026-04-11","artist":"Thrown","support":"Half Me","city":"Helsinki","country":"Finland","venue":"","tour":"Baltics & Finland Tour 2026","ticketUrl":"https://lnk.to/thrown-helsinki"},
-
   // === MORNING AGAIN - EUROPE 2026 ===
   {"date":"2026-04-08","artist":"Morning Again","support":"","city":"Antwerp","country":"Belgium","venue":"Kavka","tour":"Europe 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-04-09","artist":"Morning Again","support":"","city":"Dordrecht","country":"Netherlands","venue":"Bibelot","tour":"Europe 2026","ticketUrl":"https://lnk.to/MA-Dordrecht26"},
@@ -743,8 +737,6 @@ const CITY_COORDS = {
   "Sulingen": [52.68, 8.8],
   "Swansea": [51.62, -3.94],
   "Sölvesborg": [56.05, 14.59],
-  "Tallinn": [59.44, 24.75],
-  "Tampere": [61.5, 23.79],
   "Tilburg": [51.56, 5.09],
   "Torgau": [51.56, 13],
   "Torquay": [50.46, -3.53],
@@ -782,7 +774,7 @@ const TOUR_IMAGES = [
   {"artist":"Rain City Drive","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/RCD-EU2026_BANNER_3a2836e4996fe4ebe2b34fd177b88271.jpg"},
   {"artist":"Shai Hulud","tour":"EUROPE SUMMER 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ShaiHulud-26_Header_88ef1dbc268ff041e34f268966d96d19.jpg"},
   {"artist":"Spaced","tour":"UK and Ireland 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Spaced26_Header_645ae3d42149023506fc6de0e3b0c3c5.jpg"},
-  {"artist":"Thrown","tour":"Baltics & Finland Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Thrown-26_Banner_62aa02c418ad6b587db93354548497de.jpg"},
+  {"artist":"Thrown","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ThrownSummer2026_header_13eccd530aef6e307fb0e373ec39c265.jpg"},
   {"artist":"Bodysnatcher","tour":"THE HELL IS HERE, HELL IS HOME TOUR","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/BODYSNATCHER-EU2026-HEADER-alt_e9d4c97f6d63ae34a61510b3ec4eb644.jpg"},
   {"artist":"Converge","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_2026_poster_621d2ee28c62a5d799028d8c27f03e56.jpg"},
   {"artist":"Fit For A King","tour":"Lonely God European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/FFAK_EUSping26-Banner-981_596195d95e85e760a4ee4349575e48df.jpg"},
@@ -792,7 +784,7 @@ const TOUR_IMAGES = [
   {"artist":"Rivers Of Nihil","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/RON-EU_Header_65d9a567148c1609bd987cca63557e86.jpg"},
   {"artist":"Signs Of The Swarm","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SignsOf Th Swarm_Header981_67fc1f1757bb24b548d9ea164a4dee79.jpg"},
   {"artist":"The Amity Affliction","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAA-FB_Banner-26_ca6943210d103c881e0fae8681c2a16e.jpg"},
-  {"artist":"Thrown","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ThrownSummer2026_header_13eccd530aef6e307fb0e373ec39c265.jpg"},
+  {"artist":"Thy Art Is Murder","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAIM_EU2026Tour_Banner_c3a3c123e5ae38377e5489b32f445967.jpg"},
   {"artist":"Boundaries","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Boundaris_Header981_1d5d4bf44a85a8e7fd12caec92bce8bb.jpg"},
   {"artist":"Cryptopsy","tour":"Malicious & Vile Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Cryptopsy-EuropeSummer2026_HEADER_5352b5b71a1822abc96757ebdb667061.jpg"},
   {"artist":"Evergrey","tour":"European Tour Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Evergrey-Summer2026_HEADER_5737c5827b4259208438cc0a1cd92ee8.jpg"},
@@ -803,5 +795,4 @@ const TOUR_IMAGES = [
   {"artist":"Shadow Of Intent","tour":"“Imperium Delirium” European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SHADOWOFINTENT-EU2026_HEADER_ffd19b960c6dc8736b151debadf1c649.jpg"},
   {"artist":"Silent Planet","tour":"EU/UK Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SilentPlanet_EUJune26_Banner_54db5edb0665040e9ecbde14c1006f72.jpg"},
   {"artist":"The Plot In You","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TPIY-26_Banner_ffea523c834a6d65c29bca8ac868ce75.jpg"},
-  {"artist":"Thy Art Is Murder","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAIM_EU2026Tour_Banner_c3a3c123e5ae38377e5489b32f445967.jpg"},
 ];
