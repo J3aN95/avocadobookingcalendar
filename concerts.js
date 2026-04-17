@@ -537,6 +537,23 @@ const CONCERTS_DATA = [
   {"date":"2026-10-09","artist":"Shadow Of Intent","support":"Aborted, Disembodied Tyrant, Soreption","city":"Utrecht","country":"Netherlands","venue":"Tivoli Ronda","tour":"“Imperium Delirium” European Tour 2026","ticketUrl":"http://lnk.to/SOI2026-Utrecht"},
   {"date":"2026-10-10","artist":"Shadow Of Intent","support":"Aborted, Disembodied Tyrant, Soreption","city":"Cologne","country":"Germany","venue":"Essigfabrik","tour":"“Imperium Delirium” European Tour 2026","ticketUrl":"http://lnk.to/SOI2026-Cologne"},
 
+  // === 156/SILENCE SUPPORT TO THE DEVIL WEARS PRADA - THE DEVIL WEARS PRADA EU/UK TOUR 2026 ===
+  {"date":"2026-10-07","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Munich","country":"Germany","venue":"Backstage Werk","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Muenchen"},
+  {"date":"2026-10-08","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Wiesbaden","country":"Germany","venue":"Schlachthof","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Wiesbaden"},
+  {"date":"2026-10-09","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Hamburg","country":"Germany","venue":"Docks","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Hamburg"},
+  {"date":"2026-10-10","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Eindhoven","country":"Netherlands","venue":"Effenaar","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Eindhoven"},
+  {"date":"2026-10-12","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Wien","country":"Austria","venue":"Simm City","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Wien"},
+  {"date":"2026-10-13","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Leipzig","country":"Germany","venue":"Felsenkeller","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Leipzig"},
+  {"date":"2026-10-14","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Prague","country":"Czech Republic","venue":"Archa+","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Prague"},
+  {"date":"2026-10-16","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Cologne","country":"Germany","venue":"E-Werk","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Koeln"},
+  {"date":"2026-10-17","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Antwerp","country":"Belgium","venue":"Zappa","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Antwerp"},
+  {"date":"2026-10-18","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Paris","country":"France","venue":"Elysee Montmartre","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Paris"},
+  {"date":"2026-10-20","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Bristol","country":"UK","venue":"Electric","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Bristol"},
+  {"date":"2026-10-21","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Leeds","country":"UK","venue":"Project House","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Leeds"},
+  {"date":"2026-10-23","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"London","country":"UK","venue":"Brixton Electric","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-London"},
+  {"date":"2026-10-24","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Manchester","country":"UK","venue":"New Century Hall","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Manchester"},
+  {"date":"2026-10-25","artist":"156/Silence support to The Devil Wears Prada","support":"","city":"Birmingham","country":"UK","venue":"Institute 1","tour":"The Devil Wears Prada EU/UK Tour 2026","ticketUrl":"https://b.link/TDWP26-Birmingham"},
+
   // === ALPHA WOLF - LET IT RIP TOUR EU/UK 2026 ===
   {"date":"2026-10-08","artist":"Alpha Wolf","support":"Psycho-Frame, Fox Lake, Diamond Construct","city":"Karlsruhe","country":"Germany","venue":"Substage","tour":"LET IT RIP TOUR EU/UK 2026","ticketUrl":"https://lnk.to/AW-KARLSRUHE26"},
   {"date":"2026-10-09","artist":"Alpha Wolf","support":"Psycho-Frame, Fox Lake, Diamond Construct","city":"Eindhoven","country":"Netherlands","venue":"Effenaar","tour":"LET IT RIP TOUR EU/UK 2026","ticketUrl":"https://lnk.to/AW-EINDHOVEN26"},
@@ -772,6 +789,7 @@ const CITY_COORDS = {
   "Viveiro": [43.66, -7.6],
   "Wacken": [54.02, 9.38],
   "Warsaw": [52.23, 21.01],
+  "Wien": [48.21, 16.37],
   "Wiesbaden": [50.08, 8.24],
   "Ypres": [50.85, 2.89],
   "Ysselsteyn": [51.53, 5.94],
@@ -781,6 +799,16 @@ const CITY_COORDS = {
 };
 
 const TOUR_IMAGES = [
+  {"artist":"156/Silence support to The Devil Wears Prada","tour":"The Devil Wears Prada EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TheDevilWearsPrada_156silence_header981_9cc8604432e5ab5d707200f401cc9de3.jpg"},
+  {"artist":"Bodysnatcher","tour":"THE HELL IS HERE, HELL IS HOME TOUR","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/BODYSNATCHER-EU2026-HEADER-alt_e9d4c97f6d63ae34a61510b3ec4eb644.jpg"},
+  {"artist":"Converge","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_2026_poster_621d2ee28c62a5d799028d8c27f03e56.jpg"},
+  {"artist":"Fit For An Autopsy","tour":"European Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/FFAA-26_Banner_0322bf0193165cc73f90a177c2ac18da.jpg"},
+  {"artist":"Humanity's Last Breath","tour":"European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/HLB-2026-HEADER_21c12e15ee80bf2c551b27b45e9c0c7e.jpg"},
+  {"artist":"Man With A Mission","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/MWAM_FullTour_EU26_Header_93a3db6a7fba55f9ee51e856a89ce410.jpg"},
+  {"artist":"Queensrÿche","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Queensryche-2026_Banner_a054852653db27e680077fb5a1b9bdd7.jpg"},
+  {"artist":"Shadow Of Intent","tour":"“Imperium Delirium” European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SHADOWOFINTENT-EU2026_HEADER_ffd19b960c6dc8736b151debadf1c649.jpg"},
+  {"artist":"Silent Planet","tour":"EU/UK Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SilentPlanet_EUJune26_Banner_54db5edb0665040e9ecbde14c1006f72.jpg"},
+  {"artist":"The Plot In You","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TPIY-26_Banner_ffea523c834a6d65c29bca8ac868ce75.jpg"},
   {"artist":"Alpha Wolf","tour":"LET IT RIP TOUR EU/UK 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/AlphWolf_Header2_dff5d89ab891831279a381ea40866ae1.jpg"},
   {"artist":"Boundaries","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Boundaris_Header981_1d5d4bf44a85a8e7fd12caec92bce8bb.jpg"},
   {"artist":"Cryptopsy","tour":"Malicious & Vile Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Cryptopsy-EuropeSummer2026_HEADER_5352b5b71a1822abc96757ebdb667061.jpg"},
@@ -803,13 +831,4 @@ const TOUR_IMAGES = [
   {"artist":"Signs Of The Swarm","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SignsOf Th Swarm_Header981_67fc1f1757bb24b548d9ea164a4dee79.jpg"},
   {"artist":"The Amity Affliction","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAA-FB_Banner-26_ca6943210d103c881e0fae8681c2a16e.jpg"},
   {"artist":"Thy Art Is Murder","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAIM_EU2026Tour_Banner_c3a3c123e5ae38377e5489b32f445967.jpg"},
-  {"artist":"Bodysnatcher","tour":"THE HELL IS HERE, HELL IS HOME TOUR","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/BODYSNATCHER-EU2026-HEADER-alt_e9d4c97f6d63ae34a61510b3ec4eb644.jpg"},
-  {"artist":"Converge","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_2026_poster_621d2ee28c62a5d799028d8c27f03e56.jpg"},
-  {"artist":"Fit For An Autopsy","tour":"European Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/FFAA-26_Banner_0322bf0193165cc73f90a177c2ac18da.jpg"},
-  {"artist":"Humanity's Last Breath","tour":"European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/HLB-2026-HEADER_21c12e15ee80bf2c551b27b45e9c0c7e.jpg"},
-  {"artist":"Man With A Mission","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/MWAM_FullTour_EU26_Header_93a3db6a7fba55f9ee51e856a89ce410.jpg"},
-  {"artist":"Queensrÿche","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Queensryche-2026_Banner_a054852653db27e680077fb5a1b9bdd7.jpg"},
-  {"artist":"Shadow Of Intent","tour":"“Imperium Delirium” European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SHADOWOFINTENT-EU2026_HEADER_ffd19b960c6dc8736b151debadf1c649.jpg"},
-  {"artist":"Silent Planet","tour":"EU/UK Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SilentPlanet_EUJune26_Banner_54db5edb0665040e9ecbde14c1006f72.jpg"},
-  {"artist":"The Plot In You","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TPIY-26_Banner_ffea523c834a6d65c29bca8ac868ce75.jpg"},
 ];
