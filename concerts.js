@@ -63,6 +63,7 @@ const CONCERTS_DATA = [
 
   // === HOLLOW SUNS - BACK TO DUST EUROPE SUMMER 2026 ===
   {"date":"2026-05-29","artist":"Hollow Suns","support":"","city":"Copenhagen","country":"Denmark","venue":"Nasty Cut Fest","tour":"Back to Dust Europe Summer 2026","ticketUrl":"https://billetto.dk/e/nasty-cut-fest-2026-billetter-1674809"},
+  {"date":"2026-06-01","artist":"Hollow Suns","support":"","city":"Bristol","country":"UK","venue":"Exchange Basement","tour":"Back to Dust Europe Summer 2026","ticketUrl":"https://hdfst.uk/e153424"},
   {"date":"2026-06-04","artist":"Hollow Suns","support":"","city":"Leeds","country":"UK","venue":"Key Club","tour":"Back to Dust Europe Summer 2026","ticketUrl":"https://lnk.to/EXCIDE-LEEDS26"},
   {"date":"2026-06-05","artist":"Hollow Suns","support":"","city":"Manchester","country":"UK","venue":"The Lodge","tour":"Back to Dust Europe Summer 2026","ticketUrl":"https://lnk.to/EXCIDE-MANCHESTER26"},
   {"date":"2026-06-06","artist":"Hollow Suns","support":"","city":"Glasgow","country":"UK","venue":"Nice n ' Sleazy","tour":"Back to Dust Europe Summer 2026","ticketUrl":"https://lnk.to/EXCIDE-GLASGOW26"},
