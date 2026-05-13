@@ -306,6 +306,7 @@ const CONCERTS_DATA = [
 
   // === SHAI HULUD - EUROPE SUMMER 2026 ===
   {"date":"2026-06-18","artist":"Shai Hulud","support":"","city":"Milan","country":"Italy","venue":"Q Club","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-MILAN26"},
+  {"date":"2026-06-19","artist":"Shai Hulud","support":"","city":"Moenchengladbach","country":"Germany","venue":"Projekt 42","tour":"EUROPE SUMMER 2026","ticketUrl":"https://doyoucare.bigcartel.com/product/55-x-online-einzel-singleticket-vvk-pre-sale-1906-exkl-shai-hulud-nrw-benelux-clubshow"},
   {"date":"2026-06-20","artist":"Shai Hulud","support":"","city":"Querfurt","country":"Germany","venue":"Return to Strength","tour":"EUROPE SUMMER 2026","ticketUrl":"https://www.tixforgigs.com/Event/67171"},
   {"date":"2026-06-21","artist":"Shai Hulud","support":"","city":"Wiesbaden","country":"Germany","venue":"Schlachthof","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/SH-WIESBADEN26"},
   {"date":"2026-06-22","artist":"Shai Hulud","support":"","city":"Amsterdam","country":"Netherlands","venue":"Melkwe","tour":"EUROPE SUMMER 2026","ticketUrl":"https://lnk.to/KKTX-AMSTERDAM26"},
@@ -777,6 +778,7 @@ const CITY_COORDS = {
   "Mannheim": [49.49, 8.47],
   "Martigny": [46.1, 7.07],
   "Milan": [45.46, 9.19],
+  "Moenchengladbach": [51.19, 6.44],
   "Monthey": [46.25, 6.95],
   "Munich": [48.14, 11.58],
   "Münster": [51.96, 7.63],
