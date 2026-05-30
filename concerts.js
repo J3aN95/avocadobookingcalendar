@@ -309,7 +309,7 @@ const CONCERTS_DATA = [
   {"date":"2026-06-28","artist":"Contention","support":"Clique","city":"Paris","country":"France","venue":"Le Chinois","tour":"Nuclear Summer Europe 2026","ticketUrl":"https://lnk.to/CONTENTION-PARIS26"},
   {"date":"2026-06-29","artist":"Contention","support":"Clique","city":"Stuttgart","country":"Germany","venue":"Linkes Zentrum Lilo Herrmann","tour":"Nuclear Summer Europe 2026","ticketUrl":"https://lnk.to/CONTENTION-ESSLINGEN26"},
   {"date":"2026-06-30","artist":"Contention","support":"Clique","city":"Lyon","country":"France","venue":"Warm Audio","tour":"Nuclear Summer Europe 2026","ticketUrl":"https://lnk.to/CONTENTION-LYON26"},
-  {"date":"2026-07-01","artist":"Contention","support":"Clique","city":"San Dona di Piave","country":"Italy","venue":"Garage Guingette","tour":"Nuclear Summer Europe 2026","ticketUrl":"https://lnk.to/CONTENTION-VENICE26"},
+  {"date":"2026-07-01","artist":"Contention","support":"Clique","city":"San Dona di Piave","country":"Italy","venue":"Garage Guingette","tour":"Nuclear Summer Europe 2026","ticketUrl":""},
   {"date":"2026-07-02","artist":"Contention","support":"Clique","city":"Neunkirchen","country":"Germany","venue":"Stummsche Reithalle","tour":"Nuclear Summer Europe 2026","ticketUrl":"https://lnk.to/SH-NEUNKIRCHEN26"},
   {"date":"2026-07-03","artist":"Contention","support":"Clique","city":"Herford","country":"Germany","venue":"SZ FLA FLA","tour":"Nuclear Summer Europe 2026","ticketUrl":"https://lnk.to/CONTENTION-HERFORD26"},
   {"date":"2026-07-04","artist":"Contention","support":"Clique","city":"Dordrecht","country":"Netherlands","venue":"Bibelot","tour":"Nuclear Summer Europe 2026","ticketUrl":"https://lnk.to/CONTENTION-DORDRECHT26"},
