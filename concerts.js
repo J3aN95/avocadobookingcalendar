@@ -682,9 +682,10 @@ const CONCERTS_DATA = [
   {"date":"2026-11-14","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Jena","country":"Germany","venue":"F-Haus","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-JENA26"},
   {"date":"2026-11-16","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Hamburg","country":"Germany","venue":"Gruenspan","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-HAMBURG26"},
   {"date":"2026-11-17","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Copenhagen","country":"Denmark","venue":"Vega","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-COPENHAGEN26"},
-  {"date":"2026-11-18","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Oslo","country":"Norway","venue":"John Dee","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-OSLO26"},
+  {"date":"2026-11-18","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Oslo","country":"Norway","venue":"Rockefeller","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-OSLO26"},
   {"date":"2026-11-19","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Stockholm","country":"Sweden","venue":"Kollektivet Livet","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-STOCKHOLM26"},
-  {"date":"2026-11-21","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-HELSINKI26"},
+  {"date":"2026-11-21","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-HELSINKI26","soldOut":true},
+  {"date":"2026-11-22","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-HELSINKI26"},
 
   // === IMPERICON FESTIVAL PRESENTS DEATH DOMINION EU 2026 - IMPERICON FESTIVAL PRESENTS DEATH DOMINION EU 2026 ===
   {"date":"2026-10-29","artist":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","support":"DESPISED ICON, CARNIFEX, SUFFOCATION w/ Special Guests GATES TO HELL","city":"Munich","country":"Germany","venue":"Backstage","tour":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","ticketUrl":"https://lnk.to/DD-MUNICH26"},
@@ -795,6 +796,19 @@ const CONCERTS_DATA = [
   {"date":"2026-12-18","artist":"Ov Sulfur support to Mental Cruelty","support":"KIngstar Music Tour","city":"Aarau","country":"Switzerland","venue":"Kiff","tour":"Ov Sulfur support to Mental Cruelty","ticketUrl":"https://b.link/MC-Aarau"},
   {"date":"2026-12-19","artist":"Ov Sulfur support to Mental Cruelty","support":"KIngstar Music Tour","city":"Schweinfurt","country":"Germany","venue":"Alter Stattbahnhof","tour":"Ov Sulfur support to Mental Cruelty","ticketUrl":"https://b.link/MC-Schweinfurt"},
   {"date":"2026-12-20","artist":"Ov Sulfur support to Mental Cruelty","support":"KIngstar Music Tour","city":"Karlsruhe","country":"Germany","venue":"Substage","tour":"Ov Sulfur support to Mental Cruelty","ticketUrl":"https://b.link/MC-Karlsruhe"},
+
+  // === THROWN - EU/UK TOUR 2026 ===
+  {"date":"2026-11-27","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Stockholm","country":"Sweden","venue":"Fållan","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Stockholm"},
+  {"date":"2026-11-29","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Hamburg","country":"Germany","venue":"Grosse Freiheit 36","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Hamburg"},
+  {"date":"2026-11-30","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Berlin","country":"Germany","venue":"Huxleys","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Berlin"},
+  {"date":"2026-12-01","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Vienna","country":"Austria","venue":"Gasometer","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Vienna"},
+  {"date":"2026-12-03","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Munich","country":"Germany","venue":"Tonhalle","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Munich"},
+  {"date":"2026-12-04","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Wiesbaden","country":"Germany","venue":"Schlachthof","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Wiesbaden"},
+  {"date":"2026-12-05","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Cologne","country":"Germany","venue":"Palladium","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Cologne"},
+  {"date":"2026-12-06","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Paris","country":"France","venue":"Elysée Montmartre","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Paris"},
+  {"date":"2026-12-11","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Manchester","country":"UK","venue":"Academy","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Manchester"},
+  {"date":"2026-12-12","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"Glasgow","country":"UK","venue":"O2 Academy","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-Glasgow"},
+  {"date":"2026-12-13","artist":"Thrown","support":"Counterparts, No Cure, Heavensgate","city":"London","country":"UK","venue":"Troxy","tour":"EU/UK Tour 2026","ticketUrl":"https://lnk.to/thrown2026-London"},
 
   // === SPITE | EMMURE - NEW WORLD KILLER EU/UK TOUR ===
   {"date":"2027-01-22","artist":"Spite | Emmure","support":"Distant, Mauled","city":"Karlsruhe","country":"Germany","venue":"Substage","tour":"New World Killer EU/UK Tour","ticketUrl":"https://lnk.to/NWK-KARLSRUHE27"},
@@ -1027,7 +1041,7 @@ const TOUR_IMAGES = [
   {"artist":"Shadow Of Intent","tour":"“Imperium Delirium” European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SHADOWOFINTENT-EU2026_HEADER_ffd19b960c6dc8736b151debadf1c649.jpg"},
   {"artist":"Silent Planet","tour":"EU/UK Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SilentPlanet_EUJune26_Banner_54db5edb0665040e9ecbde14c1006f72.jpg"},
   {"artist":"The Amity Affliction","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAA-FB_Banner-26_ca6943210d103c881e0fae8681c2a16e.jpg"},
-  {"artist":"Thy Art Is Murder","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAIM_EU2026Tour_Banner_c3a3c123e5ae38377e5489b32f445967.jpg"},
+  {"artist":"Thrown","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ThrownSummer2026_header_13eccd530aef6e307fb0e373ec39c265.jpg"},
   {"artist":"200 Stab Wounds","tour":"EU/UK Headline Shows Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/200SW-EuropeSummer2026header981_d7f8854c638f4af57ce49f7e7275adf1.jpg"},
   {"artist":"Archspire","tour":"European Vacation 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Archspire26_Banner_a048bc9a8cc06e78a493df25f8eab552.jpg"},
   {"artist":"Converge","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_2026_poster_621d2ee28c62a5d799028d8c27f03e56.jpg"},
@@ -1040,6 +1054,7 @@ const TOUR_IMAGES = [
   {"artist":"Shai Hulud","tour":"EUROPE SUMMER 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ShaiHulud-26_Header_88ef1dbc268ff041e34f268966d96d19.jpg"},
   {"artist":"Spaced","tour":"UK and Ireland 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Spaced26_Header_645ae3d42149023506fc6de0e3b0c3c5.jpg"},
   {"artist":"The Plot In You","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TPIY-26_Banner_ffea523c834a6d65c29bca8ac868ce75.jpg"},
+  {"artist":"Thy Art Is Murder","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAIM_EU2026Tour_Banner_c3a3c123e5ae38377e5489b32f445967.jpg"},
   {"artist":"Acres","tour":"\"The Host\" UK/EU Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Acres26_Header_0cee54619dafed1a1344b2e931974547.jpg"},
   {"artist":"Boundaries","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Boundaris_Header981_1d5d4bf44a85a8e7fd12caec92bce8bb.jpg"},
   {"artist":"Cryptopsy","tour":"Malicious & Vile Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Cryptopsy-EuropeSummer2026_HEADER_5352b5b71a1822abc96757ebdb667061.jpg"},
@@ -1053,5 +1068,5 @@ const TOUR_IMAGES = [
   {"artist":"Sanguisugabogg","tour":"Europe Summer 2026 Headline Shows","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Sanguisugabogg_Summer2026_Headline_Header_618f9a952b41babc21d1d3cb0b626365.jpg"},
   {"artist":"Signs Of The Swarm","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SignsOf Th Swarm_Header981_67fc1f1757bb24b548d9ea164a4dee79.jpg"},
   {"artist":"Spite | Emmure","tour":"New World Killer EU/UK Tour","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SpiteEmmure-Banner_ee4d51c3dc2812ab39a0c1c86d54333e.jpg"},
-  {"artist":"Thrown","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ThrownSummer2026_header_13eccd530aef6e307fb0e373ec39c265.jpg"},
+  {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK-HL-Banner_4ead8e25c9f043aebd3558547bc9b036.jpg"},
 ];
