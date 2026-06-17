@@ -248,9 +248,9 @@ const CONCERTS_DATA = [
 
   // === MAN WITH A MISSION - ‘MARKING NEW GROUND’ EUROPE SUMMER 2026 ===
   {"date":"2026-06-14","artist":"Man With A Mission","support":"","city":"Hradec Kralove","country":"Czech Republic","venue":"Rock For People","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"https://rockforpeople.cz/en/"},
-  {"date":"2026-06-17","artist":"Man With A Mission","support":"","city":"Budapest","country":"Hungary","venue":"Akvarium","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/MWAM2026-Budapest"},
+  {"date":"2026-06-17","artist":"Man With A Mission","support":"","city":"Budapest","country":"Hungary","venue":"Akvarium","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-06-19","artist":"Man With A Mission","support":"","city":"Warsaw","country":"Poland","venue":"Summer Punch","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"https://summerpunchfestival.com/"},
-  {"date":"2026-06-20","artist":"Man With A Mission","support":"","city":"Dresden","country":"Germany","venue":"Blauer Salon","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/MWAM2026-Dresden"},
+  {"date":"2026-06-20","artist":"Man With A Mission","support":"","city":"Dresden","country":"Germany","venue":"Blauer Salon","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-06-23","artist":"Man With A Mission","support":"","city":"Stuttgart","country":"Germany","venue":"Im Wizemann","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/MWAM2026-Stuttgart"},
   {"date":"2026-06-25","artist":"Man With A Mission","support":"","city":"Aarau","country":"Switzerland","venue":"KiFF","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/MWAM2026-Aarau"},
   {"date":"2026-06-27","artist":"Man With A Mission","support":"","city":"Milan","country":"Italy","venue":"Asia Wave Fest","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/ASIAWAVEFEST"},
