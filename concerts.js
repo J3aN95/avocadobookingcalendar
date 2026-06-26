@@ -211,7 +211,7 @@ const CONCERTS_DATA = [
   {"date":"2026-06-23","artist":"Man With A Mission","support":"","city":"Stuttgart","country":"Germany","venue":"Im Wizemann","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/MWAM2026-Stuttgart"},
   {"date":"2026-06-25","artist":"Man With A Mission","support":"","city":"Aarau","country":"Switzerland","venue":"KiFF","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/MWAM2026-Aarau"},
   {"date":"2026-06-27","artist":"Man With A Mission","support":"","city":"Milan","country":"Italy","venue":"Asia Wave Fest","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/ASIAWAVEFEST"},
-  {"date":"2026-06-28","artist":"Man With A Mission","support":"","city":"Monthey","country":"Switzerland","venue":"Pont Rouge","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"http://lnk.to/MWAM2026-Monthey"},
+  {"date":"2026-06-28","artist":"Man With A Mission","support":"","city":"Monthey","country":"Switzerland","venue":"Pont Rouge","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-07-01","artist":"Man With A Mission","support":"","city":"Viveiro","country":"Spain","venue":"Resurrection Fest","tour":"‘MARKING NEW GROUND’ EUROPE SUMMER 2026","ticketUrl":"https://www.resurrectionfest.es/"},
 
   // === SHAI HULUD - EUROPE SUMMER 2026 ===
