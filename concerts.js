@@ -451,10 +451,10 @@ const CONCERTS_DATA = [
   {"date":"2026-11-13","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Berlin","country":"Germany","venue":"Columbia Theater","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-BERLIN26"},
   {"date":"2026-11-14","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Jena","country":"Germany","venue":"F-Haus","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-JENA26"},
   {"date":"2026-11-16","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Hamburg","country":"Germany","venue":"Gruenspan","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-HAMBURG26"},
-  {"date":"2026-11-17","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Copenhagen","country":"Denmark","venue":"Vega","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-COPENHAGEN26"},
+  {"date":"2026-11-17","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Copenhagen","country":"Denmark","venue":"Vega","tour":"European Vacation 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-11-18","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Oslo","country":"Norway","venue":"Rockefeller","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-OSLO26"},
   {"date":"2026-11-19","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Stockholm","country":"Sweden","venue":"Kollektivet Livet","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-STOCKHOLM26"},
-  {"date":"2026-11-21","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-HELSINKI26","soldOut":true},
+  {"date":"2026-11-21","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"European Vacation 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-11-22","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-HELSINKI26"},
 
   // === IMPERICON FESTIVAL PRESENTS DEATH DOMINION EU 2026 - IMPERICON FESTIVAL PRESENTS DEATH DOMINION EU 2026 ===
