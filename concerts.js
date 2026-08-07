@@ -294,7 +294,7 @@ const CONCERTS_DATA = [
 
   // === HUMANITY'S LAST BREATH - EUROPEAN TOUR 2026 ===
   {"date":"2026-09-25","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Berlin","country":"Germany","venue":"Hole44","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Berlin"},
-  {"date":"2026-09-26","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Cologne","country":"Germany","venue":"Euroblast","tour":"European Tour 2026","ticketUrl":"https://www.euroblast.net/"},
+  {"date":"2026-09-26","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Cologne","country":"Germany","venue":"Euroblast","tour":"European Tour 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-09-27","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Leipzig","country":"Germany","venue":"Hellraiser","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Leipzig"},
   {"date":"2026-09-28","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Prague","country":"Czech Republic","venue":"Rock Cafe","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Prague"},
   {"date":"2026-09-29","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Vienna","country":"Austria","venue":"Szene","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Vienna"},
@@ -315,7 +315,7 @@ const CONCERTS_DATA = [
   {"date":"2026-10-17","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Hamburg","country":"Germany","venue":"Markthalle","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Hamburg"},
   {"date":"2026-10-18","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Copenhagen","country":"Denmark","venue":"Pumpehuset","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Copenhagen"},
   {"date":"2026-10-19","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Gothenburg","country":"Sweden","venue":"Filmstudion","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Gothenburg"},
-  {"date":"2026-10-20","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Oslo","country":"Norway","venue":"John Dee","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Oslo"},
+  {"date":"2026-10-20","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Oslo","country":"Norway","venue":"John Dee","tour":"European Tour 2026","ticketUrl":"","soldOut":true},
   {"date":"2026-10-22","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Helsinki","country":"Finland","venue":"Tavastia","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Helsinki"},
   {"date":"2026-10-24","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Stockholm","country":"Sweden","venue":"Kollektivet Livet","tour":"European Tour 2026","ticketUrl":"","soldOut":true},
 
