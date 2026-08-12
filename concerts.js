@@ -165,12 +165,6 @@ const CONCERTS_DATA = [
   {"date":"2026-08-21","artist":"Signs Of The Swarm","support":"","city":"Lich","country":"Germany","venue":"Music Forge Festival","tour":"Europe Summer 2026","ticketUrl":"https://musicforgefestival.de/"},
   {"date":"2026-08-22","artist":"Signs Of The Swarm","support":"","city":"Bad Dürkheim","country":"Germany","venue":"Fallen Fortress Open Air","tour":"Europe Summer 2026","ticketUrl":"https://www.ffoa-duew.de/"},
 
-  // === 200 STAB WOUNDS - EU/UK HEADLINE SHOWS SUMMER 2026 ===
-  {"date":"2026-08-01","artist":"200 Stab Wounds","support":"","city":"Utrecht","country":"Netherlands","venue":"DB's","tour":"EU/UK Headline Shows Summer 2026","ticketUrl":"https://lnk.to/200SW-Utrecht"},
-  {"date":"2026-08-08","artist":"200 Stab Wounds","support":"","city":"Brighton","country":"UK","venue":"Dust","tour":"EU/UK Headline Shows Summer 2026","ticketUrl":"https://lnk.to/200SW-Brighton"},
-  {"date":"2026-08-10","artist":"200 Stab Wounds","support":"","city":"Leeds","country":"UK","venue":"The Key Club","tour":"EU/UK Headline Shows Summer 2026","ticketUrl":"https://lnk.to/200SW-Leeds"},
-  {"date":"2026-08-11","artist":"200 Stab Wounds","support":"Celestial Sanctuary","city":"London","country":"UK","venue":"Downstairs At The Dome","tour":"EU/UK Headline Shows Summer 2026","ticketUrl":"https://lnk.to/200SW-London"},
-
   // === REVOCATION - EUROPE SUMMER 2026 ===
   {"date":"2026-08-07","artist":"Revocation","support":"","city":"Kortrijk","country":"Belgium","venue":"Alcatraz","tour":"Europe Summer 2026","ticketUrl":"https://www.alcatraz.be/"},
   {"date":"2026-08-08","artist":"Revocation","support":"","city":"Jaromer","country":"Czech Republic","venue":"Brutal Assault","tour":"Europe Summer 2026","ticketUrl":"https://brutalassault.cz/"},
@@ -821,16 +815,6 @@ const CITY_COORDS = {
 
 const TOUR_IMAGES = [
   {"artist":"156/Silence support to The Devil Wears Prada","tour":"The Devil Wears Prada EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TheDevilWearsPrada_156silence_header981_9cc8604432e5ab5d707200f401cc9de3.jpg"},
-  {"artist":"Alpha Wolf","tour":"LET IT RIP TOUR EU/UK 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/AlphWolf_Header2_dff5d89ab891831279a381ea40866ae1.jpg"},
-  {"artist":"Cryptopsy","tour":"Malicious & Vile Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Cryptopsy-EuropeSummer2026_HEADER_5352b5b71a1822abc96757ebdb667061.jpg"},
-  {"artist":"Fit For An Autopsy","tour":"European Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/FFAA-26_Banner_0322bf0193165cc73f90a177c2ac18da.jpg"},
-  {"artist":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","tour":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ImpericonFestivalpresents_DespisedIcone_Carnifex_Suffocation-Header_DI_16725a3f135616940c0df38a2d49ab1f.jpg"},
-  {"artist":"Queensryche","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/QueensrycheFB_Banner_b468594b405e2c83e1e402e149f93bfe.jpg"},
-  {"artist":"Sanguisugabogg","tour":"Europe Summer 2026 Headline Shows","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Sanguisugabogg_Summer2026_Headline_Header_618f9a952b41babc21d1d3cb0b626365.jpg"},
-  {"artist":"Spaced","tour":"UK and Ireland 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Spaced26_Header_645ae3d42149023506fc6de0e3b0c3c5.jpg"},
-  {"artist":"Suffocation","tour":"Southern & Eastern Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Suffo-EU-2026-HEADER_0914069ae60b43adb53ce744f893fff7.jpg"},
-  {"artist":"Thrown","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ThrownSummer2026_header_13eccd530aef6e307fb0e373ec39c265.jpg"},
-  {"artist":"200 Stab Wounds","tour":"EU/UK Headline Shows Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/200SW-EuropeSummer2026header981_d7f8854c638f4af57ce49f7e7275adf1.jpg"},
   {"artist":"Archspire","tour":"European Vacation 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Archspire26_Banner_a048bc9a8cc06e78a493df25f8eab552.jpg"},
   {"artist":"Decapitated","tour":"30TH ANNIVERSARY TOUR 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/DECAPITATEDSummer2026_Header_5c4a5c69eb4cf2efd3dd80c75671a98e.jpg"},
   {"artist":"Erra, Currents","tour":"THE SILENCE FOLLOWS TOUR EU/UK 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ERRA-header981_b2bd7acb7ad2e28355685a8782730bb9.jpg"},
@@ -850,4 +834,13 @@ const TOUR_IMAGES = [
   {"artist":"Signs Of The Swarm","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SignsOf Th Swarm_Header981_67fc1f1757bb24b548d9ea164a4dee79.jpg"},
   {"artist":"Still In Love","tour":"EU Weekender","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SIL-HEADER2_a2bfb6ae0fd0c2723ae295ad71f187f6.jpg"},
   {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK-HL-Banner_4ead8e25c9f043aebd3558547bc9b036.jpg"},
+  {"artist":"Alpha Wolf","tour":"LET IT RIP TOUR EU/UK 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/AlphWolf_Header2_dff5d89ab891831279a381ea40866ae1.jpg"},
+  {"artist":"Cryptopsy","tour":"Malicious & Vile Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Cryptopsy-EuropeSummer2026_HEADER_5352b5b71a1822abc96757ebdb667061.jpg"},
+  {"artist":"Fit For An Autopsy","tour":"European Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/FFAA-26_Banner_0322bf0193165cc73f90a177c2ac18da.jpg"},
+  {"artist":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","tour":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ImpericonFestivalpresents_DespisedIcone_Carnifex_Suffocation-Header_DI_16725a3f135616940c0df38a2d49ab1f.jpg"},
+  {"artist":"Queensryche","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/QueensrycheFB_Banner_b468594b405e2c83e1e402e149f93bfe.jpg"},
+  {"artist":"Sanguisugabogg","tour":"Europe Summer 2026 Headline Shows","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Sanguisugabogg_Summer2026_Headline_Header_618f9a952b41babc21d1d3cb0b626365.jpg"},
+  {"artist":"Spaced","tour":"UK and Ireland 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Spaced26_Header_645ae3d42149023506fc6de0e3b0c3c5.jpg"},
+  {"artist":"Suffocation","tour":"Southern & Eastern Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Suffo-EU-2026-HEADER_0914069ae60b43adb53ce744f893fff7.jpg"},
+  {"artist":"Thrown","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ThrownSummer2026_header_13eccd530aef6e307fb0e373ec39c265.jpg"},
 ];
