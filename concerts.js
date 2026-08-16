@@ -109,24 +109,6 @@ const CONCERTS_DATA = [
   {"date":"2026-08-10","artist":"Sanguisugabogg","support":"Revocation, Internal Bleeding","city":"Hannover","country":"Germany","venue":"Béi Chéz Heinz","tour":"Europe Summer 2026 Headline Shows","ticketUrl":"https://lnk.to/Bogg-Hannover"},
   {"date":"2026-08-11","artist":"Sanguisugabogg","support":"Revocation, Internal Bleeding","city":"Rotterdam","country":"Netherlands","venue":"Baroeg","tour":"Europe Summer 2026 Headline Shows","ticketUrl":"https://lnk.to/Bogg-Rotterdam"},
 
-  // === THY ART IS MURDER - EUROPE SUMMER 2026 ===
-  {"date":"2026-07-29","artist":"Thy Art Is Murder","support":"","city":"Brasov","country":"Romania","venue":"Rockstadt Extreme Fest","tour":"Europe Summer 2026","ticketUrl":"https://rockstadtextremefest.ro/"},
-  {"date":"2026-07-31","artist":"Thy Art Is Murder","support":"","city":"Manchester","country":"UK","venue":"Radar Fest","tour":"Europe Summer 2026","ticketUrl":"https://www.radarfestival.co.uk/"},
-  {"date":"2026-08-01","artist":"Thy Art Is Murder","support":"","city":"Wacken","country":"Germany","venue":"Wacken Open Air","tour":"Europe Summer 2026","ticketUrl":"https://www.wacken.com/"},
-  {"date":"2026-08-02","artist":"Thy Art Is Murder","support":"Fit For An Autopsy, Sun Eater","city":"Rostock","country":"Germany","venue":"Mau Club","tour":"Europe Summer 2026","ticketUrl":"https://lnk.to/TAIM-ROSTOCK26"},
-  {"date":"2026-08-03","artist":"Thy Art Is Murder","support":"","city":"Leipzig","country":"Germany","venue":"Haus Auensee","tour":"Europe Summer 2026","ticketUrl":"https://www.eventim.de/artist/lamb-of-god/"},
-  {"date":"2026-08-04","artist":"Thy Art Is Murder","support":"Fit For An Autopsy, Sun Eater, Protest The Hero","city":"Berlin","country":"Germany","venue":"Metropol","tour":"Europe Summer 2026","ticketUrl":"https://lnk.to/TAIM-BERLIN26"},
-  {"date":"2026-08-05","artist":"Thy Art Is Murder","support":"Sun Eater","city":"Warsaw","country":"Poland","venue":"Progresja","tour":"Europe Summer 2026","ticketUrl":"https://lnk.to/TAIM-WARSAW26"},
-  {"date":"2026-08-06","artist":"Thy Art Is Murder","support":"","city":"Jaromer","country":"Czech Republic","venue":"Brutal Assault","tour":"Europe Summer 2026","ticketUrl":"https://brutalassault.cz/"},
-  {"date":"2026-08-07","artist":"Thy Art Is Murder","support":"","city":"Kortrijk","country":"Belgium","venue":"Alcatraz","tour":"Europe Summer 2026","ticketUrl":"https://www.alcatraz.be/"},
-  {"date":"2026-08-08","artist":"Thy Art Is Murder","support":"","city":"Hamburg","country":"Germany","venue":"Elbriot","tour":"Europe Summer 2026","ticketUrl":"https://www.elbriot.de/"},
-  {"date":"2026-08-09","artist":"Thy Art Is Murder","support":"","city":"Gothenburg","country":"Sweden","venue":"Pustervik","tour":"Europe Summer 2026","ticketUrl":"https://lnk.to/TAIM-GOTHENBURG26"},
-  {"date":"2026-08-11","artist":"Thy Art Is Murder","support":"","city":"Copenhagen","country":"Denmark","venue":"KB Hallen","tour":"Europe Summer 2026","ticketUrl":"https://www.livenation.dk/en/event/lamb-of-god-frederiksberg-tickets-edp1637054"},
-  {"date":"2026-08-12","artist":"Thy Art Is Murder","support":"Fit For An Autopsy, Sun Eater, Signs Of The Swarm","city":"Wiesbaden","country":"Germany","venue":"Schlachthof","tour":"Europe Summer 2026","ticketUrl":"https://lnk.to/TAIM-WIESBADEN26"},
-  {"date":"2026-08-13","artist":"Thy Art Is Murder","support":"","city":"Sulingen","country":"Germany","venue":"Reload","tour":"Europe Summer 2026","ticketUrl":"https://reload-festival.de/"},
-  {"date":"2026-08-14","artist":"Thy Art Is Murder","support":"","city":"Eindhoven","country":"Netherlands","venue":"Dynamo Metalfest","tour":"Europe Summer 2026","ticketUrl":"https://dynamo-metalfest.nl/"},
-  {"date":"2026-08-15","artist":"Thy Art Is Murder","support":"","city":"Dinkelsbühl","country":"Germany","venue":"Summer Breeze","tour":"Europe Summer 2026","ticketUrl":"https://www.summer-breeze.de/"},
-
   // === FIT FOR AN AUTOPSY - EUROPEAN SUMMER 2026 ===
   {"date":"2026-07-30","artist":"Fit For An Autopsy","support":"","city":"Brasov","country":"Romania","venue":"Rockstadt Extreme Fest","tour":"European Summer 2026","ticketUrl":"https://rockstadtextremefest.ro/"},
   {"date":"2026-08-01","artist":"Fit For An Autopsy","support":"","city":"Wacken","country":"Germany","venue":"Wacken Open Air","tour":"European Summer 2026","ticketUrl":"https://www.wacken.com/"},
@@ -825,7 +807,6 @@ const TOUR_IMAGES = [
   {"artist":"Shadow Of Intent","tour":"“Imperium Delirium” European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SHADOWOFINTENT-EU2026_HEADER_ffd19b960c6dc8736b151debadf1c649.jpg"},
   {"artist":"Spite | Emmure","tour":"New World Killer EU/UK Tour","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SpiteEmmure-Banner_ee4d51c3dc2812ab39a0c1c86d54333e.jpg"},
   {"artist":"The Amity Affliction","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAA-FB_Banner-26_ca6943210d103c881e0fae8681c2a16e.jpg"},
-  {"artist":"Thy Art Is Murder","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAIM_EU2026Tour_Banner_c3a3c123e5ae38377e5489b32f445967.jpg"},
   {"artist":"Acres","tour":"\"The Host\" UK/EU Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Acres26_Header_0cee54619dafed1a1344b2e931974547.jpg"},
   {"artist":"Converge","tour":"EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_Fall26_Header2_e322da87e08f700111300c089028118b.jpg"},
   {"artist":"Downswing","tour":"United Kingdom 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Downswing-UK-2026-HEADER_b021774e04b5588a1e668a334b2e1778.jpg"},
