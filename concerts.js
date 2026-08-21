@@ -163,7 +163,7 @@ const CONCERTS_DATA = [
   {"date":"2026-09-11","artist":"ROMAN CANDLE | FILTH IS ETERNAL","support":"","city":"Prague","country":"Czech Republic","venue":"Klub Varsava","tour":"Europe 2026","ticketUrl":"https://lnk.to/RCXFIE-PRAGUE26"},
   {"date":"2026-09-12","artist":"ROMAN CANDLE | FILTH IS ETERNAL","support":"","city":"Dresden","country":"Germany","venue":"HD Rock Bar","tour":"Europe 2026","ticketUrl":"https://lnk.to/RCXFIE-DRESDEN26"},
   {"date":"2026-09-13","artist":"ROMAN CANDLE | FILTH IS ETERNAL","support":"","city":"Berlin","country":"Germany","venue":"Cassiopeia","tour":"Europe 2026","ticketUrl":"https://lnk.to/RCXFIE-DRESDEN26"},
-  {"date":"2026-09-15","artist":"ROMAN CANDLE | FILTH IS ETERNAL","support":"","city":"Milan","country":"Italy","venue":"Rock n Roll","tour":"Europe 2026","ticketUrl":"https://lnk.to/RCXFIE-MILAN26"},
+  {"date":"2026-09-15","artist":"ROMAN CANDLE | FILTH IS ETERNAL","support":"","city":"Milan","country":"Italy","venue":"Black Hole","tour":"Europe 2026","ticketUrl":"https://lnk.to/RCXFIE-MILAN26"},
   {"date":"2026-09-16","artist":"ROMAN CANDLE | FILTH IS ETERNAL","support":"","city":"Strasbourg","country":"France","venue":"La Maison Bleue","tour":"Europe 2026","ticketUrl":"https://lnk.to/RCXFIE-STRASBOURG26"},
   {"date":"2026-09-17","artist":"ROMAN CANDLE | FILTH IS ETERNAL","support":"","city":"Paris","country":"France","venue":"Glazart","tour":"Europe 2026","ticketUrl":"https://lnk.to/RCXFIE-PARIS26"},
 
