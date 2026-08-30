@@ -1,17 +1,4 @@
 const CONCERTS_DATA = [
-  // === SPACED - UK AND IRELAND 2026 ===
-  {"date":"2025-09-08","artist":"Spaced","support":"","city":"Newcastle","country":"UK","venue":"The Grove","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-NEWCASTLE26"},
-  {"date":"2025-09-09","artist":"Spaced","support":"","city":"Leeds","country":"UK","venue":"Boom","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-LEEDS2026"},
-  {"date":"2025-09-10","artist":"Spaced","support":"","city":"London","country":"UK","venue":"Underworld","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-LONDON26"},
-  {"date":"2026-08-29","artist":"Spaced","support":"","city":"Cork","country":"Ireland","venue":"Dali","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-CORK26"},
-  {"date":"2026-08-30","artist":"Spaced","support":"","city":"Dublin","country":"Ireland","venue":"Lost Lane","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-DUBLIN26"},
-  {"date":"2026-08-31","artist":"Spaced","support":"","city":"Belfast","country":"UK","venue":"Voodoo","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-BELFAST26"},
-  {"date":"2026-09-02","artist":"Spaced","support":"","city":"Bristol","country":"UK","venue":"Exchange","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-BRISTOL26"},
-  {"date":"2026-09-03","artist":"Spaced","support":"","city":"Swansea","country":"UK","venue":"The Bunkhouse","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-SWANSEA26"},
-  {"date":"2026-09-04","artist":"Spaced","support":"","city":"Torquay","country":"UK","venue":"Burn it Down Festival","tour":"UK and Ireland 2026","ticketUrl":"https://www.byplive.co.uk/burn-it-down"},
-  {"date":"2026-09-05","artist":"Spaced","support":"","city":"Liverpool","country":"UK","venue":"No Play Festival","tour":"UK and Ireland 2026","ticketUrl":"https://www.instagram.com/noplayfest/"},
-  {"date":"2026-09-06","artist":"Spaced","support":"","city":"Glasgow","country":"UK","venue":"Mono","tour":"UK and Ireland 2026","ticketUrl":"https://lnk.to/SPACED-GLASGOW26"},
-
   // === DECAPITATED - 30TH ANNIVERSARY TOUR 2026 ===
   {"date":"2026-06-01","artist":"Decapitated","support":"Anthrax","city":"Nuremberg","country":"Germany","venue":"Loewensaal","tour":"30TH ANNIVERSARY TOUR 2026","ticketUrl":"https://www.eventim.de/en/event/anthrax-loewensaal-21005785/"},
   {"date":"2026-06-02","artist":"Decapitated","support":"Anthrax","city":"Budapest","country":"Hungary","venue":"Barba Negra","tour":"30TH ANNIVERSARY TOUR 2026","ticketUrl":"https://www.barbanegra.hu/anthrax_20260601"},
@@ -686,8 +673,8 @@ const TOUR_IMAGES = [
   {"artist":"Decapitated","tour":"30TH ANNIVERSARY TOUR 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/DECAPITATEDSummer2026_Header_5c4a5c69eb4cf2efd3dd80c75671a98e.jpg"},
   {"artist":"Erra, Currents","tour":"THE SILENCE FOLLOWS TOUR EU/UK 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ERRA-header981_b2bd7acb7ad2e28355685a8782730bb9.jpg"},
   {"artist":"Humanity's Last Breath","tour":"European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/HLB-2026-HEADER_21c12e15ee80bf2c551b27b45e9c0c7e.jpg"},
-  {"artist":"Spaced","tour":"UK and Ireland 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Spaced26_Header_645ae3d42149023506fc6de0e3b0c3c5.jpg"},
-  {"artist":"Suffocation","tour":"Southern & Eastern Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Suffo-EU-2026-HEADER_0914069ae60b43adb53ce744f893fff7.jpg"},
+  {"artist":"Spite | Emmure","tour":"New World Killer EU/UK Tour","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SpiteEmmure-Banner_ee4d51c3dc2812ab39a0c1c86d54333e.jpg"},
+  {"artist":"The Amity Affliction","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAA-FB_Banner-26_ca6943210d103c881e0fae8681c2a16e.jpg"},
   {"artist":"Acres","tour":"\"The Host\" UK/EU Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Acres26_Header_0cee54619dafed1a1344b2e931974547.jpg"},
   {"artist":"Contention","tour":"Nuclear Winter UK/IRELAND 2027","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Contention2027Header_8f16f052de6adf743fad0dfa856ca4c2.jpg"},
   {"artist":"Downswing","tour":"United Kingdom 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Downswing-UK-2026-HEADER_b021774e04b5588a1e668a334b2e1778.jpg"},
@@ -695,8 +682,8 @@ const TOUR_IMAGES = [
   {"artist":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","tour":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/ImpericonFestivalpresents_DespisedIcone_Carnifex_Suffocation-Header_DI_16725a3f135616940c0df38a2d49ab1f.jpg"},
   {"artist":"Queensryche","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/QueensrycheFB_Banner_b468594b405e2c83e1e402e149f93bfe.jpg"},
   {"artist":"Sanguisugabogg","tour":"Europe Summer 2026 Headline Shows","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Sanguisugabogg_Summer2026_Headline_Header_618f9a952b41babc21d1d3cb0b626365.jpg"},
-  {"artist":"Spite | Emmure","tour":"New World Killer EU/UK Tour","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SpiteEmmure-Banner_ee4d51c3dc2812ab39a0c1c86d54333e.jpg"},
-  {"artist":"The Amity Affliction","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/TAA-FB_Banner-26_ca6943210d103c881e0fae8681c2a16e.jpg"},
+  {"artist":"Still In Love","tour":"EU Weekender","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SIL-HEADER2_a2bfb6ae0fd0c2723ae295ad71f187f6.jpg"},
+  {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK-HL-Banner_4ead8e25c9f043aebd3558547bc9b036.jpg"},
   {"artist":"Archspire","tour":"European Vacation 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Archspire26_Banner_a048bc9a8cc06e78a493df25f8eab552.jpg"},
   {"artist":"Converge","tour":"EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_Fall26_Header2_e322da87e08f700111300c089028118b.jpg"},
   {"artist":"Havok","tour":"Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Havok_Banner_67ab60d81ffa8501f8f108896c8e3884.jpg"},
@@ -704,6 +691,5 @@ const TOUR_IMAGES = [
   {"artist":"Ministry","tour":"HATE TO GO - GOODBYE EUROPE 2027","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Ministry Euro27_Banner_604d0ecd6e2ee7a36bc07c4a685f062b.jpg"},
   {"artist":"Revocation","tour":"Europe Summer 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Revocation-summer26-Header_52714dab66920291e0cdee8485d8d2f8.jpg"},
   {"artist":"Shadow Of Intent","tour":"“Imperium Delirium” European Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SHADOWOFINTENT-EU2026_HEADER_ffd19b960c6dc8736b151debadf1c649.jpg"},
-  {"artist":"Still In Love","tour":"EU Weekender","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/SIL-HEADER2_a2bfb6ae0fd0c2723ae295ad71f187f6.jpg"},
-  {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK-HL-Banner_4ead8e25c9f043aebd3558547bc9b036.jpg"},
+  {"artist":"Suffocation","tour":"Southern & Eastern Europe 2026","imageUrl":"http://www.avocadobooking.com/avocms/cache/com_zoo/images/Suffo-EU-2026-HEADER_0914069ae60b43adb53ce744f893fff7.jpg"},
 ];
