@@ -90,7 +90,7 @@
       </div>
       <div class="calendar-3months" id="calendar3months"></div>
       <div class="calendar-legend">
-        <div><div style="width:5px;height:5px;background:var(--concert-dot);border-radius:50%;"></div> Concert</div>
+        <div><div style="width:5px;height:5px;background:var(--accent);border-radius:50%;"></div> Concert</div>
         <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Sold Out</div>
       </div>
     </div>
@@ -298,7 +298,7 @@
     }
     if (chips.length === 0) { bar.classList.remove('visible'); return; }
     bar.classList.add('visible');
-    bar.innerHTML = '<span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Filters</span>';
+    bar.innerHTML = '<span style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;">Filters</span>';
     chips.forEach(c => {
       const chip = document.createElement('span');
       chip.className = 'filter-chip';

@@ -1,35 +1,80 @@
+/* ===== JETONS ===== */
 :root {
-  --bg: #0d0d0d;
-  --surface: #1a1a1a;
-  --surface2: #252525;
-  --border: #333;
-  --text: #e8e8e8;
-  --text-muted: #888;
-  --accent: #6dbf4a;
-  --accent-hover: #5aa63d;
-  --accent-bg: rgba(109, 191, 74, 0.12);
-  --available: rgba(109, 191, 74, 0.25);
-  --available-border: #6dbf4a;
-  --concert-dot: #6dbf4a;
-  --sold-out: #e74c3c;
-  --today: rgba(255, 255, 255, 0.08);
+  /* couleurs, theme sombre par defaut */
+  --bg: #0c0b0a;
+  --surface: #14130f;
+  --surface-2: #1d1b16;
+  --border: #2a2721;
+  --border-strong: #3d3a32;
+  --text: #f2efe6;
+  --text-dim: #a8a29a;
+  --text-faint: #888277;
+  --accent: #8fd14f;
+  --accent-hover: #a3dd6b;
+  --accent-soft: rgba(143, 209, 79, .14);
+  --cal-1: rgba(143, 209, 79, .12);
+  --cal-2: rgba(143, 209, 79, .26);
+  --cal-3: rgba(143, 209, 79, .42);
+  --sold-out: #e15640;
+  --today: rgba(255, 255, 255, .06);
+  --on-accent: #0c0b0a;
+
+  /* typographie */
+  --font-sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  /* seul jeton sous le plancher de 11px : chrome de carte, ou la geometrie
+     du marqueur Leaflet contraint la taille. Voir la spec section 3.1. */
+  --fs-micro: 0.625rem;
+  --fs-xs: 0.6875rem;
+  --fs-sm: 0.75rem;
+  --fs-md: 0.875rem;
+  --fs-lg: 1rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: 1.75rem;
+  --fs-3xl: 2.5rem;
+
+  /* espacement, base 4 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* rayons */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 14px;
+
+  /* gabarit */
+  --header-h: 56px;
+  --sidebar-w: 380px;
+
+  color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg: #f5f5f5;
+  --bg: #f7f5ef;
   --surface: #ffffff;
-  --surface2: #eaeaea;
-  --border: #ddd;
-  --text: #1a1a1a;
-  --text-muted: #666;
-  --accent: #4a9e2f;
-  --accent-hover: #3d8526;
-  --accent-bg: rgba(74, 158, 47, 0.1);
-  --available: rgba(74, 158, 47, 0.18);
-  --available-border: #4a9e2f;
-  --concert-dot: #4a9e2f;
-  --sold-out: #d32f2f;
-  --today: rgba(0, 0, 0, 0.05);
+  --surface-2: #efece3;
+  --border: #ddd8cc;
+  --border-strong: #c7c0b0;
+  --text: #17150f;
+  --text-dim: #5c574d;
+  --text-faint: #6e695e;
+  --accent: #40751c;
+  --accent-hover: #2f5714;
+  --accent-soft: rgba(64, 117, 28, .12);
+  --cal-1: rgba(64, 117, 28, .10);
+  --cal-2: rgba(64, 117, 28, .22);
+  --cal-3: rgba(64, 117, 28, .36);
+  --sold-out: #c03a22;
+  --today: rgba(0, 0, 0, .05);
+  --on-accent: #ffffff;
+
+  color-scheme: light;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -97,7 +142,7 @@ body {
 .artist-select-btn {
   width: 100%;
   padding: 7px 12px;
-  background: var(--surface2);
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
@@ -112,7 +157,7 @@ body {
   text-align: left;
 }
 .artist-select-btn:hover { border-color: var(--accent); }
-.artist-select-btn .artist-select-arrow { font-size: 10px; color: var(--text-muted); transition: transform 0.2s; }
+.artist-select-btn .artist-select-arrow { font-size: 10px; color: var(--text-dim); transition: transform 0.2s; }
 .artist-dropdown.open + .artist-select-btn .artist-select-arrow,
 .artist-select-btn.open .artist-select-arrow { transform: rotate(180deg); }
 
@@ -134,7 +179,7 @@ body {
 .artist-filter-input {
   width: 100%;
   padding: 8px 12px;
-  background: var(--surface2);
+  background: var(--surface-2);
   border: none;
   border-bottom: 1px solid var(--border);
   color: var(--text);
@@ -142,7 +187,7 @@ body {
   outline: none;
   box-sizing: border-box;
 }
-.artist-filter-input::placeholder { color: var(--text-muted); }
+.artist-filter-input::placeholder { color: var(--text-dim); }
 
 .artist-dropdown-list {
   max-height: 300px;
@@ -160,8 +205,8 @@ body {
   font-size: 13px;
 }
 .artist-dropdown-item:last-child { border-bottom: none; }
-.artist-dropdown-item:hover { background: var(--surface2); }
-.artist-dropdown-item.checked { background: var(--accent-bg); }
+.artist-dropdown-item:hover { background: var(--surface-2); }
+.artist-dropdown-item.checked { background: var(--accent-soft); }
 
 .artist-dropdown-item input[type="checkbox"] {
   width: 14px; height: 14px;
@@ -171,7 +216,7 @@ body {
 }
 .artist-dropdown-item .artist-name { flex: 1; font-weight: 500; }
 .artist-dropdown-item .artist-count {
-  background: var(--accent-bg);
+  background: var(--accent-soft);
   color: var(--accent);
   padding: 1px 6px;
   border-radius: 8px;
@@ -184,7 +229,7 @@ body {
   display: flex;
   gap: 14px;
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   margin-left: auto;
   flex-shrink: 0;
 }
@@ -201,7 +246,7 @@ body {
 .btn-icon {
   background: none;
   border: 1px solid var(--border);
-  color: var(--text-muted);
+  color: var(--text-dim);
   width: 30px;
   height: 30px;
   border-radius: 6px;
@@ -222,8 +267,8 @@ body {
   white-space: nowrap;
 }
 .badge-countdown.today { background: var(--accent); color: #000; }
-.badge-countdown.tomorrow { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
-.badge-countdown.soon { background: var(--surface2); color: var(--text-muted); }
+.badge-countdown.tomorrow { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+.badge-countdown.soon { background: var(--surface-2); color: var(--text-dim); }
 
 .btn-spotify {
   display: inline-flex;
@@ -255,7 +300,7 @@ body {
 }
 
 .festival-card {
-  background: var(--surface2);
+  background: var(--surface-2);
   border: 1px solid var(--accent);
   border-radius: 8px;
   padding: 10px 12px;
@@ -274,7 +319,7 @@ body {
 }
 .festival-card .festival-meta {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-dim);
 }
 .festival-card .festival-lineup {
   display: flex;
@@ -284,7 +329,7 @@ body {
 .festival-card .lineup-chip {
   font-size: 11px;
   padding: 2px 8px;
-  background: var(--accent-bg);
+  background: var(--accent-soft);
   border: 1px solid var(--accent);
   border-radius: 10px;
   color: var(--text);
@@ -307,7 +352,7 @@ body {
 }
 .stat-block h4 {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 8px;
@@ -322,7 +367,7 @@ body {
 .stat-bar-label {
   width: 80px;
   text-align: right;
-  color: var(--text-muted);
+  color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -331,7 +376,7 @@ body {
 .stat-bar {
   flex: 1;
   height: 12px;
-  background: var(--surface2);
+  background: var(--surface-2);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -344,7 +389,7 @@ body {
 .stat-bar-value {
   width: 24px;
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   flex-shrink: 0;
 }
 
@@ -366,7 +411,7 @@ body {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   flex-shrink: 0;
   margin-right: 4px;
 }
@@ -379,13 +424,13 @@ body {
   font-size: 11px;
   cursor: pointer;
   transition: all 0.2s;
-  color: var(--text-muted);
+  color: var(--text-dim);
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .country-tag:hover { border-color: var(--accent); color: var(--text); }
-.country-tag.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+.country-tag.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 
 /* ===== ACTIVE FILTERS CHIPS ===== */
 .active-filters {
@@ -406,7 +451,7 @@ body {
   align-items: center;
   gap: 4px;
   padding: 3px 10px;
-  background: var(--accent-bg);
+  background: var(--accent-soft);
   border: 1px solid var(--accent);
   border-radius: 12px;
   color: var(--accent);
@@ -593,7 +638,7 @@ body {
 }
 [data-theme="light"] .road-trip-summary { background: rgba(255,255,255,0.95); }
 .road-trip-summary h5 { color: #e67e22; margin: 0 0 6px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
-.road-trip-leg { font-size: 11px; color: var(--text-muted); padding: 2px 0; }
+.road-trip-leg { font-size: 11px; color: var(--text-dim); padding: 2px 0; }
 .road-trip-leg .leg-dist { color: #e67e22; font-weight: 600; }
 .road-trip-total { font-size: 12px; color: var(--text); font-weight: 600; margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
 .route-step-orange span {
@@ -654,7 +699,7 @@ body {
   padding: 3px 8px;
   border-radius: 4px;
   border: 1px solid var(--border);
-  background: var(--surface2);
+  background: var(--surface-2);
   color: var(--text);
   cursor: pointer;
 }
@@ -671,7 +716,7 @@ body {
 .going-panel-empty {
   padding: 20px 14px;
   text-align: center;
-  color: var(--text-muted);
+  color: var(--text-dim);
   font-size: 12px;
 }
 .going-item {
@@ -683,7 +728,7 @@ body {
   transition: background 0.15s;
 }
 .going-item:last-child { border-bottom: none; }
-.going-item:hover { background: var(--surface2); }
+.going-item:hover { background: var(--surface-2); }
 .going-item-date {
   flex-shrink: 0;
   text-align: center;
@@ -693,12 +738,12 @@ body {
 .going-item-date .gi-day { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.1; }
 .going-item-info { flex: 1; min-width: 0; }
 .going-item-info .gi-artist { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.going-item-info .gi-details { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.going-item-info .gi-details { font-size: 10px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .going-item-remove {
   flex-shrink: 0;
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-dim);
   cursor: pointer;
   font-size: 14px;
   padding: 4px;
@@ -727,7 +772,7 @@ body {
   border: none;
   cursor: pointer;
   font-size: 18px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   transition: all 0.2s;
   padding: 2px;
   line-height: 1;
@@ -826,7 +871,7 @@ body {
   text-align: center;
   font-size: 9px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text-dim);
   padding: 3px 0;
   text-transform: uppercase;
 }
@@ -845,31 +890,31 @@ body {
   min-height: 28px;
 }
 
-.calendar-day:hover { border-color: var(--accent); background: var(--surface2); }
+.calendar-day:hover { border-color: var(--accent); background: var(--surface-2); }
 .calendar-day.empty { background: transparent; cursor: default; }
 .calendar-day.empty:hover { background: transparent; border-color: transparent; }
 .calendar-day.today { background: var(--today); border-color: var(--border); }
 
 .calendar-day.available {
-  background: var(--available);
-  border-color: var(--available-border);
+  background: var(--accent-soft);
+  border-color: var(--accent);
 }
 
 .calendar-day.has-concerts .day-number { font-weight: 700; color: var(--accent); }
 
 .calendar-day.selected-day {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--accent-soft);
   box-shadow: 0 0 0 1px var(--accent);
 }
 .calendar-day.date-selected {
   border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--accent-soft);
   box-shadow: 0 0 0 1px var(--accent);
 }
 
 .day-number { font-size: 11px; color: var(--text); }
-.calendar-day.empty .day-number { color: var(--text-muted); opacity: 0.3; }
+.calendar-day.empty .day-number { color: var(--text-dim); opacity: 0.3; }
 .calendar-day.past .day-number { opacity: 0.35; }
 .calendar-day.past.has-concerts .day-number { opacity: 0.5; }
 
@@ -884,7 +929,7 @@ body {
 .concert-dot {
   width: 3px;
   height: 3px;
-  background: var(--concert-dot);
+  background: var(--accent);
   border-radius: 50%;
 }
 
@@ -894,7 +939,7 @@ body {
   display: flex;
   gap: 16px;
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   padding: 8px 0 0;
   justify-content: center;
 }
@@ -952,7 +997,7 @@ body {
 }
 
 .concert-card {
-  background: var(--surface2);
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 10px 12px;
@@ -985,7 +1030,7 @@ body {
 
 .concert-date .weekday {
   font-size: 9px;
-  color: var(--text-muted);
+  color: var(--text-dim);
 }
 
 .concert-info h3 {
@@ -1002,12 +1047,12 @@ body {
 
 .concert-info .details {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-dim);
 }
 
 .concert-info .support {
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   margin-top: 2px;
   font-style: italic;
 }
@@ -1047,7 +1092,7 @@ body {
 .no-results {
   text-align: center;
   padding: 30px 10px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   font-size: 13px;
 }
 
@@ -1148,4 +1193,4 @@ body {
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
