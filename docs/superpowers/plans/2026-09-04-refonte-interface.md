@@ -884,6 +884,14 @@ Puis, dans `styles.css`, remplacer les sections `MAIN CONTENT` et `BOTTOM PANEL`
 }
 ```
 
+**Le logo devient le `<h1>` du document.** La page n'a aujourd'hui aucun titre de niveau 1 :
+`grep -c "<h1" index.html` rend `0`, et les deux règles `.logo h1` et `.logo h1 span` de
+`styles.css` sont donc du CSS mort qui ne matche rien. Remplacer `<div class="logo">` par
+`<h1 class="logo">` dans le balisage de l'en-tête. Le texte alternatif de l'image,
+`Avocado Booking`, sert alors de contenu au titre. Supprimer les deux règles `.logo h1` et
+`.logo h1 span`, que ce changement rend définitivement inatteignables : le `h1` **est**
+`.logo`, il n'est pas dedans.
+
 L'en-tête garde `position: sticky; top: 0` et devient la référence de `--header-h`. Dans `styles.css`, section `TOOLBAR`, ajouter à `.toolbar` :
 
 ```css
@@ -2171,15 +2179,65 @@ git commit -m "feat: filtre pays en panneau, remplace le ruban de 43 etiquettes"
   - `function toggleSheet(id: string): void` — ouvre ou ferme une feuille mobile, ferme les autres
   - classe `.sheet-open` sur `<body>` pendant qu'une feuille est ouverte
 
-- [ ] **Step 1: Ajouter la barre de bascule mobile**
+### Pourquoi l'en-tête doit changer, et pas seulement passer à la ligne
 
-D'abord déclarer sa hauteur en jeton, dans le bloc `:root` de `styles.css`, à côté de
-`--header-h` et `--sidebar-w` :
+Mesure des largeurs de l'en-tête : logo de marque 150 px, deux sélecteurs à 160 px de
+`min-width`, quatre boutons d'icône de 36 px, six gouttières de 8 px, plus 200 px de
+compteurs. Le total fait **864 px avec les compteurs et 662 px sans**. L'en-tête déborde
+donc dès 768 px avec les compteurs et dès 560 px sans, alors que `.toolbar` porte
+`height: var(--header-h)` sans retour à la ligne depuis la tâche 5.
+
+Le faire simplement passer à la ligne serait pire : `--header-h` est la référence de tous
+les décalages collants, donc un en-tête qui grandit sans que le jeton suive désaligne
+silencieusement l'en-tête de mois et la barre d'onglets. C'est exactement le défaut corrigé
+plus haut sur `.date-separator`.
+
+La spec, section 9, dit ce qu'il faut faire : « En-tête réduit au logo et à un bouton
+`Filters` ouvrant une feuille pleine hauteur contenant artistes, pays et mes dates. »
+L'en-tête reste donc sur **une seule ligne à toutes les largeurs**, et `--header-h` ne
+change jamais.
+
+**Le mécanisme, sans dupliquer le balisage.** Les deux sélecteurs restent à un seul endroit
+du DOM, enveloppés dans un conteneur `#filtersSheet` placé à l'intérieur de `.toolbar`. Ce
+conteneur a deux présentations : au-dessus de 900 px il est en `display: contents`, donc ses
+enfants participent directement au flex de l'en-tête exactement comme aujourd'hui ; à 900 px
+et en dessous il devient une feuille escamotable en `position: fixed`. Aucune règle ne
+recopie un sélecteur, et il n'y a qu'une source de vérité.
+
+- [ ] **Step 1: Ajouter la barre de bascule mobile et la feuille de filtres**
+
+D'abord déclarer la hauteur de la barre en jeton, dans le bloc `:root` de `styles.css`, à
+côté de `--header-h` et `--sidebar-w` :
 
 ```css
   /* hauteur de la barre d'onglets mobile : 40px de bouton + 2 x 8px de padding + 1px
      de bordure. L'en-tete de mois collant s'en sert pour son decalage. */
   --sheet-bar-h: 57px;
+```
+
+Puis, dans l'en-tête, envelopper les deux sélecteurs existants dans le conteneur à double
+présentation. Le `<div class="search-wrapper" id="searchWrapper">` et le
+`<div class="picker-wrapper" id="countryWrapper">` de la tâche 9 deviennent les enfants de :
+
+```html
+<div class="filters-sheet" id="filtersSheet">
+  <div class="sheet-head">
+    <span class="u-mono">Filters</span>
+    <button class="sheet-close" onclick="toggleSheet('filtersSheet')" aria-label="Close filters">&times;</button>
+  </div>
+  <!-- ici : #searchWrapper puis #countryWrapper, inchangés -->
+</div>
+```
+
+Et ajouter dans `.toolbar-actions`, en première position, le bouton qui l'ouvre :
+
+```html
+<button class="btn-icon btn-filters" onclick="toggleSheet('filtersSheet')"
+        aria-controls="filtersSheet" aria-expanded="false" aria-label="Filters">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+    <path d="M3 6h18M6 12h12M10 18h4"/>
+  </svg>
+</button>
 ```
 
 
@@ -2216,7 +2274,44 @@ Cette barre est masquée au-dessus de 900 px.
   }
 ```
 
-L'appel à `invalidateSize` est indispensable : Leaflet calcule ses dimensions à l'affichage et une carte révélée depuis un conteneur masqué reste vide sans lui.
+L'appel à `invalidateSize` est indispensable : Leaflet calcule ses dimensions à l'affichage
+et une carte révélée depuis un conteneur masqué reste vide sans lui.
+
+`toggleSheet` pilote les trois feuilles : `mapPanel`, `calendarPanel` et `filtersSheet`.
+Élargir donc son sélecteur de fermeture pour couvrir la feuille de filtres :
+
+```js
+    document.querySelectorAll('.side-panel.sheet-open, .filters-sheet.sheet-open')
+      .forEach(pnl => { ... });
+```
+
+**Une feuille ouverte doit se fermer au clic sur le voile et à `Échap`**, comme les
+sélecteurs de la tâche 9. Sans cela le voile assombri est un cul-de-sac. Ajouter dans
+`init()` :
+
+```js
+    document.addEventListener('click', (e) => {
+      if (!document.body.classList.contains('sheet-open')) return;
+      if (e.target.closest('.side-panel, .filters-sheet, .sheet-tab, .btn-filters')) return;
+      closeAllSheets();
+    });
+```
+
+et étendre le gestionnaire de `Échap` déjà posé par la tâche 9 avec un appel à
+`closeAllSheets()`. La fonction est l'extraction de ce que `toggleSheet` fait déjà pour
+refermer, donc elle ne duplique rien :
+
+```js
+  function closeAllSheets() {
+    document.querySelectorAll('.side-panel.sheet-open, .filters-sheet.sheet-open')
+      .forEach(pnl => {
+        pnl.classList.remove('sheet-open');
+        const tab = document.querySelector(`[aria-controls="${pnl.id}"]`);
+        if (tab) tab.setAttribute('aria-expanded', 'false');
+      });
+    document.body.classList.remove('sheet-open');
+  }
+```
 
 - [ ] **Step 3: Corriger `getMonthCount` sur le nouveau seuil**
 
@@ -2235,17 +2330,68 @@ Remplacer intégralement la section `/* ===== Responsive ===== */` par :
 ```css
 /* ===== RUPTURES ===== */
 
+/* Au-dessus de 900px, la feuille de filtres n'existe pas comme boite : ses enfants
+   participent directement au flex de l'en-tete. Le bouton Filters et l'en-tete de
+   feuille sont masques. */
+.filters-sheet { display: contents; }
+.filters-sheet .sheet-head { display: none; }
+.btn-filters { display: none; }
+
+.sheet-bar { display: none; }
+
 /* colonne laterale resserree */
 @media (max-width: 1240px) {
   :root { --sidebar-w: 320px; }
   .layout { gap: var(--sp-4); padding: var(--sp-4) var(--sp-4) var(--sp-12); }
 }
 
-/* colonne unique : la laterale devient deux feuilles escamotables */
+/* colonne unique : la laterale devient deux feuilles escamotables, et l'en-tete se
+   reduit au logo plus les boutons, les selecteurs passant en feuille */
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: minmax(0, 1fr);
     padding: var(--sp-3) var(--sp-3) var(--sp-12);
+  }
+
+  /* l'en-tete reste sur UNE ligne et --header-h ne bouge jamais */
+  .toolbar-stats, .toolbar-sep { display: none; }
+  .btn-filters { display: grid; }
+
+  /* meme element du DOM, autre presentation : plus un enfant du flex de l'en-tete,
+     mais une feuille par-dessus la page */
+  .filters-sheet {
+    display: none;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 60;
+    max-height: 78vh;
+    overflow-y: auto;
+    padding: var(--sp-3);
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .5);
+  }
+
+  .filters-sheet.sheet-open { display: block; }
+  .filters-sheet .sheet-head { display: flex; }
+
+  /* en feuille, les selecteurs prennent toute la largeur et s'empilent */
+  .filters-sheet .search-wrapper,
+  .filters-sheet .picker-wrapper {
+    max-width: none;
+    min-width: 0;
+    margin-bottom: var(--sp-3);
+  }
+
+  /* le panneau d'un selecteur n'est plus flottant dans la feuille : il s'ouvre en place */
+  .filters-sheet .picker-panel,
+  .filters-sheet .artist-dropdown {
+    position: static;
+    box-shadow: none;
+    min-width: 0;
+    max-width: none;
+    margin-top: var(--sp-1);
   }
 
   .sheet-bar {
@@ -2317,9 +2463,10 @@ Remplacer intégralement la section `/* ===== Responsive ===== */` par :
 
 /* repli de la carte de concert */
 @media (max-width: 560px) {
-  .toolbar { padding: var(--sp-2) var(--sp-3); gap: var(--sp-2); flex-wrap: wrap; height: auto; }
-  .toolbar-sep, .toolbar-stats { display: none; }
-  .search-wrapper, .picker-wrapper { flex: 1 1 45%; }
+  /* toujours une seule ligne : le retour a la ligne desaligneraient les decalages
+     collants qui derivent tous de --header-h */
+  .toolbar { padding: var(--sp-2) var(--sp-3); gap: var(--sp-2); }
+  .logo-icon { height: 22px; }
 
   .concert-card {
     grid-template-columns: 52px minmax(0, 1fr);
