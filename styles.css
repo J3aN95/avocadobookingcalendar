@@ -436,18 +436,6 @@ body {
 }
 
 /* ===== MAP ===== */
-.map-container {
-  position: relative;
-  flex-shrink: 0;
-  transition: height 0.3s ease, opacity 0.2s ease;
-  overflow: hidden;
-}
-.map-container.map-hidden {
-  height: 0 !important;
-  min-height: 0 !important;
-  opacity: 0;
-  pointer-events: none;
-}
 .map-toggle-btn.active {
   color: var(--accent);
 }
@@ -817,6 +805,8 @@ body {
   overflow: hidden;
 }
 
+.side-panel.is-hidden { display: none; }
+
 #leafletMap {
   height: 46vh;
   min-height: 280px;
@@ -861,7 +851,6 @@ body {
   .tour-slide { width: 200px; height: 110px; }
   .tour-slide .slide-label { font-size: var(--fs-sm); padding: 5px 8px; }
 
-  .map-container { display: none; }
   .map-toggle-btn { display: none; }
   .festival-card { padding: 8px; }
 

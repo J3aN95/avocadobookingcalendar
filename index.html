@@ -903,24 +903,22 @@
 
   // ===== MAP TOGGLE =====
   function toggleMap() {
-    const container = document.querySelector('.map-container');
+    const panel = document.getElementById('mapPanel');
     const btn = document.getElementById('btnMapToggle');
-    const hidden = container.classList.toggle('map-hidden');
+    if (!panel || !btn) return;
+    const hidden = panel.classList.toggle('is-hidden');
     btn.classList.toggle('active', !hidden);
     localStorage.setItem('avocado_map_hidden', hidden ? '1' : '0');
-    if (!hidden && leafletMap) {
-      setTimeout(() => leafletMap.invalidateSize(), 350);
-    }
+    if (!hidden && leafletMap) setTimeout(() => leafletMap.invalidateSize(), 120);
   }
 
   function loadMapPref() {
+    const panel = document.getElementById('mapPanel');
+    const btn = document.getElementById('btnMapToggle');
+    if (!panel || !btn) return;
     const hidden = localStorage.getItem('avocado_map_hidden') === '1';
-    if (hidden) {
-      document.querySelector('.map-container').classList.add('map-hidden');
-      document.getElementById('btnMapToggle').classList.remove('active');
-    } else {
-      document.getElementById('btnMapToggle').classList.add('active');
-    }
+    panel.classList.toggle('is-hidden', hidden);
+    btn.classList.toggle('active', !hidden);
   }
 
   // ===== I'M GOING =====
