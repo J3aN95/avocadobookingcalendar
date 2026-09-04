@@ -7,7 +7,7 @@ Hors portée : `concerts.js` (généré), `.github/workflows/update-concerts.yml
 
 ## 1. Pourquoi
 
-L'application fonctionne et couvre beaucoup de terrain, mais l'interface souffre de six
+L'application fonctionne et couvre beaucoup de terrain, mais l'interface souffre de sept
 défauts constatés sur la version déployée v1.5.0 :
 
 1. Les tuiles CartoDB exigent désormais une clé d'API. Le fond de carte affiche
@@ -24,6 +24,17 @@ défauts constatés sur la version déployée v1.5.0 :
    donc il n'existe aucune hiérarchie visuelle.
 6. `outline: none` est appliqué sans rien mettre à la place, donc le focus clavier est
    invisible. Les boutons de la barre d'outils sont des glyphes emoji sans libellé.
+7. Neuf des onze conversions de chaîne de date en objet `Date` passent par
+   `new Date('2026-09-04')`, que la spécification du langage parse en **minuit UTC**, au
+   lieu de `new Date('2026-09-04T00:00:00')`, qui parse en minuit locale. Deux conséquences
+   mesurées :
+   - le jour courant n'est **jamais** surligné dans le calendrier, parce que
+     `new Date(dateStr).getTime() === today.getTime()` compare une minuit UTC à une minuit
+     locale. Relevé sur la version déployée en Europe/Paris : deux heures d'écart, et
+     `document.querySelectorAll('.calendar-day.today').length` vaut `0` ;
+   - tout visiteur d'un fuseau à décalage négatif voit chaque date **un jour trop tôt**.
+     Vérifié sous Node : `new Date('2026-09-04')` rend jeudi 3 en `America/Toronto`,
+     `America/Los_Angeles` et `Pacific/Honolulu`, contre vendredi 4 avec le parse local.
 
 ## 2. Décisions arrêtées
 
@@ -358,7 +369,10 @@ Ces contrats ne doivent pas changer, sinon des liens et des données existants c
 - **Clés `localStorage`** : `avocado_theme`, `avocado_map_hidden`, `avocado_going`,
   `avocado_known_tours`.
 - **Format de clé de concert** produit par `getConcertKey()`, dont dépend la liste
-  « mes dates » déjà enregistrée chez les visiteurs.
+  « mes dates » déjà enregistrée chez les visiteurs. Noter que l'artiste
+  `ROMAN CANDLE | FILTH IS ETERNAL` contient le séparateur `|` lui-même, donc sa clé compte
+  quatre segments et non trois. Rien ne la re-découpe aujourd'hui, et rien ne doit commencer
+  à le faire.
 - **Export ICS** : contenu inchangé.
 
 ## 12. Vérification

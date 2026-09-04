@@ -943,11 +943,67 @@ git commit -m "feat: ossature agenda d'abord, defilement de document et colonne 
 - Modify: `styles.css` — sections `TOUR CAROUSEL`, règles `.concert-card`, `.concert-date`, `.concert-info`, `.concert-actions`, `.festival-card`, `.badge-*`, `.btn-ticket`, `.btn-spotify`, `.btn-going`
 
 **Interfaces:**
-- Consumes: `#agendaList`, `.agenda-month`, `.date-separator` (tâche 5), `.u-mono` (tâche 4)
+- Consumes: `#agendaList`, `.agenda-month`, `.date-separator` (tâche 5), le bloc de titre groupé (tâche 4)
 - Produces:
+  - `function parseDate(dateStr: string): Date` — parse une date `YYYY-MM-DD` en **minuit locale**. Consommée par les tâches 7 et 9.
   - `function escapeHtml(s: string): string`
   - délégation d'événements : un unique écouteur `click` sur `#agendaList` qui lit `data-action` et `data-key` sur l'élément cliqué. Les tâches 9 et 11 réutilisent ce mécanisme.
   - `data-action="going"` avec `data-key="<clé de concert>"`
+
+- [ ] **Step 0: Corriger le parsing des dates, qui casse deux choses aujourd'hui**
+
+Ce n'est pas une amélioration cosmétique, c'est un défaut mesuré. Neuf des onze conversions
+de chaîne en `Date` du fichier passent par `new Date('2026-09-04')`. La spécification du
+langage parse cette forme en **minuit UTC**, alors que `new Date('2026-09-04T00:00:00')`
+parse en minuit locale. Deux conséquences, toutes deux vérifiées :
+
+1. **Le jour courant n'est jamais surligné dans le calendrier.** `renderCalendar` teste
+   `new Date(dateStr).getTime() === today.getTime()` où `today` est
+   `new Date(); today.setHours(0, 0, 0, 0)`, donc une minuit locale. En `Europe/Paris` les
+   deux valeurs diffèrent de deux heures et le test est toujours faux. Relevé sur la page
+   servie : `document.querySelectorAll('.calendar-day.today').length` vaut `0`.
+2. **Tout fuseau à décalage négatif affiche chaque date un jour trop tôt.** Vérifié sous
+   Node pour la même chaîne `2026-09-04` : `Europe/Paris` et `UTC` rendent vendredi 4,
+   tandis que `America/Toronto`, `America/Los_Angeles` et `Pacific/Honolulu` rendent
+   **jeudi 3**.
+
+Ajouter le helper sous la bannière `// ===== NORMALISATION DES DONNEES =====` :
+
+```js
+  // Les dates de concert sont des chaines YYYY-MM-DD. new Date() les parse en minuit UTC,
+  // donc getDate() et getDay() renvoient la veille pour tout fuseau a decalage negatif, et
+  // la comparaison avec une minuit locale echoue partout ou le decalage n'est pas nul.
+  // Toute conversion de chaine en Date passe par ici.
+  function parseDate(dateStr) {
+    return new Date(dateStr + 'T00:00:00');
+  }
+```
+
+Puis router les **neuf** sites fautifs par ce helper. Les repérer par
+`grep -n "new Date(" index.html | grep -v "new Date()"`, qui doit rendre onze lignes dont
+deux déjà correctes. Les neuf à convertir, par fonction :
+
+| Fonction | Ce qui est parsé | Effet du défaut |
+|---|---|---|
+| `renderActiveFilters` | `selectedDay` | libellé de puce daté d'un jour trop tôt |
+| clic du rail des tournées | `nearest.date` | navigation de calendrier sur le mauvais mois en début de mois |
+| `renderCalendar` | `dateStr` pour `isToday` | le jour courant n'est jamais surligné |
+| `renderCalendar` | `dateStr` pour `isPast` | frontière du passé décalée |
+| `renderConcertList` | `selectedDay` pour le titre | titre daté d'un jour trop tôt |
+| `renderConcertList` | `c.date` pour le séparateur de jour | séparateur daté d'un jour trop tôt |
+| `getCountdownBadge` | `dateStr` | `Today` et `Tomorrow` sur le mauvais jour |
+| `createConcertCard` | `c.date` | bloc date de la carte daté d'un jour trop tôt |
+| `toggleArtistSelection` | `nearest.date` | navigation de calendrier sur le mauvais mois |
+
+Ne pas toucher `new Date(y, m, 1)` ni `new Date(y, m + 1, 0)` dans `renderCalendar` : le
+constructeur à trois arguments est déjà local et correct. Les deux sites qui utilisent déjà
+`+ 'T00:00:00'`, dans `renderGoingPanel`, passent aussi par `parseDate` pour qu'il n'y ait
+qu'une seule façon de faire.
+
+Vérification, à mettre dans le rapport :
+
+- `grep -c "new Date(" index.html` puis `grep -n "new Date(" index.html | grep -v "new Date()"` → **aucune** ligne ne doit plus parser une chaîne de date directement, hors le corps de `parseDate` lui-même et les constructeurs à trois arguments.
+- `grep -c "parseDate(" index.html` → au moins 12, soit la définition plus les onze appels.
 
 - [ ] **Step 1: Remplacer les `onclick` inline par de la délégation**
 
@@ -980,7 +1036,7 @@ Dans `init()`, après le premier `render()`, brancher l'écouteur unique :
 
 ```js
   function createConcertCard(c) {
-    const d = new Date(c.date + 'T00:00:00');
+    const d = parseDate(c.date);
     const mn = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     const key = getConcertKey(c);
     const isGoing = goingSet.has(key);
@@ -1022,7 +1078,7 @@ Dans `init()`, après le premier `render()`, brancher l'écouteur unique :
 ```js
   function getCountdownBadge(dateStr) {
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    const concert = new Date(dateStr + 'T00:00:00');
+    const concert = parseDate(dateStr);
     const diff = Math.round((concert - today) / 86400000);
     if (diff < 0) return '';
     if (diff === 0) return '<span class="badge badge-now">Today</span>';
@@ -1071,7 +1127,7 @@ Le reste de la boucle est conservé, en veillant à ce que le `forEach` ne soit 
 Le séparateur de jour passe en format court :
 
 ```js
-      const d = new Date(c.date + 'T00:00:00');
+      const d = parseDate(c.date);
       const dayStr = `${WEEKDAYS_FR[d.getDay()]} ${d.getDate()}`;
 ```
 
@@ -1423,7 +1479,7 @@ git commit -m "feat: refonte des cartes de concert, festival et du rail des tour
 - Modify: `styles.css` — règles `.calendar-*`, `.month-block`, `.day-header`, `.calendar-day`, `.day-number`, suppression de `.concert-dots`, `.concert-dot`, `.day-dot`
 
 **Interfaces:**
-- Consumes: `--cal-1 --cal-2 --cal-3 --sold-out` (tâche 3), `#calendar3months` et `#calendarLegend` (tâche 5)
+- Consumes: `--cal-1 --cal-2 --cal-3 --sold-out` (tâche 3), `#calendar3months` et `#calendarLegend` (tâche 5), `parseDate()` (tâche 6)
 - Produces: classes de palier `.d-1 .d-2 .d-3` sur `.calendar-day`, utilisées seulement par la feuille de style
 
 - [ ] **Step 1: Réécrire le rendu des cases**
@@ -1648,6 +1704,9 @@ Visuellement :
 - les cases chargées sont nettement plus vertes que les cases à une seule date, sans aucun point
 - une case avec une date complète porte un filet rouge en bas
 - la légende explique les trois paliers plus le sold out
+- **le jour courant est surligné**, ce qui n'était pas le cas avant la tâche 6 :
+  `document.querySelectorAll('.calendar-day.today').length` doit valoir `1` quand le mois
+  courant est dans la fenêtre, et non `0`
 - les trois mois sont empilés verticalement dans la colonne latérale et ne débordent pas
 - la navigation `◂ ▸` déplace la fenêtre de trois mois
 - au clavier, `Tab` atteint les cases et `Entrée` en sélectionne une
@@ -2926,6 +2985,10 @@ Reprendre la liste de la spec, section 12, point 5. Cocher chaque élément :
 - [ ] persistance du thème après rechargement
 - [ ] persistance de « mes dates » après rechargement
 - [ ] persistance du masquage de carte après rechargement
+- [ ] **jour courant surligné dans le calendrier**, `.calendar-day.today` présent une fois
+- [ ] **aucun décalage de fuseau** : dans la console, `parseDate('2026-09-04').getDate()`
+      doit valoir `4`, et `document.querySelector('.date-separator').textContent` doit
+      nommer le bon jour de la semaine pour la première date affichée
 
 - [ ] **Step 4: Captures aux quatre largeurs dans les deux thèmes**
 
