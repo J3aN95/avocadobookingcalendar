@@ -60,12 +60,24 @@ const COUNTRY_NAME_MAP = {
   'Czech Rep.': 'Czech Republic',
 };
 
+// Meme table que dans index.html. La page fait autorite, ceci assainit les donnees futures.
+const COUNTRY_FIX = {
+  'United Kingdom': 'UK', 'IRELAND': 'Ireland', 'IRELEND': 'Ireland',
+  'Dublin': 'Ireland', 'Glasgow': 'UK', 'Manchester': 'UK', 'London': 'UK',
+  'Tilburg': 'Netherlands', 'Paris': 'France', 'Cologne': 'Germany',
+  'Berlin': 'Germany', 'Munich': 'Germany', 'Warsaw': 'Poland',
+  'Prague': 'Czech Republic', 'Vienna': 'Austria', 'Milan': 'Italy',
+  'Cruise': 'At sea',
+};
+const httpsUrl = (u) => typeof u === 'string' ? u.replace(/^http:\/\//i, 'https://') : u;
+
 function normalizeCity(city) {
   return CITY_NAME_MAP[city] || city;
 }
 
 function normalizeCountry(country) {
-  return COUNTRY_NAME_MAP[country] || country;
+  const c = COUNTRY_NAME_MAP[country] || country;
+  return COUNTRY_FIX[c] || c;
 }
 
 // Rate-limited fetch with retry
@@ -321,7 +333,7 @@ function generateConcertsJS(allConcerts, cityCoords, tourImages) {
   // Write TOUR_IMAGES
   js += 'const TOUR_IMAGES = [\n';
   for (const t of tourImages) {
-    js += `  ${JSON.stringify(t)},\n`;
+    js += `  ${JSON.stringify({ ...t, imageUrl: httpsUrl(t.imageUrl) })},\n`;
   }
   js += '];\n';
 

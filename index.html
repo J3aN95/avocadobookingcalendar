@@ -1267,6 +1267,35 @@
   const DAYS_FR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const WEEKDAYS_FR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
+  // ===== NORMALISATION DES DONNEES =====
+  // Le scraper laisse passer des villes dans le champ country, des variantes de casse
+  // et un doublon UK / United Kingdom. On corrige au chargement pour que filtres,
+  // carte et compteurs soient toujours d'accord entre eux. Corriger uniquement le
+  // scraper ne suffirait pas : les lignes deja commitees resteraient fausses.
+  const COUNTRY_FIX = {
+    'United Kingdom': 'UK', 'IRELAND': 'Ireland', 'IRELEND': 'Ireland',
+    'Dublin': 'Ireland', 'Glasgow': 'UK', 'Manchester': 'UK', 'London': 'UK',
+    'Tilburg': 'Netherlands', 'Paris': 'France', 'Cologne': 'Germany',
+    'Berlin': 'Germany', 'Munich': 'Germany', 'Warsaw': 'Poland',
+    'Prague': 'Czech Republic', 'Vienna': 'Austria', 'Milan': 'Italy',
+    'Cruise': 'At sea',
+  };
+
+  function normalizeCountry(name) {
+    return COUNTRY_FIX[name] || name;
+  }
+
+  function httpsUrl(u) {
+    return typeof u === 'string' ? u.replace(/^http:\/\//i, 'https://') : u;
+  }
+
+  function normalizeData() {
+    CONCERTS_DATA.forEach(c => { c.country = normalizeCountry(c.country); });
+    if (typeof TOUR_IMAGES !== 'undefined') {
+      TOUR_IMAGES.forEach(t => { t.imageUrl = httpsUrl(t.imageUrl); });
+    }
+  }
+
   const _now = new Date();
   let currentYear = _now.getFullYear();
   let currentMonth = _now.getMonth();
@@ -1280,6 +1309,7 @@
   let selectedDates = new Set();
 
   function init() {
+    normalizeData();
     loadTheme();
     loadMapPref();
     loadGoing();
