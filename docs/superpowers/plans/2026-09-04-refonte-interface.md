@@ -1541,7 +1541,16 @@ Remplacer le balisage figé de la légende, qui contenait des styles en ligne, p
 
 - [ ] **Step 4: Écrire les styles**
 
-Remplacer les règles de calendrier de `styles.css` par :
+**Il n'y a rien à remplacer : la tâche 5 a déjà retiré toute la section `BOTTOM PANEL`, et
+avec elle chaque règle de base du calendrier.** Vérifié par relevé sur `styles.css` après la
+tâche 5 : `.calendar-grid`, `.calendar-day`, `.day-header`, `.month-block` et `.nav-btn` ont
+**zéro** règle de base. Les seules mentions restantes vivent dans les media queries
+responsive, autour des lignes 824 à 880, et appartiennent à la tâche 10 qui réécrit cette
+section en entier. N'y touchez pas.
+
+Vous **ajoutez** donc une nouvelle section, sous une bannière
+`/* ===== CALENDRIER ===== */`, placée après la section `COLONNE LATERALE` et avant la
+section `Responsive` :
 
 ```css
 /* ===== CALENDRIER ===== */
@@ -1681,12 +1690,26 @@ Remplacer les règles de calendrier de `styles.css` par :
 .lg-sw.lg-sold { background: var(--sold-out); border-color: var(--sold-out); }
 ```
 
-Supprimer les règles `.concert-dots`, `.concert-dot`, `.day-dot`, `.calendar-3months` et `.calendar-day.has-concerts`.
+Il n'y a **aucune** règle à supprimer : `.concert-dots`, `.concert-dot`,
+`.calendar-day.has-concerts` et les règles de base de `.day-dot` et `.calendar-3months` sont
+déjà parties avec la section retirée par la tâche 5. Les mentions de `.day-dot` et
+`.calendar-3months` qui subsistent sont dans les media queries responsive et appartiennent à
+la tâche 10.
+
+En revanche, la classe `.concert-dot` et le `className = 'concert-dot'` **du JavaScript**
+existent encore et c'est vous qui les retirez, puisque votre Step 1 supprime le bloc qui les
+crée.
 
 - [ ] **Step 5: Vérifier qu'aucune référence morte ne subsiste**
 
-Run: `grep -n "concert-dot\|day-dot\|has-concerts\|calendar-3months" styles.css index.html`
-Expected: seule la ligne `getElementById('calendar3months')` du script et l'attribut `id="calendar3months"` du balisage, qui sont conservés volontairement. Aucune règle CSS.
+Run: `grep -n "concert-dot\|has-concerts" styles.css index.html`
+Expected: aucune ligne. Ni règle CSS, ni `className` dans le script.
+
+Run: `grep -n "calendar3months" index.html`
+Expected: deux lignes, l'attribut `id="calendar3months"` et le `getElementById` correspondant, tous deux conservés volontairement.
+
+Run: `grep -n "day-dot\|calendar-3months" styles.css`
+Expected: uniquement des lignes situées dans les media queries responsive, qui appartiennent à la tâche 10.
 
 - [ ] **Step 6: Vérifier la lisibilité**
 
@@ -2840,7 +2863,10 @@ avec :
 .es-hint { font-size: var(--fs-md); color: var(--text-dim); margin-bottom: var(--sp-4); }
 ```
 
-Supprimer les règles `.no-results` devenues mortes.
+Les règles `.no-results` n'existent plus : elles sont parties avec la section retirée par la
+tâche 5, relevé à zéro règle de base sur `styles.css`. Il n'y a donc rien à supprimer côté
+CSS. Le balisage `.no-results`, lui, existe encore dans `renderConcertList` et c'est bien
+vous qui le remplacez.
 
 - [ ] **Step 6: Compléter les attributs d'état des panneaux**
 
