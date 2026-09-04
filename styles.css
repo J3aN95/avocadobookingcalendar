@@ -276,17 +276,6 @@ body {
 }
 .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
 
-.badge-countdown {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 8px;
-  white-space: nowrap;
-}
-.badge-countdown.today { background: var(--accent); color: #000; }
-.badge-countdown.tomorrow { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
-.badge-countdown.soon { background: var(--surface-2); color: var(--text-dim); }
-
 .btn-spotify {
   display: inline-flex;
   align-items: center;
@@ -302,55 +291,173 @@ body {
 }
 .btn-spotify:hover { opacity: 0.85; }
 
-.badge-new {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: var(--sold-out);
-  color: #fff;
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  padding: 2px 5px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+/* ===== CARTE DE CONCERT ===== */
+.concert-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: start;
+  padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  margin-bottom: var(--sp-2);
+  transition: border-color .15s, background .15s;
 }
 
-.festival-card {
-  background: var(--surface-2);
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
+.concert-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  background: transparent;
+  transition: background .15s;
 }
-.festival-card .festival-header {
+
+.concert-card:hover { border-color: var(--border-strong); }
+.concert-card:hover::before,
+.concert-card.is-going::before { background: var(--accent); }
+.concert-card.is-sold-out::before { background: var(--sold-out); }
+
+.cc-date {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  padding-top: 2px;
 }
-.festival-card .festival-name {
-  font-size: var(--fs-md);
-  font-weight: 700;
-  color: var(--accent);
+
+.cc-month, .cc-weekday {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
 }
-.festival-card .festival-meta {
-  font-size: var(--fs-sm);
-  color: var(--text-dim);
-}
-.festival-card .festival-lineup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-.festival-card .lineup-chip {
-  font-size: var(--fs-sm);
-  padding: 2px 8px;
-  background: var(--accent-soft);
-  border: 1px solid var(--accent);
-  border-radius: 10px;
+
+.cc-day {
+  font-size: var(--fs-2xl);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
   color: var(--text);
 }
+
+.cc-body { min-width: 0; }
+
+.cc-artist {
+  font-size: var(--fs-xl);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.cc-tour {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-top: var(--sp-1);
+}
+
+.cc-venue {
+  font-size: var(--fs-md);
+  color: var(--text-dim);
+  margin-top: var(--sp-2);
+}
+
+.cc-support {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin-top: var(--sp-2);
+}
+
+.cc-chip {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 2px var(--sp-2);
+}
+
+.cc-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-2);
+}
+
+/* ===== BADGES ===== */
+.badge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px var(--sp-2);
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+}
+
+.badge-now { background: var(--accent); color: var(--on-accent); }
+.badge-soon { background: var(--accent-soft); color: var(--accent); }
+
+/* contoure et non rempli : du blanc sur --sold-out ne donne que 3.75:1 en theme
+   sombre, alors que le contour donne 4.96:1 en sombre et 5.43:1 en clair */
+.badge-sold {
+  background: transparent;
+  color: var(--sold-out);
+  border: 1px solid var(--sold-out);
+}
+.badge-fest { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+.badge-new { background: var(--accent); color: var(--on-accent); }
+
+/* ===== CARTE FESTIVAL ===== */
+.festival-card {
+  padding: var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  margin-bottom: var(--sp-2);
+}
+
+.fc-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.fc-name {
+  font-size: var(--fs-xl);
+}
+
+.fc-meta {
+  font-size: var(--fs-md);
+  color: var(--text-dim);
+  margin-top: var(--sp-1);
+}
+
+.fc-lineup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+
+.fc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-1) var(--sp-2);
+}
+
+.fc-chip.active { border-color: var(--accent); }
+.fc-cta { margin-top: var(--sp-3); }
 
 /* ===== ACTIVE FILTERS CHIPS ===== */
 .active-filters {
@@ -387,52 +494,56 @@ body {
 
 .filter-chip .chip-remove:hover { opacity: 1; }
 
-/* ===== TOUR CAROUSEL ===== */
-.tour-carousel {
+/* ===== RAIL DES TOURNEES ===== */
+.tour-rail {
   display: flex;
-  gap: 10px;
-  padding: 8px 20px;
+  gap: var(--sp-3);
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  flex-shrink: 0;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  scroll-snap-type: x proximity;
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-6);
 }
-.tour-carousel::-webkit-scrollbar { height: 0; }
 
 .tour-slide {
-  flex-shrink: 0;
-  width: 180px;
-  height: 100px;
-  border-radius: 6px;
-  overflow: hidden;
   position: relative;
-  cursor: pointer;
+  flex: 0 0 240px;
+  aspect-ratio: 16 / 9;
   scroll-snap-align: start;
-  border: 2px solid transparent;
-  transition: border-color 0.2s, transform 0.2s;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  padding: 0;
+  background: var(--surface-2);
+  cursor: pointer;
+  text-align: left;
 }
-.tour-slide:hover { transform: scale(1.03); border-color: var(--accent); }
-.tour-slide.active { border-color: var(--accent); box-shadow: 0 0 10px rgba(109,191,74,0.4); }
+
+.tour-slide.active { border-color: var(--accent); }
 
 .tour-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
+/* Le bloc de caractere vient de la liste groupee de la tache 4, ne pas le recopier.
+   Le degrade garantit la lisibilite du libelle sur n'importe quelle image, et sa
+   couleur de texte est litteralement claire dans les deux themes puisqu'elle se
+   pose sur un voile noir et non sur une surface du theme. */
 .tour-slide .slide-label {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 4px 8px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.85));
-  font-size: var(--fs-xs);
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  inset: auto 0 0 0;
+  padding: var(--sp-4) var(--sp-2) var(--sp-2);
+  font-size: var(--fs-md);
+  color: #f2efe6;
+  background: linear-gradient(to top, rgba(0, 0, 0, .88), rgba(0, 0, 0, 0));
+}
+
+.tour-slide .badge-new {
+  position: absolute;
+  top: var(--sp-2);
+  left: var(--sp-2);
 }
 
 /* ===== MAP ===== */
@@ -836,7 +947,6 @@ body {
   .calendar-day { min-height: 36px; font-size: var(--fs-sm); }
   .day-header { font-size: var(--fs-xs); }
   .btn-ticket { padding: 7px 14px; font-size: var(--fs-sm); }
-  .concert-date .day { font-size: var(--fs-lg); }
 }
 
 /* Mobile dropdown fix */
@@ -881,16 +991,6 @@ body {
 
   .concert-area { padding: 10px 8px; max-height: none; }
   .concert-card { grid-template-columns: 42px 1fr; gap: 8px; }
-  .concert-actions {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    justify-content: flex-end;
-    margin-top: 2px;
-  }
-  .concert-date .day { font-size: var(--fs-lg); }
-  .concert-date .month, .concert-date .weekday { font-size: var(--fs-xs); }
-  .concert-info h3 { font-size: var(--fs-md); }
-  .concert-info .details { font-size: var(--fs-sm); }
   .btn-ticket { padding: 8px 16px; font-size: var(--fs-sm); }
 
   .disclaimer { padding: 6px 8px; }

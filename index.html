@@ -119,6 +119,20 @@
     return typeof u === 'string' ? u.replace(/^http:\/\//i, 'https://') : u;
   }
 
+  // Les dates de concert sont des chaines YYYY-MM-DD. new Date() les parse en minuit UTC,
+  // donc getDate() et getDay() renvoient la veille pour tout fuseau a decalage negatif, et
+  // la comparaison avec une minuit locale echoue partout ou le decalage n'est pas nul.
+  // Toute conversion de chaine en Date passe par ici.
+  function parseDate(dateStr) {
+    return new Date(dateStr + 'T00:00:00');
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   function normalizeData() {
     CONCERTS_DATA.forEach(c => { c.country = normalizeCountry(c.country); });
     if (typeof TOUR_IMAGES !== 'undefined') {
@@ -176,6 +190,15 @@
     initMap();
     render();
     setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 200);
+
+    document.getElementById('agendaList').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      if (btn.dataset.action === 'going') {
+        e.stopPropagation();
+        toggleGoing(btn.dataset.key);
+      }
+    });
   }
 
   function getMonthCount() {
@@ -251,7 +274,7 @@
       chips.push({ label: selectedCity, clear: () => { selectedCity = null; render(); }});
     }
     if (selectedDay) {
-      const d = new Date(selectedDay);
+      const d = parseDate(selectedDay);
       chips.push({ label: `${d.getDate()} ${MONTHS_FR[d.getMonth()]}`, clear: () => { selectedDay = null; render(); }});
     }
     if (showGoingOnly) {
@@ -282,16 +305,21 @@
     if (!container || typeof TOUR_IMAGES === 'undefined' || !TOUR_IMAGES.length) return;
     container.innerHTML = '';
 
-    TOUR_IMAGES.forEach(t => {
-      const slide = document.createElement('div');
+    // Les nouveautes passent en tete : getNewTours() reecrit avocado_known_tours a chaque
+    // appel, donc un rail limite aux nouveautes serait vide des la deuxieme visite.
+    const ordered = [...TOUR_IMAGES].sort((a, b) =>
+      (newTours.has(b.artist) ? 1 : 0) - (newTours.has(a.artist) ? 1 : 0));
+
+    ordered.forEach(t => {
+      const slide = document.createElement('button');
+      slide.type = 'button';
       slide.className = 'tour-slide';
       const artistLower = t.artist.toLowerCase();
-      const isActive = searchTerms.some(term => artistLower.includes(term));
-      if (isActive) slide.classList.add('active');
+      if (searchTerms.some(term => artistLower.includes(term))) slide.classList.add('active');
       slide.innerHTML = `
-        <img src="${t.imageUrl}" alt="${t.artist}" loading="lazy">
-        <div class="slide-label">${t.artist}</div>
-        ${newTours.has(t.artist) ? '<span class="badge-new">NEW</span>' : ''}
+        <img src="${escapeHtml(httpsUrl(t.imageUrl))}" alt="" loading="lazy">
+        <span class="slide-label">${escapeHtml(t.artist)}</span>
+        ${newTours.has(t.artist) ? '<span class="badge badge-new">New</span>' : ''}
       `;
       slide.onclick = () => {
         const existIdx = searchTerms.indexOf(artistLower);
@@ -307,7 +335,7 @@
           const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
           const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
           if (nearest) {
-            const d = new Date(nearest.date);
+            const d = parseDate(nearest.date);
             currentMonth = d.getMonth();
             currentYear = d.getFullYear();
           }
@@ -322,15 +350,14 @@
 
     // Auto-scroll
     if (carouselInterval) clearInterval(carouselInterval);
-    carouselInterval = setInterval(() => {
-      if (container.matches(':hover')) return;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      if (container.scrollLeft >= maxScroll - 10) {
-        container.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        container.scrollBy({ left: 190, behavior: 'smooth' });
-      }
-    }, 3000);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      carouselInterval = setInterval(() => {
+        if (container.matches(':hover, :focus-within')) return;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        if (container.scrollLeft >= maxScroll - 10) container.scrollTo({ left: 0, behavior: 'smooth' });
+        else container.scrollBy({ left: 240, behavior: 'smooth' });
+      }, 4000);
+    }
   }
 
   // ===== LEAFLET MAP =====
@@ -587,8 +614,8 @@
         const cell = document.createElement('div');
         const allConcerts = getConcertsForDate(dateStr);
         const matchingFiltered = filtered.filter(c => c.date === dateStr);
-        const isToday = new Date(dateStr).getTime() === today.getTime();
-        const isPast = new Date(dateStr) < today;
+        const isToday = parseDate(dateStr).getTime() === today.getTime();
+        const isPast = parseDate(dateStr) < today;
         const hasFiltered = matchingFiltered.length > 0;
         const hasAnyConcerts = allConcerts.length > 0;
 
@@ -646,7 +673,7 @@
     if (selectedCity) title = selectedCity;
     else {
       if (selectedDay) {
-        const d = new Date(selectedDay);
+        const d = parseDate(selectedDay);
         title = `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
       } else {
         const mc = getMonthCount();
@@ -671,12 +698,29 @@
     const festivalGroups = detectFestivals(displayed);
     const renderedFestivals = new Set();
 
+    let currentMonthKey = '';
     let currentGroup = '';
+    const monthTotals = {};
+    displayed.forEach(c => { const k = c.date.slice(0, 7); monthTotals[k] = (monthTotals[k] || 0) + 1; });
+
     displayed.forEach(c => {
+      const monthKey = c.date.slice(0, 7);
+      if (monthKey !== currentMonthKey) {
+        currentMonthKey = monthKey;
+        const [my, mm] = monthKey.split('-');
+        const head = document.createElement('div');
+        head.className = 'agenda-month';
+        const n = monthTotals[monthKey];
+        head.innerHTML = `<span class="month-name">${MONTHS_FR[+mm - 1]} ${my}</span>` +
+                         `<span class="month-count">${n} date${n > 1 ? 's' : ''}</span>`;
+        list.appendChild(head);
+        currentGroup = '';
+      }
+
       const festKey = `${c.date}|${c.venue}`;
       const group = festivalGroups[festKey];
-      const d = new Date(c.date);
-      const dayStr = `${WEEKDAYS_FR[d.getDay()]} ${d.getDate()} ${MONTHS_FR[d.getMonth()]}`;
+      const d = parseDate(c.date);
+      const dayStr = `${WEEKDAYS_FR[d.getDay()]} ${d.getDate()}`;
 
       if (dayStr !== currentGroup) {
         currentGroup = dayStr;
@@ -691,24 +735,23 @@
         renderedFestivals.add(festKey);
         const fCard = document.createElement('div');
         fCard.className = 'festival-card';
-        const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        const countdown = getCountdownBadge(c.date);
         fCard.innerHTML = `
-          <div class="festival-header">
-            <span class="festival-name">&#127926; ${c.venue}</span>
-            ${countdown}
+          <div class="fc-head">
+            <span class="badge badge-fest">Festival</span>
+            ${getCountdownBadge(c.date)}
           </div>
-          <div class="festival-meta">${c.city}, ${c.country} &middot; ${mn[d.getMonth()]} ${d.getDate()}</div>
-          <div class="festival-lineup">${group.map(g => {
-            const fKey = getConcertKey(g);
-            const fGoing = goingSet.has(fKey);
-            const fSafe = fKey.replace(/'/g, "\\'");
-            return `<span class="lineup-chip">${g.artist} <button class="btn-going ${fGoing ? 'active' : ''}" onclick="event.stopPropagation();toggleGoing('${fSafe}')" style="font-size:13px;">${fGoing ? '&#9829;' : '&#9825;'}</button></span>`;
+          <h3 class="fc-name">${escapeHtml(c.venue)}</h3>
+          <div class="fc-meta">${escapeHtml(c.city)}, ${escapeHtml(c.country)}</div>
+          <div class="fc-lineup">${group.map(g => {
+            const gk = getConcertKey(g);
+            const gGoing = goingSet.has(gk);
+            return `<span class="fc-chip${gGoing ? ' active' : ''}">${escapeHtml(g.artist)}` +
+                   `<button class="btn-going${gGoing ? ' active' : ''}" data-action="going" data-key="${escapeHtml(gk)}"` +
+                   ` aria-label="${gGoing ? 'Remove from my concerts' : 'Add to my concerts'}"` +
+                   ` aria-pressed="${gGoing}">${gGoing ? '&#9829;' : '&#9825;'}</button></span>`;
           }).join('')}</div>
+          ${group[0].ticketUrl ? `<div class="fc-cta"><a class="btn-ticket" href="${escapeHtml(group[0].ticketUrl)}" target="_blank" rel="noopener">Tickets</a></div>` : ''}
         `;
-        if (group[0].ticketUrl) {
-          fCard.innerHTML += `<div style="margin-top:6px;"><a href="${group[0].ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a></div>`;
-        }
         list.appendChild(fCard);
       } else if (!group || group.length < 2) {
         list.appendChild(createConcertCard(c));
@@ -717,44 +760,46 @@
   }
 
   function getCountdownBadge(dateStr) {
-    const today = new Date(); today.setHours(0,0,0,0);
-    const concert = new Date(dateStr); concert.setHours(0,0,0,0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const concert = parseDate(dateStr);
     const diff = Math.round((concert - today) / 86400000);
     if (diff < 0) return '';
-    if (diff === 0) return '<span class="badge-countdown today">Today!</span>';
-    if (diff === 1) return '<span class="badge-countdown tomorrow">Tomorrow</span>';
-    if (diff <= 7) return `<span class="badge-countdown soon">In ${diff} days</span>`;
-    if (diff <= 30) return `<span class="badge-countdown soon">In ${diff} days</span>`;
+    if (diff === 0) return '<span class="badge badge-now">Today</span>';
+    if (diff === 1) return '<span class="badge badge-soon">Tomorrow</span>';
+    if (diff <= 30) return `<span class="badge badge-soon">In ${diff} days</span>`;
     return '';
   }
 
   function createConcertCard(c) {
-    const d = new Date(c.date);
-    const card = document.createElement('div');
-    card.className = 'concert-card' + (c.soldOut ? ' sold-out' : '');
-    const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const countdown = getCountdownBadge(c.date);
+    const d = parseDate(c.date);
+    const mn = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     const key = getConcertKey(c);
     const isGoing = goingSet.has(key);
-    const safeKey = key.replace(/'/g, "\\'");
+
+    const card = document.createElement('article');
+    card.className = 'concert-card' + (c.soldOut ? ' is-sold-out' : '') + (isGoing ? ' is-going' : '');
+
     card.innerHTML = `
-      <div class="concert-date">
-        <div class="month">${mn[d.getMonth()]}</div>
-        <div class="day">${d.getDate()}</div>
-        <div class="weekday">${WEEKDAYS_FR[d.getDay()]}</div>
+      <div class="cc-date">
+        <span class="cc-month">${mn[d.getMonth()]}</span>
+        <span class="cc-day">${d.getDate()}</span>
+        <span class="cc-weekday">${DAYS_FR[(d.getDay() + 6) % 7]}</span>
       </div>
-      <div class="concert-info">
-        <h3>${c.artist}</h3>
-        <div class="tour-name">${c.tour}</div>
-        <div class="details">${c.venue} - ${c.city}, ${c.country}</div>
-        ${c.support ? `<div class="support">w/ ${c.support}</div>` : ''}
+      <div class="cc-body">
+        <h3 class="cc-artist">${escapeHtml(c.artist)}</h3>
+        ${c.tour ? `<div class="cc-tour">${escapeHtml(c.tour)}</div>` : ''}
+        <div class="cc-venue">${escapeHtml(c.venue)} &middot; ${escapeHtml(c.city)}, ${escapeHtml(c.country)}</div>
+        ${c.support ? `<div class="cc-support">${c.support.split(',').map(s => `<span class="cc-chip">${escapeHtml(s.trim())}</span>`).join('')}</div>` : ''}
       </div>
-      <div class="concert-actions">
-        <button class="btn-going ${isGoing ? 'active' : ''}" onclick="toggleGoing('${safeKey}')" title="I'm going">${isGoing ? '&#9829;' : '&#9825;'}</button>
-        ${countdown}
-        <a href="https://open.spotify.com/search/${encodeURIComponent(c.artist)}" target="_blank" rel="noopener" class="btn-spotify">&#9654; Spotify</a>
-        ${c.soldOut ? '<span class="badge-sold-out">Sold Out</span>' : ''}
-        ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a>` : ''}
+      <div class="cc-actions">
+        ${getCountdownBadge(c.date)}
+        ${c.soldOut ? '<span class="badge badge-sold">Sold out</span>' : ''}
+        <button class="btn-going${isGoing ? ' active' : ''}" data-action="going" data-key="${escapeHtml(key)}"
+                aria-label="${isGoing ? 'Remove from my concerts' : 'Add to my concerts'}"
+                aria-pressed="${isGoing}">${isGoing ? '&#9829;' : '&#9825;'}</button>
+        <a class="btn-spotify" href="https://open.spotify.com/search/${encodeURIComponent(c.artist)}"
+           target="_blank" rel="noopener">Spotify</a>
+        ${c.ticketUrl ? `<a class="btn-ticket" href="${escapeHtml(c.ticketUrl)}" target="_blank" rel="noopener">Tickets</a>` : ''}
       </div>
     `;
     return card;
@@ -832,7 +877,7 @@
       const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
       const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
       if (nearest) {
-        const d = new Date(nearest.date);
+        const d = parseDate(nearest.date);
         currentMonth = d.getMonth();
         currentYear = d.getFullYear();
       }
@@ -962,8 +1007,8 @@
 
     list.innerHTML = '';
     concerts.forEach(c => {
-      const d = new Date(c.date + 'T00:00:00');
-      const key = getConcertKey(c).replace(/'/g, "\\'");
+      const d = parseDate(c.date);
+      const key = getConcertKey(c);
       const item = document.createElement('div');
       item.className = 'going-item';
       item.innerHTML = `
@@ -972,14 +1017,15 @@
           <div class="gi-day">${d.getDate()}</div>
         </div>
         <div class="going-item-info">
-          <div class="gi-artist">${c.artist}</div>
-          <div class="gi-details">${c.venue} — ${c.city}, ${c.country}</div>
+          <div class="gi-artist">${escapeHtml(c.artist)}</div>
+          <div class="gi-details">${escapeHtml(c.venue)} — ${escapeHtml(c.city)}, ${escapeHtml(c.country)}</div>
         </div>
-        <button class="going-item-remove" onclick="event.stopPropagation();toggleGoing('${key}')" title="Remove">&#10005;</button>
+        <button class="going-item-remove" title="Remove">&#10005;</button>
       `;
+      item.querySelector('.going-item-remove').onclick = (e) => { e.stopPropagation(); toggleGoing(key); };
       item.onclick = () => {
         document.getElementById('goingPanel').classList.remove('visible');
-        const dt = new Date(c.date + 'T00:00:00');
+        const dt = parseDate(c.date);
         currentMonth = dt.getMonth();
         currentYear = dt.getFullYear();
         selectedDay = c.date;
