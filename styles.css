@@ -86,12 +86,6 @@ body {
   background: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
-
-  /* conserve tel quel jusqu'a la tache 5, qui passe au defilement de document */
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Bloc de titre partage. Chaque tache qui ajoute une classe de titre l'ajoute a cette
@@ -126,8 +120,10 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  flex-shrink: 0;
   z-index: 10;
+  position: sticky;
+  top: 0;
+  height: var(--header-h);
 }
 
 .logo {
@@ -145,14 +141,6 @@ body {
   height: 100%;
   width: auto;
 }
-
-.logo h1 {
-  font-size: var(--fs-lg);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.logo h1 span { color: var(--accent); }
 
 .toolbar-sep {
   width: 1px;
@@ -364,103 +352,6 @@ body {
   color: var(--text);
 }
 
-.stats-panel {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height 0.3s ease;
-  flex-shrink: 0;
-}
-.stats-panel.open { max-height: 300px; }
-.stats-inner {
-  padding: 12px 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-}
-.stat-block h4 {
-  font-size: var(--fs-xs);
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
-.stat-bar-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 3px;
-  font-size: var(--fs-sm);
-}
-.stat-bar-label {
-  width: 80px;
-  text-align: right;
-  color: var(--text-dim);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-shrink: 0;
-}
-.stat-bar {
-  flex: 1;
-  height: 12px;
-  background: var(--surface-2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.stat-bar-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-}
-.stat-bar-value {
-  width: 24px;
-  font-size: var(--fs-sm);
-  color: var(--text-dim);
-  flex-shrink: 0;
-}
-
-/* ===== COUNTRY RIBBON ===== */
-.country-ribbon {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 6px 20px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-  overflow-x: auto;
-}
-
-.country-ribbon::-webkit-scrollbar { height: 0; }
-
-.country-ribbon-label {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-dim);
-  flex-shrink: 0;
-  margin-right: 4px;
-}
-
-.country-tag {
-  padding: 3px 10px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: all 0.2s;
-  color: var(--text-dim);
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.country-tag:hover { border-color: var(--accent); color: var(--text); }
-.country-tag.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-
 /* ===== ACTIVE FILTERS CHIPS ===== */
 .active-filters {
   background: var(--surface);
@@ -495,14 +386,6 @@ body {
 }
 
 .filter-chip .chip-remove:hover { opacity: 1; }
-
-/* ===== MAIN CONTENT ===== */
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
 
 /* ===== TOUR CAROUSEL ===== */
 .tour-carousel {
@@ -828,303 +711,117 @@ body {
 }
 .disclaimer a:hover { text-decoration: underline; }
 
-/* ===== BOTTOM PANEL: Calendar + Concert List ===== */
-.bottom-panel {
-  flex: 1;
+/* ===== OSSATURE ===== */
+.layout {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  overflow: hidden;
-  border-top: 1px solid var(--border);
+  grid-template-columns: minmax(0, 1fr) var(--sidebar-w);
+  gap: var(--sp-6);
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-6) var(--sp-16);
+  align-items: start;
 }
 
-/* --- Calendar area --- */
-.calendar-area {
-  overflow-y: auto;
-  padding: 12px 20px;
+.agenda {
+  min-width: 0;
 }
 
-.calendar-nav {
+.agenda-head {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 10px;
+  align-items: baseline;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
 }
 
-.calendar-nav h2 {
-  font-size: var(--fs-md);
-  font-weight: 600;
-  min-width: 220px;
-  text-align: center;
-}
-
-.nav-btn {
-  width: 28px;
-  height: 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  cursor: pointer;
-  font-size: var(--fs-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.nav-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-.calendar-3months {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.month-block h3 {
-  text-align: center;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 6px;
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
-}
-
-.calendar-grid .day-header {
-  text-align: center;
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--text-dim);
-  padding: 3px 0;
-  text-transform: uppercase;
-}
-
-.calendar-day {
-  background: var(--surface);
-  border: 1px solid transparent;
-  border-radius: 3px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.12s;
-  padding: 3px 1px;
-  min-height: 28px;
-}
-
-.calendar-day:hover { border-color: var(--accent); background: var(--surface-2); }
-.calendar-day.empty { background: transparent; cursor: default; }
-.calendar-day.empty:hover { background: transparent; border-color: transparent; }
-.calendar-day.today { background: var(--today); border-color: var(--border); }
-
-.calendar-day.available {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-}
-
-.calendar-day.has-concerts .day-number { font-weight: 700; color: var(--accent); }
-
-.calendar-day.selected-day {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-.calendar-day.date-selected {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-
-.day-number { font-size: var(--fs-sm); color: var(--text); }
-.calendar-day.empty .day-number { color: var(--text-dim); opacity: 0.3; }
-.calendar-day.past .day-number { opacity: 0.35; }
-.calendar-day.past.has-concerts .day-number { opacity: 0.5; }
-
-.concert-dots {
-  display: flex;
-  gap: 2px;
-  margin-top: 1px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.concert-dot {
-  width: 3px;
-  height: 3px;
-  background: var(--accent);
-  border-radius: 50%;
-}
-
-.concert-dot.filtered { box-shadow: 0 0 3px var(--accent); }
-
-.calendar-legend {
-  display: flex;
-  gap: 16px;
-  font-size: var(--fs-sm);
-  color: var(--text-dim);
-  padding: 8px 0 0;
-  justify-content: center;
-}
-
-.calendar-legend > div {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* --- Concert list area --- */
-.concert-area {
-  background: var(--surface);
-  border-left: 1px solid var(--border);
-  overflow-y: auto;
-  padding: 14px 16px;
-}
-
-.concerts-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
-
-.concerts-header h2 {
-  font-size: var(--fs-md);
-  font-weight: 600;
-}
-
-.concerts-header .count {
-  background: var(--accent);
-  color: #000;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: var(--fs-sm);
+.agenda-head h2 {
+  font-stretch: 75%;
   font-weight: 700;
-}
-
-.concert-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.date-separator {
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  color: var(--accent);
-  padding: 8px 0 3px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 2px;
-}
-
-.concert-card {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 10px 12px;
-  transition: border-color 0.2s;
-  display: grid;
-  grid-template-columns: 50px 1fr auto;
-  gap: 10px;
-  align-items: center;
-}
-
-.concert-card:hover { border-color: var(--accent); }
-.concert-card.sold-out { opacity: 0.5; }
-
-.concert-date {
-  text-align: center;
-}
-
-.concert-date .month {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.concert-date .day {
   font-size: var(--fs-xl);
-  font-weight: 700;
-  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
 }
 
-.concert-date .weekday {
-  font-size: var(--fs-xs);
-  color: var(--text-dim);
-}
-
-.concert-info h3 {
-  font-size: var(--fs-md);
-  font-weight: 700;
-  margin-bottom: 1px;
-}
-
-.concert-info .tour-name {
+.agenda-count {
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--accent);
-  margin-bottom: 2px;
 }
 
-.concert-info .details {
-  font-size: var(--fs-sm);
+/* en-tete de mois collant dans l'agenda */
+.agenda-month {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 3;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: var(--sp-8) 0 var(--sp-4);
+  padding: var(--sp-2) 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.agenda-month:first-child {
+  margin-top: 0;
+}
+
+.agenda-month .month-name {
+  font-stretch: 62%;
+  font-weight: 700;
+  font-size: var(--fs-3xl);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.agenda-month .month-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* separateur de jour */
+/* Volontairement NON collant. Seuls les en-tetes de mois le sont, comme le dit la
+   spec section 4.2. Empiler un second element collant imposerait un decalage egal a
+   la hauteur de l'en-tete de mois, qui vaut 57px en grand et 45px sous 560px ou le
+   nom de mois rétrécit : un nombre magique faux et dependant de la largeur. */
+.date-separator {
+  padding: var(--sp-2) 0 var(--sp-1);
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--text-dim);
 }
 
-.concert-info .support {
-  font-size: var(--fs-sm);
-  color: var(--text-dim);
-  margin-top: 2px;
-  font-style: italic;
-}
-
-.concert-actions {
+/* ===== COLONNE LATERALE ===== */
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + var(--sp-6));
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  gap: var(--sp-4);
+  min-width: 0;
 }
 
-.badge-sold-out {
-  background: var(--sold-out);
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  text-transform: uppercase;
+.side-panel {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
 }
 
-.btn-ticket {
-  padding: 5px 12px;
-  background: var(--accent);
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s;
+#leafletMap {
+  height: 46vh;
+  min-height: 280px;
+  width: 100%;
 }
-
-.btn-ticket:hover { background: var(--accent-hover); }
-
-.no-results {
-  text-align: center;
-  padding: 30px 10px;
-  color: var(--text-dim);
-  font-size: var(--fs-md);
-}
-
-.no-results p { margin-bottom: 6px; }
 
 /* ===== Responsive ===== */
 
@@ -1150,7 +847,6 @@ body {
   .day-header { font-size: var(--fs-xs); }
   .btn-ticket { padding: 7px 14px; font-size: var(--fs-sm); }
   .concert-date .day { font-size: var(--fs-lg); }
-  .country-ribbon { padding: 5px 12px; }
 }
 
 /* Mobile dropdown fix */
@@ -1167,8 +863,6 @@ body {
 
   .map-container { display: none; }
   .map-toggle-btn { display: none; }
-  .stats-inner { grid-template-columns: 1fr; padding: 10px 8px; }
-  .stat-bar-label { width: 60px; font-size: var(--fs-sm); }
   .festival-card { padding: 8px; }
 
   .toolbar {
@@ -1182,9 +876,6 @@ body {
     order: 10;
   }
   .toolbar-stats { display: none; }
-
-  .country-ribbon { padding: 4px 8px; gap: 4px; }
-  .country-tag { font-size: var(--fs-sm); padding: 2px 7px; }
 
   .active-filters { padding: 4px 8px; }
 

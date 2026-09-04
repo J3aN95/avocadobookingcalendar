@@ -14,9 +14,9 @@
 
 <!-- TOOLBAR -->
 <div class="toolbar">
-  <div class="logo">
+  <h1 class="logo">
     <div class="logo-icon"><img src="https://www.avocadobooking.com/avocms/images/designimages/avocado_logo_new_small.png" alt="Avocado Booking"></div>
-  </div>
+  </h1>
   <div class="toolbar-sep"></div>
   <div class="search-wrapper" id="searchWrapper">
     <button class="artist-select-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()">
@@ -34,7 +34,6 @@
     <span><strong id="totalCountries">0</strong> countries</span>
   </div>
   <div class="toolbar-actions">
-    <button class="btn-icon" onclick="toggleStats()" title="Statistics">&#128202;</button>
     <div class="going-wrapper">
       <button class="btn-icon going-toggle-btn" id="btnGoingFilter" onclick="toggleGoingPanel()" title="My concerts">&#9829;<span id="goingCount" class="going-badge" data-count="0">0</span></button>
       <div class="going-panel" id="goingPanel">
@@ -54,60 +53,42 @@
   </div>
 </div>
 
-<!-- COUNTRY RIBBON -->
-<div class="country-ribbon">
-  <span class="country-ribbon-label">Countries</span>
-  <div id="countryFilters" style="display:contents;"></div>
-</div>
-
-<!-- STATS PANEL -->
-<div class="stats-panel" id="statsPanel">
-  <div class="stats-inner" id="statsInner"></div>
-</div>
-
 <!-- ACTIVE FILTERS -->
 <div class="active-filters" id="activeFilters"></div>
 
-<!-- TOUR CAROUSEL -->
-<div class="tour-carousel" id="tourCarousel"></div>
+<main class="layout">
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
-  <!-- MAP -->
-  <div class="map-container">
-    <div id="leafletMap"></div>
-    <div class="map-city-filter" id="mapCityFilter">
-      <span id="mapCityLabel"></span>
-      <span class="close-city" onclick="selectedCity=null;render();">&times;</span>
+  <div class="agenda">
+    <div class="tour-rail" id="tourCarousel"></div>
+    <div class="agenda-head">
+      <h2 id="concertTitle">Concerts</h2>
+      <span class="agenda-count" id="concertCount" aria-live="polite">0</span>
     </div>
-    <div class="road-trip-summary" id="roadTripSummary" style="display:none;"></div>
+    <div class="agenda-list" id="agendaList"></div>
   </div>
 
-  <!-- BOTTOM: Calendar + Concert list -->
-  <div class="bottom-panel">
-    <div class="calendar-area">
+  <aside class="sidebar" id="sidebar">
+    <section class="side-panel" id="mapPanel">
+      <div id="leafletMap"></div>
+      <div class="map-city-filter" id="mapCityFilter">
+        <span id="mapCityLabel"></span>
+        <button onclick="selectedCity=null;render();" aria-label="Clear city filter">&times;</button>
+      </div>
+      <div class="road-trip-summary" id="roadTripSummary" hidden></div>
+    </section>
+
+    <section class="side-panel" id="calendarPanel">
       <div class="calendar-nav">
-        <button class="nav-btn" onclick="changeMonth(-1)">&#9664;</button>
-        <h2 id="currentMonth"></h2>
-        <button class="nav-btn" onclick="changeMonth(1)">&#9654;</button>
+        <button class="nav-btn" onclick="changeMonth(-1)" aria-label="Previous months">&#9664;</button>
+        <h3 id="currentMonth"></h3>
+        <button class="nav-btn" onclick="changeMonth(1)" aria-label="Next months">&#9654;</button>
       </div>
-      <div class="calendar-3months" id="calendar3months"></div>
-      <div class="calendar-legend">
-        <div><div style="width:5px;height:5px;background:var(--accent);border-radius:50%;"></div> Concert</div>
-        <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Sold Out</div>
-      </div>
-    </div>
+      <div class="calendar-months" id="calendar3months"></div>
+      <div class="calendar-legend" id="calendarLegend"></div>
+    </section>
+  </aside>
 
-    <div class="concert-area">
-      <div class="concerts-header">
-        <h2 id="concertTitle">Concerts</h2>
-
-        <span class="count" id="concertCount">0</span>
-      </div>
-      <div class="concert-list" id="concertList"></div>
-    </div>
-  </div>
-</div>
+</main>
 
 <script src="concerts.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -179,26 +160,6 @@
     document.getElementById('totalConcerts').textContent = CONCERTS_DATA.length;
     document.getElementById('totalArtists').textContent = artists.size;
     document.getElementById('totalCountries').textContent = countries.size;
-
-    // Country tags
-    const container = document.getElementById('countryFilters');
-    [...countries].sort().forEach(country => {
-      const tag = document.createElement('span');
-      tag.className = 'country-tag';
-      tag.textContent = country;
-      if (activeCountries.has(country)) tag.classList.add('active');
-      tag.onclick = () => {
-        if (activeCountries.has(country)) {
-          activeCountries.delete(country);
-          tag.classList.remove('active');
-        } else {
-          activeCountries.add(country);
-          tag.classList.add('active');
-        }
-        render();
-      };
-      container.appendChild(tag);
-    });
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('#searchWrapper')) closeArtistDropdown();
@@ -553,16 +514,16 @@
         });
         html += `<div class="road-trip-total">${tripPoints.length} stops &middot; ${Math.round(totalDist)} km total</div>`;
         tripPanel.innerHTML = html;
-        tripPanel.style.display = 'block';
+        tripPanel.hidden = false;
 
         if (allBounds.length === 0) {
           leafletMap.fitBounds(tripLine.getBounds(), { padding: [30, 30] });
         }
       } else {
-        tripPanel.style.display = 'none';
+        tripPanel.hidden = true;
       }
     } else {
-      tripPanel.style.display = 'none';
+      tripPanel.hidden = true;
     }
   }
 
@@ -678,7 +639,7 @@
     const displayed = getDisplayedConcerts();
     displayed.sort((a, b) => a.date.localeCompare(b.date));
 
-    const list = document.getElementById('concertList');
+    const list = document.getElementById('agendaList');
     list.innerHTML = '';
 
     let title = 'Concerts';
@@ -753,7 +714,6 @@
         list.appendChild(createConcertCard(c));
       }
     });
-    list.scrollTop = 0;
   }
 
   function getCountdownBadge(dateStr) {
@@ -894,77 +854,6 @@
     } else {
       label.textContent = `${searchTerms.length} artists`;
     }
-  }
-
-  // ===== STATISTICS DASHBOARD =====
-  function toggleStats() {
-    document.getElementById('statsPanel').classList.toggle('open');
-    if (document.getElementById('statsPanel').classList.contains('open')) renderStats();
-  }
-
-  function renderStats() {
-    const inner = document.getElementById('statsInner');
-    inner.innerHTML = '';
-
-    // Concerts per month
-    const monthCounts = {};
-    CONCERTS_DATA.forEach(c => {
-      const key = c.date.substring(0, 7);
-      monthCounts[key] = (monthCounts[key] || 0) + 1;
-    });
-    const sortedMonths = Object.entries(monthCounts).sort((a, b) => a[0].localeCompare(b[0]));
-    const maxMonth = Math.max(...sortedMonths.map(e => e[1]));
-    let monthHTML = '<div class="stat-block"><h4>Concerts per month</h4>';
-    sortedMonths.forEach(([m, count]) => {
-      const [yr, mo] = m.split('-');
-      const label = MONTHS_FR[parseInt(mo) - 1].substring(0, 3) + ' ' + yr;
-      const pct = (count / maxMonth * 100).toFixed(0);
-      monthHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${label}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    monthHTML += '</div>';
-
-    // Top cities
-    const cityCounts = {};
-    CONCERTS_DATA.forEach(c => { cityCounts[c.city] = (cityCounts[c.city] || 0) + 1; });
-    const topCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const maxCity = topCities[0]?.[1] || 1;
-    let cityHTML = '<div class="stat-block"><h4>Top cities</h4>';
-    topCities.forEach(([city, count]) => {
-      const pct = (count / maxCity * 100).toFixed(0);
-      cityHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${city}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    cityHTML += '</div>';
-
-    // Most touring artists
-    const artistCounts = {};
-    CONCERTS_DATA.forEach(c => {
-      artistCounts[c.artist] = (artistCounts[c.artist] || 0) + 1;
-      if (c.support) c.support.split(',').map(s => s.trim()).filter(Boolean).forEach(name => {
-        artistCounts[name] = (artistCounts[name] || 0) + 1;
-      });
-    });
-    const topArtists = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const maxArtist = topArtists[0]?.[1] || 1;
-    let artistHTML = '<div class="stat-block"><h4>Most shows</h4>';
-    topArtists.forEach(([artist, count]) => {
-      const pct = (count / maxArtist * 100).toFixed(0);
-      artistHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${artist}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    artistHTML += '</div>';
-
-    // Country distribution
-    const countryCounts = {};
-    CONCERTS_DATA.forEach(c => { countryCounts[c.country] = (countryCounts[c.country] || 0) + 1; });
-    const topCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const maxCountry = topCountries[0]?.[1] || 1;
-    let countryHTML = '<div class="stat-block"><h4>By country</h4>';
-    topCountries.forEach(([country, count]) => {
-      const pct = (count / maxCountry * 100).toFixed(0);
-      countryHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${country}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    countryHTML += '</div>';
-
-    inner.innerHTML = monthHTML + cityHTML + artistHTML + countryHTML;
   }
 
   // ===== NEW TOUR DETECTION =====
