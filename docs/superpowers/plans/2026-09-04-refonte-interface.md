@@ -2566,9 +2566,16 @@ Remplacer intégralement la section `/* ===== Responsive ===== */` par :
 
 Le `display: none` qui masquait `.map-container` et `.map-toggle-btn` sous 480 px disparaît. C'était le défaut principal du parcours mobile.
 
-- [ ] **Step 5: Adapter le bouton de masquage de carte**
+- [ ] **Step 5: Vérifier le bouton de masquage de carte, déjà repointé**
 
-`toggleMap` et `loadMapPref` agissent sur `.map-container`, qui n'existe plus. Les repointer sur `#mapPanel` :
+**Ce travail est déjà fait.** La tâche 5 avait supprimé `.map-container` sans repointer
+`loadMapPref()`, qui le déréférençait depuis `init()`. Avec `avocado_map_hidden` à `'1'`,
+la page levait une `TypeError` et `init()` avortait : plus aucune carte, aucune case de
+calendrier, aucune vignette. Le défaut a été reproduit et corrigé dans la tâche 5 elle-même,
+parce qu'un déréférencement qui tue `init()` ne pouvait pas attendre cinq tâches.
+
+Il ne reste donc ici qu'à **vérifier** que les deux fonctions ressemblent bien à ceci, et à
+ne rien changer si c'est le cas :
 
 ```js
   function toggleMap() {
