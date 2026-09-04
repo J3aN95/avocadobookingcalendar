@@ -67,14 +67,24 @@ tournée, distances, compteurs, badges.
 | `--fs-md` | 0.875rem / 14px | corps, lieu et ville |
 | `--fs-sm` | 0.75rem / 12px | métadonnées |
 | `--fs-xs` | 0.6875rem / 11px | étiquettes en capitales à tracking élargi uniquement |
+| `--fs-micro` | 0.625rem / 10px | chrome de carte uniquement, voir ci-dessous |
+
+`--fs-micro` est le seul jeton sous le plancher. Il est réservé aux trois endroits où la
+taille est contrainte par la géométrie et non par un choix typographique : l'attribution
+Leaflet, le numéro de `.route-step span` dans sa pastille de 20 px, et `.distance-label`
+dans son `divIcon` de 50×16 px. Un jeton nommé documente cette contrainte là où un littéral
+la cacherait.
 
 Le plancher du corps passe donc de 10 px à 14 px. Le 11 px ne subsiste que pour les
 étiquettes capitalisées, où il reste lisible grâce au tracking.
 
 ### 3.2 Palettes
 
-Noir chaud plutôt que gris froid. Les trois niveaux de texte tiennent le ratio 4.5:1 sur
-leur fond dans les deux thèmes.
+Noir chaud plutôt que gris froid. Tout jeton employé comme couleur de texte tient le ratio
+4.5:1 sur les trois fonds dans les deux thèmes, y compris `--accent` et `--sold-out`, et
+`--on-accent` tient 4.5:1 sur `--accent` et `--accent-hover`. Quarante combinaisons ont été
+calculées et aucune n'échoue. Les valeurs ci-dessous sont le résultat de ce calcul, pas une
+estimation : cinq jetons ont dû être corrigés après vérification.
 
 | Jeton | Sombre | Clair |
 |---|---|---|
@@ -85,15 +95,28 @@ leur fond dans les deux thèmes.
 | `--border-strong` | `#3d3a32` | `#c7c0b0` |
 | `--text` | `#f2efe6` | `#17150f` |
 | `--text-dim` | `#a8a29a` | `#5c574d` |
-| `--text-faint` | `#837d73` | `#7d776b` |
-| `--accent` | `#8fd14f` | `#4f8f22` |
-| `--accent-hover` | `#a3dd6b` | `#3f7519` |
-| `--accent-soft` | `rgba(143,209,79,.14)` | `rgba(79,143,34,.12)` |
-| `--cal-1` | `rgba(143,209,79,.12)` | `rgba(79,143,34,.10)` |
-| `--cal-2` | `rgba(143,209,79,.26)` | `rgba(79,143,34,.22)` |
-| `--cal-3` | `rgba(143,209,79,.42)` | `rgba(79,143,34,.36)` |
-| `--sold-out` | `#e0533d` | `#c03a22` |
+| `--text-faint` | `#888277` | `#6e695e` |
+| `--accent` | `#8fd14f` | `#40751c` |
+| `--accent-hover` | `#a3dd6b` | `#2f5714` |
+| `--accent-soft` | `rgba(143,209,79,.14)` | `rgba(64,117,28,.12)` |
+| `--cal-1` | `rgba(143,209,79,.12)` | `rgba(64,117,28,.10)` |
+| `--cal-2` | `rgba(143,209,79,.26)` | `rgba(64,117,28,.22)` |
+| `--cal-3` | `rgba(143,209,79,.42)` | `rgba(64,117,28,.36)` |
+| `--sold-out` | `#e15640` | `#c03a22` |
+| `--on-accent` | `#0c0b0a` | `#ffffff` |
 | `--today` | `rgba(255,255,255,.06)` | `rgba(0,0,0,.05)` |
+
+Les cinq jetons corrigés après calcul, et ce qui échouait :
+
+| Jeton | Valeur initiale | Corrigée | Ce qui échouait |
+|---|---|---|---|
+| `--accent` clair | `#4f8f22` | `#40751c` | 3.65 comme texte sur le fond, et 3.97 sous le blanc du bouton Tickets |
+| `--accent-hover` clair | `#3f7519` | `#2f5714` | suivait l'accent |
+| `--text-faint` clair | `#7d776b` | `#6e695e` | 3.76 sur `--surface-2` |
+| `--text-faint` sombre | `#837d73` | `#888277` | 4.22 sur `--surface-2` |
+| `--sold-out` sombre | `#e0533d` | `#e15640` | 4.48 comme texte sur `--surface-2` |
+
+Le script de vérification est conservé dans l'espace de travail SDD sous `verif-palette.py`.
 
 Le thème sombre est le défaut sur `:root`, le clair sur `[data-theme="light"]`, comme
 aujourd'hui. La préférence reste dans `localStorage` sous `avocado_theme`.
@@ -166,7 +189,10 @@ Grille : `[bloc date 64px] [contenu minmax(0,1fr)] [actions auto]`.
   fantôme.
 - **Filet de 3 px** sur le bord gauche, transparent au repos, accent au survol et à la
   sélection, `--sold-out` quand la date est complète.
-- **Dates complètes** : filet rouge plus badge mono `SOLD OUT`.
+- **Dates complètes** : filet rouge plus badge mono `SOLD OUT`. Le badge est **contouré et
+  non rempli** : `color` et `border` en `--sold-out` sur fond transparent. Un badge rempli
+  en blanc sur `--sold-out` ne donne que 3.75:1 en thème sombre, alors que le contour donne
+  4.96:1 en sombre et 5.43:1 en clair.
 - **Badges de proximité** : `Today` et `Tomorrow` deviennent des pilules mono.
 
 Les cartes festival conservent leur affichage de plateau produit par `detectFestivals()`,

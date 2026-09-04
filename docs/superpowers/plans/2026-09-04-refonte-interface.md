@@ -408,20 +408,23 @@ Remplacer les deux blocs `:root` et `[data-theme="light"]` en tête de `styles.c
   --border-strong: #3d3a32;
   --text: #f2efe6;
   --text-dim: #a8a29a;
-  --text-faint: #837d73;
+  --text-faint: #888277;
   --accent: #8fd14f;
   --accent-hover: #a3dd6b;
   --accent-soft: rgba(143, 209, 79, .14);
   --cal-1: rgba(143, 209, 79, .12);
   --cal-2: rgba(143, 209, 79, .26);
   --cal-3: rgba(143, 209, 79, .42);
-  --sold-out: #e0533d;
+  --sold-out: #e15640;
   --today: rgba(255, 255, 255, .06);
   --on-accent: #0c0b0a;
 
   /* typographie */
   --font-sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  /* seul jeton sous le plancher de 11px : chrome de carte, ou la geometrie
+     du marqueur Leaflet contraint la taille. Voir la spec section 3.1. */
+  --fs-micro: 0.625rem;
   --fs-xs: 0.6875rem;
   --fs-sm: 0.75rem;
   --fs-md: 0.875rem;
@@ -460,13 +463,13 @@ Remplacer les deux blocs `:root` et `[data-theme="light"]` en tête de `styles.c
   --border-strong: #c7c0b0;
   --text: #17150f;
   --text-dim: #5c574d;
-  --text-faint: #7d776b;
-  --accent: #4f8f22;
-  --accent-hover: #3f7519;
-  --accent-soft: rgba(79, 143, 34, .12);
-  --cal-1: rgba(79, 143, 34, .10);
-  --cal-2: rgba(79, 143, 34, .22);
-  --cal-3: rgba(79, 143, 34, .36);
+  --text-faint: #6e695e;
+  --accent: #40751c;
+  --accent-hover: #2f5714;
+  --accent-soft: rgba(64, 117, 28, .12);
+  --cal-1: rgba(64, 117, 28, .10);
+  --cal-2: rgba(64, 117, 28, .22);
+  --cal-3: rgba(64, 117, 28, .36);
   --sold-out: #c03a22;
   --today: rgba(0, 0, 0, .05);
   --on-accent: #ffffff;
@@ -496,10 +499,21 @@ Puis vérifier qu'aucun jeton mort ne reste :
 Run: `grep -n "text-muted\|surface2\|--available\|concert-dot\|accent-bg" styles.css index.html`
 Expected: aucune ligne
 
-- [ ] **Step 6: Interdire les couleurs littérales dans les règles de composant**
+- [ ] **Step 6: Relever les couleurs littérales, sans les corriger**
 
-Run: `grep -nE "^[^-].*:\s*(#[0-9a-fA-F]{3,8}|rgba?\()" styles.css | grep -v "^[0-9]*:\s*--"`
-Expected: seules des lignes appartenant au bloc de jetons, aux dégradés de lisibilité, ou aux ombres. Toute couleur de composant restante doit être remplacée par un jeton. Consigner dans le message de commit celles qui sont volontairement littérales.
+La porte absolue sur les couleurs littérales appartient à la tâche 12, pas à celle-ci. Un
+relevé sur le CSS d'origine montre 46 déclarations de couleur littérale, et **aucune ne se
+trouve dans une règle qui survit à la refonte** : elles vivent toutes dans des règles que
+les tâches 5 à 11 réécrivent intégralement. Les tokeniser ici serait du travail jeté, et
+chaque site demande un arbitrage sémantique que la tâche propriétaire est mieux placée pour
+rendre.
+
+L'inventaire complet, avec la tâche propriétaire de chaque déclaration, est déjà écrit dans
+`.superpowers/sdd/2026-09-04-refonte-interface/inventaire-couleurs.md`. Le lire, vérifier
+que le compte correspond toujours, et ne rien changer :
+
+Run: `grep -cE "^[^-].*:[^;]*(#[0-9a-fA-F]{3,8}|rgba?\()" styles.css`
+Expected: 46. Un écart signifie que l'extraction a perdu ou dupliqué des règles.
 
 - [ ] **Step 7: Vérifier les deux thèmes**
 
@@ -522,7 +536,9 @@ git commit -m "feat: reconstruit le CSS sur des jetons de design, palette noir c
 
 **Interfaces:**
 - Consumes: jetons de la tâche 3
-- Produces: classes utilitaires `.u-display` (condensée, capitales, tracking serré) et `.u-mono` (mono, capitales, tracking élargi), utilisées par les tâches 6, 7 et 9
+- Produces:
+  - une liste de sélecteurs groupés déclarant une seule fois le bloc de titre (`font-stretch`, `font-weight`, `letter-spacing`, `text-transform`). Les tâches 5, 6, 7, 8 et 11 **ajoutent leur classe de titre à cette liste** au lieu de recopier les quatre propriétés.
+  - la classe utilitaire `.u-mono`, consommée par le balisage de la tâche 11.
 
 - [ ] **Step 1: Charger Archivo et corriger la langue**
 
@@ -559,18 +575,36 @@ body {
 
 `height`, `overflow` et `display` sont volontairement conservés ici. Les retirer maintenant casserait la disposition et cette tâche se terminerait sur un état non vérifiable. C'est la tâche 5 qui les supprime, en même temps qu'elle reconstruit la grille.
 
-Ajouter les deux utilitaires :
+Déclarer le bloc de titre **une seule fois**, par une liste de sélecteurs groupés, et non
+par une classe utilitaire. Les huit classes de titre que les tâches 5 à 11 introduisent
+partagent exactement les mêmes quatre propriétés ; les recopier huit fois serait la
+duplication verbatim que le barème de revue traite comme un défaut, et une classe
+utilitaire que le balisage n'emploie jamais serait du CSS mort.
 
 ```css
-.u-display {
-  font-family: var(--font-sans);
+/* Bloc de titre partage. Chaque tache qui ajoute une classe de titre l'ajoute a cette
+   liste plutot que de recopier les quatre proprietes. */
+.agenda-head h2,
+.agenda-month .month-name,
+.cc-artist,
+.cc-day,
+.fc-name,
+.popup-city,
+.es-title,
+.tour-slide .slide-label {
   font-stretch: 75%;
   font-weight: 700;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  line-height: 1.05;
 }
+```
 
+Les tailles, hauteurs de ligne et couleurs restent propres à chaque classe : seul le bloc
+de caractère est partagé.
+
+Puis l'utilitaire mono, qui lui est bien consommé par le balisage de la tâche 11 :
+
+```css
 .u-mono {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
@@ -590,17 +624,23 @@ Pour chaque ligne trouvée, appliquer la règle de conversion :
 
 | Ancienne valeur | Nouveau jeton |
 |---|---|
+| `8px`, `9px` | `var(--fs-xs)` |
 | `10px`, `11px` sur une étiquette en capitales | `var(--fs-xs)` |
 | `10px`, `11px` sur du texte en casse normale | `var(--fs-sm)` |
 | `12px` | `var(--fs-sm)` |
 | `13px` | `var(--fs-md)` |
+
+Les onze sites en 8 et 9 px sont tous des micro-étiquettes en capitales à tracking :
+`.badge-countdown`, `.badge-new`, `.badge-sold-out`, `.going-badge`,
+`.going-item-date .gi-month`, `.concert-date .month`, `.concert-date .weekday` et
+`.calendar-grid .day-header`. Les relever à 11 px est l'objet même de la tâche.
 
 Puis convertir les tailles au-dessus :
 
 | Ancienne valeur | Nouveau jeton |
 |---|---|
 | `14px`, `15px` | `var(--fs-md)` |
-| `16px`, `18px` | `var(--fs-lg)` |
+| `16px`, `17px`, `18px` | `var(--fs-lg)` |
 | `20px`, `22px` | `var(--fs-xl)` |
 | `24px` et plus | `var(--fs-2xl)` |
 
@@ -1214,7 +1254,14 @@ Ajouter dans `styles.css`, en remplacement des règles `.concert-card`, `.concer
 
 .badge-now { background: var(--accent); color: var(--on-accent); }
 .badge-soon { background: var(--accent-soft); color: var(--accent); }
-.badge-sold { background: var(--sold-out); color: #fff; }
+
+/* contoure et non rempli : du blanc sur --sold-out ne donne que 3.75:1 en theme
+   sombre, alors que le contour donne 4.96:1 en sombre et 5.43:1 en clair */
+.badge-sold {
+  background: transparent;
+  color: var(--sold-out);
+  border: 1px solid var(--sold-out);
+}
 .badge-fest { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
 .badge-new { background: var(--accent); color: var(--on-accent); }
 
@@ -1302,15 +1349,15 @@ Ajouter dans `styles.css`, en remplacement des règles `.concert-card`, `.concer
   display: block;
 }
 
-/* degrade de lisibilite : le libelle doit rester lisible sur n'importe quelle image */
+/* Le bloc de caractere vient de la liste groupee de la tache 4, ne pas le recopier.
+   Le degrade garantit la lisibilite du libelle sur n'importe quelle image, et sa
+   couleur de texte est litteralement claire dans les deux themes puisqu'elle se
+   pose sur un voile noir et non sur une surface du theme. */
 .tour-slide .slide-label {
   position: absolute;
   inset: auto 0 0 0;
   padding: var(--sp-4) var(--sp-2) var(--sp-2);
-  font-stretch: 75%;
-  font-weight: 700;
   font-size: var(--fs-md);
-  text-transform: uppercase;
   color: #f2efe6;
   background: linear-gradient(to top, rgba(0, 0, 0, .88), rgba(0, 0, 0, 0));
 }
@@ -1610,11 +1657,11 @@ git commit -m "feat: calendrier a paliers de densite, remplace les points illisi
 - Modify: `styles.css` — section `MAP`, `TOUR ROUTE STEPS`, `ROAD TRIP PLANNER`, règles `.leaflet-popup-*`
 
 **Interfaces:**
-- Consumes: jetons tâche 3, `#mapPanel` tâche 5
+- Consumes: jetons tâche 3 dont `--fs-micro`, `#mapPanel` tâche 5
 - Produces:
   - `const OSM_TILES: string` et `const OSM_ATTRIB: string`
-  - `function accentColor(): string` — lit `--accent` sur `documentElement`, utilisée par `renderMap` pour les marqueurs et les tracés
-  - `function applyMapTheme(): void` — appelée par `toggleTheme`
+  - `function accentColor(): string` — lit `--accent` sur `documentElement`. Elle **remplace** l'appel `getComputedStyle(...)` en ligne que la tâche 2 avait introduit dans le tracé de tournée, où il était de surcroît recalculé à chaque itération de la boucle sur les artistes.
+  - `function matchesSingleArtist(c: Concert, term: string): boolean` — teste un concert contre UN nom d'artiste, à placer sous la bannière de normalisation à côté de `matchesArtistFilter`. Elle remplace les trois blocs `c.artist.toLowerCase().includes(x) || c.support.toLowerCase().includes(x)` recopiés à l'identique dans le clic du rail, `toggleArtistSelection` et le tracé de tournée, et elle garde `c.support` par `(c.support || '')` comme le fait déjà `matchesArtistFilter`.
 
 - [ ] **Step 1: Remplacer le fournisseur de tuiles**
 
@@ -1669,14 +1716,18 @@ Ajouter dans `styles.css`, section carte :
   background: color-mix(in srgb, var(--surface) 85%, transparent);
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: .04em;
 }
 
 .leaflet-container .leaflet-control-attribution a { color: var(--text-dim); }
 ```
 
-L'attribution est le seul endroit du projet où descendre sous 11 px est acceptable : c'est une mention légale, pas du contenu, et Leaflet la dimensionne ainsi par défaut. Le noter dans le message de commit.
+L'attribution, les pas de route et l'étiquette de distance utilisent `--fs-micro`, le seul
+jeton sous le plancher de 11 px. Il existe précisément pour ces trois endroits, où la taille
+est contrainte par la géométrie du marqueur Leaflet et non par un choix typographique. Un
+jeton nommé documente la contrainte ; il n'y a donc plus d'exception à consigner en message
+de commit.
 
 - [ ] **Step 3: Simplifier `toggleTheme`**
 
@@ -1758,17 +1809,20 @@ Expected: aucune ligne
   height: 20px;
   border-radius: 50%;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-micro);
   font-weight: 700;
   color: var(--on-accent);
   background: var(--accent);
 }
 
-.route-step-orange span { background: var(--sold-out); }
+/* Le numero du road trip garde du blanc sur le rouge, qui ne tient que 3.75:1 en
+   sombre. C'est assume : ces numeros sont une decoration redondante, dont
+   l'equivalent accessible est la liste en texte du panneau de resume juste a cote. */
+.route-step-orange span { background: var(--sold-out); color: #fff; }
 
 .distance-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-micro);
   letter-spacing: .04em;
   color: var(--text);
   background: color-mix(in srgb, var(--surface) 90%, transparent);
@@ -1779,7 +1833,8 @@ Expected: aucune ligne
 }
 ```
 
-Les pas de route et l'étiquette de distance sont des vignettes de carte de 20 px : leur `font-size` de 10 px est contrainte par la géométrie du marqueur, pas un choix typographique. Le noter dans le message de commit.
+Les pas de route et l'étiquette de distance sont des vignettes de carte : `--fs-micro` est
+le jeton prévu pour elles.
 
 Le tracé du road trip garde sa couleur distincte, `--sold-out`, pour se démarquer des tracés de tournée en accent. Dans `renderMap`, remplacer `color: '#e67e22'` par `color: getComputedStyle(document.documentElement).getPropertyValue('--sold-out').trim()`.
 
@@ -2662,6 +2717,26 @@ Corriger aussi le lien `http://www.avocadobooking.com` du pied de page en `https
 
 Run: `grep -n 'style="' index.html`
 Expected: aucune ligne. Tout est passé en classes.
+
+- [ ] **Step 2b: Porte absolue sur les couleurs littérales**
+
+C'est ici, et non à la tâche 3, que la règle « aucune couleur littérale dans une règle de
+composant » se vérifie : à la tâche 3 les 46 littéraux d'origine vivaient encore dans des
+règles que les tâches 5 à 11 ont depuis réécrites.
+
+Run: `grep -nE "^[^-].*:[^;]*(#[0-9a-fA-F]{3,8}|rgba?\()" styles.css | grep -v "^[0-9]*:\s*--"`
+
+Expected: seules les catégories suivantes, et rien d'autre. Toute ligne hors de ces
+catégories doit passer en jeton :
+
+1. les ombres, `box-shadow: ... rgba(0, 0, 0, x)` ;
+2. les dégradés de lisibilité, `linear-gradient(..., rgba(0, 0, 0, x), ...)` ;
+3. `.tour-slide .slide-label { color: #f2efe6 }`, qui se pose sur un voile noir et non sur
+   une surface du thème ;
+4. `.route-step-orange span { color: #fff }`, décoration redondante documentée à la tâche 8.
+
+Comparer le résultat à `.superpowers/sdd/2026-09-04-refonte-interface/inventaire-couleurs.md`
+et signaler tout littéral qui aurait survécu à la tâche qui devait le faire disparaître.
 
 - [ ] **Step 3: Passe fonctionnelle complète**
 
