@@ -2347,6 +2347,11 @@ Remplacer intégralement la section `/* ===== Responsive ===== */` par :
 
   .cc-day { font-size: var(--fs-xl); }
   .agenda-month .month-name { font-size: var(--fs-2xl); }
+  /* 40px de haut sur environ 52px de large. La regle des 44px de cette tache vise les
+     boutons d'action des cartes, ou le doigt vise un controle isole; une case de
+     calendrier est dans une grille dense et depasse largement le minimum de 24px que
+     WCAG 2.5.8 demande en AA. La porter a 44px rendrait le calendrier a trois mois
+     empiles inutilement haut sur telephone. */
   .calendar-day { min-height: 40px; }
   .tour-slide { flex-basis: 200px; }
   .picker-panel { min-width: 0; width: calc(100vw - var(--sp-6)); max-width: none; }
@@ -2534,8 +2539,13 @@ Aujourd'hui `outline: none` est appliqué sans remplacement, ce qui rend la navi
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: var(--r-sm);
 }
+
+/* Ne PAS declarer border-radius ici. Sur un selecteur aussi large, cela ne stylise
+   pas l'anneau: cela redefinit le rayon reel de l'element pendant le focus, donc les
+   boutons circulaires en border-radius 50% (coeur, pastille de compteur) se
+   deformeraient au focus clavier. Les navigateurs font deja suivre l'anneau au rayon
+   propre de l'element. */
 
 /* pas d'anneau au clic souris, seulement au clavier */
 :focus:not(:focus-visible) { outline: none; }
