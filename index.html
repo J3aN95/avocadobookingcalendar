@@ -178,9 +178,6 @@
       flex-shrink: 0;
     }
     .artist-dropdown-item .artist-name { flex: 1; font-weight: 500; }
-    .artist-dropdown-item .artist-color-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-    }
     .artist-dropdown-item .artist-count {
       background: var(--accent-bg);
       color: var(--accent);
@@ -584,6 +581,7 @@
       height: 100%;
       border-radius: 50%;
       border: 2px solid rgba(255, 255, 255, 0.8);
+      background: var(--accent);
     }
 
     /* ===== ROAD TRIP PLANNER ===== */
@@ -1296,12 +1294,18 @@
     }
   }
 
+  function matchesArtistFilter(c) {
+    if (searchTerms.length === 0) return true;
+    const artist = c.artist.toLowerCase();
+    const support = (c.support || '').toLowerCase();
+    return searchTerms.some(t => artist.includes(t) || support.includes(t));
+  }
+
   const _now = new Date();
   let currentYear = _now.getFullYear();
   let currentMonth = _now.getMonth();
   let activeCountries = new Set();
-  let searchTerms = []; // [{ name: 'artist', color: '#6dbf4a' }]
-  const COMPARE_COLORS = ['#6dbf4a', '#e67e22', '#3498db', '#e74c3c', '#9b59b6'];
+  let searchTerms = []; // noms d'artistes en minuscules
   let selectedDay = null;
   let selectedCity = null;
   let goingSet = new Set();
@@ -1378,10 +1382,7 @@
   function getFilteredConcerts() {
     return CONCERTS_DATA.filter(c => {
       if (showGoingOnly && !goingSet.has(getConcertKey(c))) return false;
-      if (searchTerms.length > 0) {
-        const match = searchTerms.some(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
-        if (!match) return false;
-      }
+      if (!matchesArtistFilter(c)) return false;
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
       if (selectedCity && c.city !== selectedCity) return false;
       if (selectedDates.size > 0 && !selectedDates.has(c.date)) return false;
@@ -1425,9 +1426,9 @@
     const bar = document.getElementById('activeFilters');
     const chips = [];
     if (searchTerms.length > 0) {
-      searchTerms.forEach(s => {
-        chips.push({ label: `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${s.color};margin-right:4px;"></span>${s.name}`, clear: () => {
-          searchTerms = searchTerms.filter(x => x.name !== s.name);
+      searchTerms.forEach(name => {
+        chips.push({ label: name, clear: () => {
+          searchTerms = searchTerms.filter(x => x !== name);
           updateArtistSelectLabel();
           buildArtistDropdown(document.getElementById('artistFilterInput').value);
           render();
@@ -1472,27 +1473,21 @@
     TOUR_IMAGES.forEach(t => {
       const slide = document.createElement('div');
       slide.className = 'tour-slide';
-      const artistMatch = searchTerms.find(s => t.artist.toLowerCase().includes(s.name));
-      if (artistMatch) {
-        slide.classList.add('active');
-        slide.style.borderColor = artistMatch.color;
-      }
+      const artistLower = t.artist.toLowerCase();
+      const isActive = searchTerms.some(term => artistLower.includes(term));
+      if (isActive) slide.classList.add('active');
       slide.innerHTML = `
         <img src="${t.imageUrl}" alt="${t.artist}" loading="lazy">
         <div class="slide-label">${t.artist}</div>
         ${newTours.has(t.artist) ? '<span class="badge-new">NEW</span>' : ''}
       `;
       slide.onclick = () => {
-        const artistLower = t.artist.toLowerCase();
-        const existIdx = searchTerms.findIndex(s => s.name === artistLower);
+        const existIdx = searchTerms.indexOf(artistLower);
         if (existIdx >= 0) {
           // Remove this artist
           searchTerms.splice(existIdx, 1);
-        } else if (searchTerms.length < COMPARE_COLORS.length) {
-          // Add this artist with next available color
-          const usedColors = new Set(searchTerms.map(s => s.color));
-          const color = COMPARE_COLORS.find(c => !usedColors.has(c)) || COMPARE_COLORS[0];
-          searchTerms.push({ name: artistLower, color });
+        } else {
+          searchTerms.push(artistLower);
           // Navigate calendar to the nearest concert date
           const today = new Date(); today.setHours(0,0,0,0);
           const todayStr = today.toISOString().slice(0,10);
@@ -1552,10 +1547,7 @@
     routeLayer.clearLayers();
 
     const concertsNoCity = CONCERTS_DATA.filter(c => {
-      if (searchTerms.length > 0) {
-        const match = searchTerms.some(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
-        if (!match) return false;
-      }
+      if (!matchesArtistFilter(c)) return false;
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
       return true;
     });
@@ -1615,9 +1607,9 @@
     const routeArtists = searchTerms;
 
     const allBounds = [];
-    routeArtists.forEach(artist => {
+    routeArtists.forEach(name => {
       const artistConcerts = concertsNoCity
-        .filter(c => c.artist.toLowerCase().includes(artist.name) || c.support.toLowerCase().includes(artist.name))
+        .filter(c => c.artist.toLowerCase().includes(name) || c.support.toLowerCase().includes(name))
         .sort((a, b) => a.date.localeCompare(b.date));
 
       const points = [];
@@ -1632,7 +1624,7 @@
 
       if (uniquePoints.length >= 2) {
         const line = L.polyline(uniquePoints, {
-          color: artist.color, weight: 2.5, opacity: 0.6, dashArray: '8, 6'
+          color: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), weight: 2.5, opacity: 0.6, dashArray: '8, 6'
         });
         line.addTo(routeLayer);
         allBounds.push(line.getBounds());
@@ -1641,7 +1633,7 @@
           L.marker(p, {
             icon: L.divIcon({
               className: 'route-step',
-              html: `<span style="background:${artist.color}">${i + 1}</span>`,
+              html: `<span>${i + 1}</span>`,
               iconSize: [20, 20]
             })
           }).addTo(routeLayer);
@@ -1814,26 +1806,11 @@
         if (hasFiltered) {
           const dots = document.createElement('div');
           dots.className = 'concert-dots';
-          if (searchTerms.length > 0) {
-            // Show colored dots per artist
-            const artistsOnDay = new Set();
-            matchingFiltered.forEach(c => {
-              const match = searchTerms.find(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
-              if (match && !artistsOnDay.has(match.name)) {
-                artistsOnDay.add(match.name);
-                const dot = document.createElement('div');
-                dot.className = 'concert-dot filtered';
-                dot.style.background = match.color;
-                dots.appendChild(dot);
-              }
-            });
-          } else {
-            const maxDots = Math.min(matchingFiltered.length, 4);
-            for (let i = 0; i < maxDots; i++) {
-              const dot = document.createElement('div');
-              dot.className = 'concert-dot filtered';
-              dots.appendChild(dot);
-            }
+          const maxDots = Math.min(matchingFiltered.length, 4);
+          for (let i = 0; i < maxDots; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'concert-dot filtered';
+            dots.appendChild(dot);
           }
           cell.appendChild(dots);
         }
@@ -2015,12 +1992,11 @@
 
     filtered.forEach(a => {
       const nameLower = a.name.toLowerCase();
-      const selected = searchTerms.find(s => s.name === nameLower);
+      const selected = searchTerms.includes(nameLower);
       const item = document.createElement('div');
       item.className = 'artist-dropdown-item' + (selected ? ' checked' : '');
       item.innerHTML = `
         <input type="checkbox" ${selected ? 'checked' : ''} tabindex="-1">
-        <span class="artist-color-dot" style="background:${selected ? selected.color : 'transparent'}"></span>
         <span class="artist-name">${a.name}</span>
         <span class="artist-count">${a.count}</span>
       `;
@@ -2033,13 +2009,11 @@
   }
 
   function toggleArtistSelection(artistName) {
-    const existIdx = searchTerms.findIndex(s => s.name === artistName);
+    const existIdx = searchTerms.indexOf(artistName);
     if (existIdx >= 0) {
       searchTerms.splice(existIdx, 1);
-    } else if (searchTerms.length < COMPARE_COLORS.length) {
-      const usedColors = new Set(searchTerms.map(s => s.color));
-      const color = COMPARE_COLORS.find(c => !usedColors.has(c)) || COMPARE_COLORS[0];
-      searchTerms.push({ name: artistName, color });
+    } else {
+      searchTerms.push(artistName);
       // Navigate calendar to nearest future concert
       const today = new Date(); today.setHours(0,0,0,0);
       const todayStr = today.toISOString().slice(0,10);
@@ -2063,9 +2037,9 @@
     if (searchTerms.length === 0) {
       label.textContent = 'All artists';
     } else if (searchTerms.length === 1) {
-      label.textContent = searchTerms[0].name;
+      label.textContent = searchTerms[0];
     } else if (searchTerms.length === 2) {
-      label.textContent = searchTerms.map(s => s.name).join(', ');
+      label.textContent = searchTerms.join(', ');
     } else {
       label.textContent = `${searchTerms.length} artists`;
     }
@@ -2298,7 +2272,7 @@
   // ===== SHARE FILTERS VIA URL =====
   function shareFilters() {
     const params = new URLSearchParams();
-    if (searchTerms.length > 0) params.set('artists', searchTerms.map(s => s.name).join(','));
+    if (searchTerms.length > 0) params.set('artists', searchTerms.join(','));
     if (selectedCity) params.set('city', selectedCity);
     if (activeCountries.size > 0) params.set('countries', [...activeCountries].join(','));
     const url = window.location.origin + window.location.pathname + (params.toString() ? '?' + params.toString() : '');
@@ -2314,13 +2288,10 @@
     const params = new URLSearchParams(window.location.search);
     if (params.has('artists')) {
       const names = params.get('artists').split(',');
-      names.forEach((name, i) => {
-        searchTerms.push({ name: name.toLowerCase(), color: COMPARE_COLORS[i % COMPARE_COLORS.length] });
-      });
+      names.filter(Boolean).forEach(name => searchTerms.push(name.toLowerCase()));
       updateArtistSelectLabel();
     } else if (params.has('artist')) {
-      const name = params.get('artist').toLowerCase();
-      searchTerms.push({ name, color: COMPARE_COLORS[0] });
+      searchTerms.push(params.get('artist').toLowerCase());
       updateArtistSelectLabel();
     }
     if (params.has('city')) {
