@@ -691,7 +691,8 @@ git commit -m "feat: echelle typographique Archivo, plancher de corps a 14px"
   - `#agendaList` — conteneur de l'agenda, remplace `#concertList`
   - `#sidebar` — colonne latérale collante
   - `#mapPanel`, `#calendarPanel` — les deux blocs de la colonne latérale
-  - `.agenda-month` — en-tête de mois collant
+  - `.agenda-month` — en-tête de mois collant, seul élément collant de l'agenda
+  - `.date-separator` — séparateur de jour, **non collant** (voir le commentaire dans la règle)
   - `--header-h` et `--sidebar-w` comme seules sources de vérité du gabarit
 
 - [ ] **Step 1: Retirer le panneau statistiques et le ruban pays**
@@ -844,10 +845,11 @@ Puis, dans `styles.css`, remplacer les sections `MAIN CONTENT` et `BOTTOM PANEL`
 }
 
 /* separateur de jour */
+/* Volontairement NON collant. Seuls les en-tetes de mois le sont, comme le dit la
+   spec section 4.2. Empiler un second element collant imposerait un decalage egal a
+   la hauteur de l'en-tete de mois, qui vaut 57px en grand et 45px sous 560px ou le
+   nom de mois rétrécit : un nombre magique faux et dependant de la largeur. */
 .date-separator {
-  position: sticky;
-  top: calc(var(--header-h) + 44px);
-  z-index: 2;
   padding: var(--sp-2) 0 var(--sp-1);
   background: var(--bg);
   font-family: var(--font-mono);
@@ -902,7 +904,9 @@ Ouvrir `index.html` en 1440 px de large.
 
 Attendu :
 - l'agenda occupe la colonne large, la carte et le calendrier la colonne de 380 px à droite
-- au défilement de la page, l'en-tête reste en haut et la colonne latérale reste visible
+- au défilement de la page, l'en-tête reste en haut, la colonne latérale reste visible, et
+  l'en-tête du mois courant colle juste sous l'en-tête de page
+- les séparateurs de jour défilent normalement, sans coller : c'est voulu
 - aucune barre de défilement interne dans l'agenda : c'est la page qui défile
 - ni ruban pays ni bouton statistiques
 - console sans erreur
@@ -2169,6 +2173,16 @@ git commit -m "feat: filtre pays en panneau, remplace le ruban de 43 etiquettes"
 
 - [ ] **Step 1: Ajouter la barre de bascule mobile**
 
+D'abord déclarer sa hauteur en jeton, dans le bloc `:root` de `styles.css`, à côté de
+`--header-h` et `--sidebar-w` :
+
+```css
+  /* hauteur de la barre d'onglets mobile : 40px de bouton + 2 x 8px de padding + 1px
+     de bordure. L'en-tete de mois collant s'en sert pour son decalage. */
+  --sheet-bar-h: 57px;
+```
+
+
 Juste après l'en-tête, avant `<div class="active-filters" id="activeFilters"></div>` :
 
 ```html
@@ -2295,9 +2309,10 @@ Remplacer intégralement la section `/* ===== Responsive ===== */` par :
 
   #leafletMap { height: 52vh; min-height: 260px; }
 
-  /* l'en-tete de mois n'a plus la barre de feuilles au-dessus de lui */
-  .agenda-month { top: calc(var(--header-h) + 57px); }
-  .date-separator { top: calc(var(--header-h) + 57px + 44px); }
+  /* l'en-tete de mois colle sous la barre de feuilles, pas sous l'en-tete de page.
+     La hauteur de la barre passe par un jeton et non par un nombre en dur, sinon
+     tout changement de son padding desaligne silencieusement l'en-tete de mois. */
+  .agenda-month { top: calc(var(--header-h) + var(--sheet-bar-h)); }
 }
 
 /* repli de la carte de concert */
