@@ -2745,6 +2745,38 @@ avec :
 .btn-icon.copied { border-color: var(--accent); color: var(--accent); }
 ```
 
+- [ ] **Step 0: Deux restes signalés par les tâches 7 et 9**
+
+**Le dernier interpolation non échappée de données scrapées.** `buildArtistDropdown`
+interpole `${a.name}` brut dans `innerHTML`, sur la ligne
+`<span class="picker-name">${a.name}</span>`. La tâche 6 a échappé partout ailleurs ; c'est
+le seul reste. Sur les données du jour un seul nom porte un caractère sensible,
+`Humanity's Last Breath`, et une apostrophe en contenu texte est inoffensive, donc ce n'est
+pas un défaut vivant. Mais le scraper tire d'un site tiers et un nom contenant `&` ou `<`
+est parfaitement plausible. Corriger :
+
+```js
+        <span class="picker-name">${escapeHtml(a.name)}</span>
+```
+
+`${a.count}` est un nombre, il n'a pas besoin d'être échappé.
+
+**Le chevron du sélecteur ne tourne plus.** L'ancien CSS avait
+`.artist-select-btn.open .artist-select-arrow { transform: rotate(180deg) }`. La tâche 9 a
+renommé les classes et cette règle n'a pas d'équivalent, donc le chevron reste fixe à
+l'ouverture. C'est une affordance perdue, purement cosmétique, et elle se rétablit en deux
+lignes. `toggleCountryPicker` et `toggleArtistDropdown` posent déjà `aria-expanded` sur leur
+bouton, donc autant s'y accrocher plutôt que d'ajouter une classe d'état :
+
+```css
+.picker-caret { transition: transform .15s; }
+.picker-btn[aria-expanded="true"] .picker-caret { transform: rotate(180deg); }
+```
+
+Vérifier que les deux boutons portent bien `aria-expanded`, y compris le bouton artistes :
+si `toggleArtistDropdown` ne le met pas à jour, l'ajouter, puisque c'est aussi ce qui
+annonce l'état du panneau à un lecteur d'écran.
+
 - [ ] **Step 1a: Retokeniser les sept dernières couleurs littérales sans propriétaire**
 
 La porte absolue sur les couleurs littérales est celle de la tâche 12, qui est une tâche de
