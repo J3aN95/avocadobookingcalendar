@@ -1,0 +1,1391 @@
+/* ===== JETONS ===== */
+:root {
+  /* couleurs, theme sombre par defaut */
+  --bg: #0c0b0a;
+  --surface: #14130f;
+  --surface-2: #1d1b16;
+  --border: #2a2721;
+  --border-strong: #3d3a32;
+  --text: #f2efe6;
+  --text-dim: #a8a29a;
+  --text-faint: #888277;
+  --accent: #8fd14f;
+  --accent-hover: #a3dd6b;
+  --accent-soft: rgba(143, 209, 79, .14);
+  --cal-1: rgba(143, 209, 79, .12);
+  --cal-2: rgba(143, 209, 79, .26);
+  --cal-3: rgba(143, 209, 79, .42);
+  --sold-out: #e15640;
+  --today: rgba(255, 255, 255, .06);
+  --on-accent: #0c0b0a;
+
+  /* typographie */
+  --font-sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  /* seul jeton sous le plancher de 11px : chrome de carte, ou la geometrie
+     du marqueur Leaflet contraint la taille. Voir la spec section 3.1. */
+  --fs-micro: 0.625rem;
+  --fs-xs: 0.6875rem;
+  --fs-sm: 0.75rem;
+  --fs-md: 0.875rem;
+  --fs-lg: 1rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: 1.75rem;
+  --fs-3xl: 2.5rem;
+
+  /* espacement, base 4 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* rayons */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 14px;
+
+  /* gabarit */
+  --header-h: 56px;
+  --sidebar-w: 380px;
+  /* hauteur de la barre d'onglets mobile : 40px de bouton + 2 x 8px de padding + 1px
+     de bordure. L'en-tete de mois collant s'en sert pour son decalage. */
+  --sheet-bar-h: 57px;
+
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #f7f5ef;
+  --surface: #ffffff;
+  --surface-2: #efece3;
+  --border: #ddd8cc;
+  --border-strong: #c7c0b0;
+  --text: #17150f;
+  --text-dim: #5c574d;
+  --text-faint: #6e695e;
+  --accent: #40751c;
+  --accent-hover: #2f5714;
+  --accent-soft: rgba(64, 117, 28, .12);
+  --cal-1: rgba(64, 117, 28, .10);
+  --cal-2: rgba(64, 117, 28, .22);
+  --cal-3: rgba(64, 117, 28, .36);
+  --sold-out: #c03a22;
+  --today: rgba(0, 0, 0, .05);
+  --on-accent: #ffffff;
+
+  color-scheme: light;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  line-height: 1.45;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== FOCUS ===== */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Ne PAS declarer border-radius ici. Sur un selecteur aussi large, cela ne stylise
+   pas l'anneau: cela redefinit le rayon reel de l'element pendant le focus, donc les
+   boutons circulaires en border-radius 50% (coeur, pastille de compteur) se
+   deformeraient au focus clavier. Les navigateurs font deja suivre l'anneau au rayon
+   propre de l'element. */
+
+/* pas d'anneau au clic souris, seulement au clavier */
+:focus:not(:focus-visible) { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Bloc de titre partage. Chaque tache qui ajoute une classe de titre l'ajoute a cette
+   liste plutot que de recopier les quatre proprietes. */
+.agenda-head h2,
+.agenda-month .month-name,
+.cc-artist,
+.cc-day,
+.fc-name,
+.popup-city,
+.es-title,
+.tour-slide .slide-label {
+  font-stretch: 75%;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* Bloc mono partage. La police est commune aux vingt regles ci-dessous ; parmi
+   elles, les quatorze premieres passent aussi en majuscules (les six dernieres sont
+   des compteurs ou decors chiffres qui n'en prennent pas). Tracking, tailles et
+   couleurs restent propres a chaque emploi (le tracking vaut 0.08em pour la plupart,
+   0.06em pour .day-header et .calendar-legend), donc ils restent dans chaque regle.
+   Toute nouvelle etiquette mono s'ajoute a la liste qui correspond a son cas plutot
+   que de recopier ces proprietes. */
+.u-mono,
+.af-label,
+.btn-spotify,
+.btn-ticket,
+.cc-tour,
+.badge,
+.agenda-month .month-count,
+.date-separator,
+.calendar-nav h3,
+.month-block h3,
+.day-header,
+.calendar-legend,
+.popup-count,
+.sheet-tab,
+.picker-count,
+.cc-month, .cc-weekday,
+.leaflet-container .leaflet-control-attribution,
+.route-step span,
+.route-step-orange span,
+.distance-label,
+.agenda-count {
+  font-family: var(--font-mono);
+}
+
+.u-mono,
+.af-label,
+.btn-spotify,
+.btn-ticket,
+.cc-tour,
+.badge,
+.agenda-month .month-count,
+.date-separator,
+.calendar-nav h3,
+.month-block h3,
+.day-header,
+.calendar-legend,
+.popup-count,
+.sheet-tab {
+  text-transform: uppercase;
+}
+
+.u-mono {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+/* ===== TOOLBAR ===== */
+.toolbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+  position: sticky;
+  top: 0;
+  height: var(--header-h);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  height: 32px;
+}
+
+.logo-icon img {
+  height: 100%;
+  width: auto;
+}
+
+.toolbar-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ===== SELECTEURS (artistes, pays) ===== */
+.picker-wrapper, .search-wrapper { position: relative; min-width: 0; }
+.search-wrapper { flex: 1; max-width: 320px; min-width: 160px; }
+
+.picker-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.picker-btn:hover { border-color: var(--border-strong); }
+.picker-caret { color: var(--text-faint); flex-shrink: 0; transition: transform .15s; }
+.picker-btn[aria-expanded="true"] .picker-caret { transform: rotate(180deg); }
+
+.picker-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + var(--sp-1));
+  left: 0;
+  z-index: 40;
+  min-width: 260px;
+  max-width: 340px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .4);
+  overflow: hidden;
+}
+
+.picker-panel.visible { display: block; }
+
+.picker-filter {
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+}
+
+.picker-list { max-height: 320px; overflow-y: auto; }
+
+.picker-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-md);
+  cursor: pointer;
+}
+
+.picker-item:hover { background: var(--surface-2); }
+.picker-item.selected { background: var(--accent-soft); }
+.picker-item input[type="checkbox"] {
+  width: 14px; height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.picker-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.picker-count {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+.picker-empty {
+  padding: var(--sp-3);
+  font-size: var(--fs-md);
+  color: var(--text-faint);
+}
+
+.af-label {
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  color: var(--text-faint);
+}
+
+.toolbar-stats {
+  display: flex;
+  gap: 14px;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.toolbar-stats strong { color: var(--accent); }
+
+.toolbar-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+
+.btn-icon:hover { color: var(--text); border-color: var(--border-strong); }
+.btn-icon.active { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.btn-icon svg { width: 20px; height: 20px; }
+.btn-icon.copied { border-color: var(--accent); color: var(--accent); }
+
+.btn-spotify {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
+}
+
+.btn-spotify:hover { color: var(--text); border-color: var(--border-strong); }
+
+/* ===== CARTE DE CONCERT ===== */
+/* Appel a l'action principal de l'application. Sa regle de base avait disparu avec la
+   section retiree par la tache 5, ne laissant que deux surcharges orphelines dans les
+   media queries. */
+.btn-ticket {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--sp-1) var(--sp-3);
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.btn-ticket:hover { background: var(--accent-hover); }
+
+.concert-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: start;
+  padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  margin-bottom: var(--sp-2);
+  transition: border-color .15s, background .15s;
+}
+
+.concert-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  background: transparent;
+  transition: background .15s;
+}
+
+.concert-card:hover { border-color: var(--border-strong); }
+.concert-card:hover::before,
+.concert-card.is-going::before { background: var(--accent); }
+.concert-card.is-sold-out::before { background: var(--sold-out); }
+
+.cc-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.cc-month, .cc-weekday {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.cc-day {
+  font-size: var(--fs-2xl);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.cc-body { min-width: 0; }
+
+.cc-artist {
+  font-size: var(--fs-xl);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.cc-tour {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-top: var(--sp-1);
+}
+
+.cc-venue {
+  font-size: var(--fs-md);
+  color: var(--text-dim);
+  margin-top: var(--sp-2);
+}
+
+.cc-support {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin-top: var(--sp-2);
+}
+
+.cc-chip {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 2px var(--sp-2);
+}
+
+.cc-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-2);
+}
+
+/* ===== BADGES ===== */
+.badge {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  padding: 3px var(--sp-2);
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+}
+
+.badge-now { background: var(--accent); color: var(--on-accent); }
+.badge-soon { background: var(--accent-soft); color: var(--accent); }
+
+/* contoure et non rempli : du blanc sur --sold-out ne donne que 3.75:1 en theme
+   sombre, alors que le contour donne 4.96:1 en sombre et 5.43:1 en clair */
+.badge-sold {
+  background: transparent;
+  color: var(--sold-out);
+  border: 1px solid var(--sold-out);
+}
+.badge-fest { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+.badge-new { background: var(--accent); color: var(--on-accent); }
+
+/* ===== CARTE FESTIVAL ===== */
+.festival-card {
+  padding: var(--sp-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  margin-bottom: var(--sp-2);
+}
+
+.fc-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.fc-name {
+  font-size: var(--fs-xl);
+}
+
+.fc-meta {
+  font-size: var(--fs-md);
+  color: var(--text-dim);
+  margin-top: var(--sp-1);
+}
+
+.fc-lineup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+
+.fc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: var(--sp-1) var(--sp-2);
+}
+
+.fc-chip.active { border-color: var(--accent); }
+
+/* un artiste complet dans un plateau: le signal ne doit pas se perdre */
+.fc-chip.is-sold-out {
+  border-color: var(--sold-out);
+  color: var(--sold-out);
+}
+.fc-cta { margin-top: var(--sp-3); }
+
+/* ===== ACTIVE FILTERS CHIPS ===== */
+.active-filters {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 20px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-sm);
+  flex-shrink: 0;
+}
+
+.active-filters.visible { display: flex; }
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  color: var(--accent);
+  font-size: var(--fs-sm);
+}
+
+.filter-chip .chip-remove {
+  cursor: pointer;
+  font-weight: 700;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.filter-chip .chip-remove:hover { opacity: 1; }
+
+/* ===== RAIL DES TOURNEES ===== */
+.tour-rail {
+  display: flex;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-6);
+}
+
+.tour-slide {
+  position: relative;
+  flex: 0 0 240px;
+  aspect-ratio: 16 / 9;
+  scroll-snap-align: start;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  padding: 0;
+  background: var(--surface-2);
+  cursor: pointer;
+  text-align: left;
+}
+
+.tour-slide.active { border-color: var(--accent); }
+
+.tour-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Le bloc de caractere vient de la liste groupee de la tache 4, ne pas le recopier.
+   Le degrade garantit la lisibilite du libelle sur n'importe quelle image, et sa
+   couleur de texte est litteralement claire dans les deux themes puisqu'elle se
+   pose sur un voile noir et non sur une surface du theme. */
+.tour-slide .slide-label {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--sp-4) var(--sp-2) var(--sp-2);
+  font-size: var(--fs-md);
+  color: #f2efe6;
+  background: linear-gradient(to top, rgba(0, 0, 0, .88), rgba(0, 0, 0, 0));
+}
+
+.tour-slide .badge-new {
+  position: absolute;
+  top: var(--sp-2);
+  left: var(--sp-2);
+}
+
+/* ===== MAP ===== */
+/* Les tuiles OSM sont colorees. Un filtre par theme les ramene a un fond neutre,
+   ce qui evite un second fournisseur et une seconde cle. */
+.leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) saturate(.25) brightness(.85) contrast(1.1);
+}
+
+[data-theme="light"] .leaflet-tile-pane {
+  filter: saturate(.15) brightness(1.05) contrast(.95);
+}
+
+/* l'attribution ne doit pas subir le filtre, elle est hors du volet de tuiles */
+.leaflet-container .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  color: var(--text-faint);
+  font-size: var(--fs-micro);
+  letter-spacing: .04em;
+}
+
+.leaflet-container .leaflet-control-attribution a { color: var(--text-dim); }
+
+.map-toggle-btn.active {
+  color: var(--accent);
+}
+
+#leafletMap {
+  width: 100%;
+  height: 38vh;
+  min-height: 220px;
+  z-index: 1;
+}
+
+.map-city-filter {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  padding: 6px 16px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  font-size: var(--fs-sm);
+  color: var(--accent);
+  display: none;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(8px);
+}
+
+.map-city-filter.visible { display: flex; }
+
+.map-city-filter .close-city {
+  cursor: pointer;
+  font-weight: 700;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.map-city-filter .close-city:hover { opacity: 1; }
+
+.leaflet-popup-content-wrapper {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+.leaflet-popup-content { margin: var(--sp-2) var(--sp-3); font-family: var(--font-sans); }
+.leaflet-popup-tip { background: var(--surface); border: 1px solid var(--border-strong); }
+
+/* font-stretch/font-weight/letter-spacing/text-transform viennent du bloc de titre
+   partage plus haut, ou .popup-city figure deja : seule la taille est propre a l'usage carte. */
+.popup-city { font-size: var(--fs-lg); }
+
+.popup-count {
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  color: var(--accent);
+}
+
+.popup-artists { font-size: var(--fs-sm); color: var(--text-dim); margin-top: var(--sp-1); }
+.leaflet-popup-close-button { color: var(--text-faint) !important; }
+.leaflet-popup-close-button:hover { color: var(--accent) !important; }
+
+/* ===== TOUR ROUTE STEPS ===== */
+.route-step span,
+.route-step-orange span {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--accent);
+}
+
+/* ===== ROAD TRIP PLANNER ===== */
+.road-trip-summary {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 500;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  border: 1px solid var(--sold-out);
+  border-radius: 8px;
+  padding: 10px 14px;
+  max-width: 280px;
+  max-height: 200px;
+  overflow-y: auto;
+  backdrop-filter: blur(8px);
+}
+.road-trip-summary h5 { color: var(--sold-out); margin: 0 0 6px; font-size: var(--fs-sm); display: flex; align-items: center; gap: 6px; }
+.road-trip-leg { font-size: var(--fs-sm); color: var(--text-dim); padding: 2px 0; }
+.road-trip-leg .leg-dist { color: var(--sold-out); font-weight: 600; }
+.road-trip-total { font-size: var(--fs-sm); color: var(--text); font-weight: 600; margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
+
+/* Le numero du road trip garde du blanc sur le rouge, qui ne tient que 3.75:1 en
+   sombre. C'est assume : ces numeros sont une decoration redondante, dont
+   l'equivalent accessible est la liste en texte du panneau de resume juste a cote. */
+.route-step-orange span { background: var(--sold-out); color: #fff; }
+
+.distance-label {
+  font-size: var(--fs-micro);
+  letter-spacing: .04em;
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 1px 4px;
+  white-space: nowrap;
+}
+
+
+/* ===== I'M GOING ===== */
+.going-wrapper { position: relative; display: inline-flex; }
+.going-panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 0;
+  z-index: 1000;
+  width: 320px;
+  max-height: 400px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  overflow: hidden;
+  display: none;
+}
+.going-panel.visible { display: flex; flex-direction: column; }
+.going-panel-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.going-panel-actions { display: flex; gap: 6px; }
+.going-panel-actions button {
+  font-size: var(--fs-sm);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+.going-panel-actions button.btn-filter-going {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.going-panel-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+.going-panel-empty {
+  padding: 20px 14px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+}
+.going-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.going-item:last-child { border-bottom: none; }
+.going-item:hover { background: var(--surface-2); }
+.going-item-date {
+  flex-shrink: 0;
+  text-align: center;
+  width: 40px;
+}
+.going-item-date .gi-month { font-size: var(--fs-xs); text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.going-item-date .gi-day { font-size: var(--fs-lg); font-weight: 700; color: var(--text); line-height: 1.1; }
+.going-item-info { flex: 1; min-width: 0; }
+.going-item-info .gi-artist { font-size: var(--fs-sm); font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.going-item-info .gi-details { font-size: var(--fs-sm); color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.going-item-remove {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: var(--fs-md);
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.going-item-remove:hover { color: var(--sold-out); background: var(--accent-soft); }
+
+
+/* Le bouton parent est en display:grid a une seule colonne implicite, donc un second
+   enfant tombe dans une deuxieme ligne et la pastille s'empilait sous l'icone au lieu
+   de la marquer. Elle est epinglee au coin, ce a quoi servait le position:relative
+   de .btn-icon, jusqu'ici inutilise. */
+.going-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: var(--fs-xs);
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: 50%;
+  min-width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+.going-badge[data-count="0"] { display: none; }
+.going-toggle-btn.active { color: var(--accent) !important; border-color: var(--accent) !important; }
+.btn-going {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--fs-lg);
+  color: var(--text-faint);
+  transition: all 0.2s;
+  padding: 2px;
+  line-height: 1;
+}
+.btn-going:hover { color: var(--accent); transform: scale(1.2); }
+.btn-going.active { color: var(--accent); }
+
+/* ===== DISCLAIMER FOOTER ===== */
+.disclaimer {
+  padding: 8px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  flex-shrink: 0;
+}
+.disclaimer p {
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+  margin: 0;
+  line-height: 1.4;
+}
+.disclaimer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.disclaimer a:hover { text-decoration: underline; }
+.disclaimer .version {
+  margin-top: var(--sp-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  color: var(--text-faint);
+}
+
+/* ===== OSSATURE ===== */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--sidebar-w);
+  gap: var(--sp-6);
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-6) var(--sp-16);
+  align-items: start;
+}
+
+.agenda {
+  min-width: 0;
+}
+
+.agenda-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+
+.agenda-head h2 {
+  font-size: var(--fs-xl);
+}
+
+.agenda-count {
+  font-size: var(--fs-sm);
+  color: var(--accent);
+}
+
+.empty-state {
+  padding: var(--sp-12) var(--sp-4);
+  text-align: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-lg);
+}
+
+/* font-stretch/font-weight/letter-spacing/text-transform viennent du bloc de titre
+   partage plus haut, ou .es-title figure deja : seules taille et marge sont propres
+   a cet usage. */
+.es-title {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--sp-2);
+}
+
+.es-hint { font-size: var(--fs-md); color: var(--text-dim); margin-bottom: var(--sp-4); }
+
+/* en-tete de mois collant dans l'agenda */
+.agenda-month {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 3;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin: var(--sp-8) 0 var(--sp-4);
+  padding: var(--sp-2) 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.agenda-month:first-child {
+  margin-top: 0;
+}
+
+/* Surcharge VOLONTAIRE de deux axes du bloc de titre partage: cet en-tete est le plus
+   grand du document et se veut plus etroit et plus serre que les autres titres. Le poids
+   et la casse viennent du bloc partage. */
+.agenda-month .month-name {
+  font-stretch: 62%;
+  font-size: var(--fs-3xl);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.agenda-month .month-count {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* separateur de jour */
+/* Volontairement NON collant. Seuls les en-tetes de mois le sont, comme le dit la
+   spec section 4.2. Empiler un second element collant imposerait un decalage egal a
+   la hauteur de l'en-tete de mois, qui vaut 57px en grand et 45px sous 560px ou le
+   nom de mois rétrécit : un nombre magique faux et dependant de la largeur. */
+.date-separator {
+  padding: var(--sp-2) 0 var(--sp-1);
+  background: var(--bg);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+/* ===== COLONNE LATERALE ===== */
+.sidebar {
+  position: sticky;
+  top: calc(var(--header-h) + var(--sp-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+.side-panel {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.side-panel.is-hidden { display: none; }
+
+#leafletMap {
+  height: 46vh;
+  min-height: 280px;
+  width: 100%;
+}
+
+/* ===== CALENDRIER ===== */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.calendar-nav h3 {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-align: center;
+  flex: 1;
+}
+
+.nav-btn {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.nav-btn:hover { color: var(--text); border-color: var(--border-strong); }
+
+/* trois mois empiles */
+.calendar-months {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-3);
+}
+
+.month-block h3 {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+  margin-bottom: var(--sp-2);
+}
+
+/* colonnes flexibles, jamais en largeur fixe : la colonne laterale passe a 320px
+   sous 1240px et une grille figee deborderait */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.day-header {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  text-align: center;
+  padding-bottom: var(--sp-1);
+}
+
+.calendar-day {
+  position: relative;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-faint);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+
+.calendar-day.empty { cursor: default; }
+.calendar-day.past { opacity: .45; }
+.calendar-day.today { box-shadow: inset 0 0 0 1px var(--border-strong); background: var(--today); }
+
+.calendar-day.d-1 { background: var(--cal-1); color: var(--text); }
+.calendar-day.d-2 { background: var(--cal-2); color: var(--text); }
+.calendar-day.d-3 { background: var(--cal-3); color: var(--accent); font-weight: 600; }
+
+.calendar-day.has-sold-out::after {
+  content: '';
+  position: absolute;
+  inset: auto var(--sp-1) 2px var(--sp-1);
+  height: 2px;
+  border-radius: 1px;
+  background: var(--sold-out);
+}
+
+.calendar-day:hover:not(.empty) { border-color: var(--border-strong); }
+.calendar-day.selected-day,
+.calendar-day.date-selected { border-color: var(--accent); }
+
+/* legende */
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3) var(--sp-3);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.lg-item { display: inline-flex; align-items: center; gap: var(--sp-1); }
+
+.lg-sw {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+}
+
+.lg-sw.d-1 { background: var(--cal-1); }
+.lg-sw.d-2 { background: var(--cal-2); }
+.lg-sw.d-3 { background: var(--cal-3); }
+.lg-sw.lg-sold { background: var(--sold-out); border-color: var(--sold-out); }
+
+/* ===== RUPTURES ===== */
+
+/* Au-dessus de 900px, la feuille de filtres n'existe pas comme boite : ses enfants
+   participent directement au flex de l'en-tete. Le bouton Filters et l'en-tete de
+   feuille sont masques. */
+.filters-sheet { display: contents; }
+.filters-sheet .sheet-head { display: none; }
+.btn-filters { display: none; }
+
+.sheet-bar { display: none; }
+
+/* colonne laterale resserree */
+@media (max-width: 1240px) {
+  :root { --sidebar-w: 320px; }
+  .layout { gap: var(--sp-4); padding: var(--sp-4) var(--sp-4) var(--sp-12); }
+}
+
+/* colonne unique : la laterale devient deux feuilles escamotables, et l'en-tete se
+   reduit au logo plus les boutons, les selecteurs passant en feuille */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--sp-3) var(--sp-3) var(--sp-12);
+  }
+
+  /* l'en-tete reste sur UNE ligne et --header-h ne bouge jamais */
+  .toolbar-stats, .toolbar-sep { display: none; }
+  .btn-filters { display: grid; }
+
+  /* l'onglet de feuille Map commande deja la meme carte : les deux etats se
+     contrediraient sinon, et l'onglet gagne par ordre de declaration */
+  .map-toggle-btn { display: none; }
+
+  /* meme element du DOM, autre presentation : plus un enfant du flex de l'en-tete,
+     mais une feuille par-dessus la page */
+  .filters-sheet {
+    display: none;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 60;
+    max-height: 78vh;
+    overflow-y: auto;
+    padding: var(--sp-3);
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .5);
+  }
+
+  .filters-sheet.sheet-open { display: block; }
+  .filters-sheet .sheet-head { display: flex; }
+
+  /* en feuille, les selecteurs prennent toute la largeur et s'empilent */
+  .filters-sheet .search-wrapper,
+  .filters-sheet .picker-wrapper {
+    max-width: none;
+    min-width: 0;
+    margin-bottom: var(--sp-3);
+  }
+
+  /* le panneau d'un selecteur n'est plus flottant dans la feuille : il s'ouvre en place.
+     Une seule classe suffit: la tache 9 a renomme .artist-dropdown en .picker-panel, donc
+     les deux selecteurs partagent desormais la meme. */
+  .filters-sheet .picker-panel {
+    position: static;
+    box-shadow: none;
+    min-width: 0;
+    max-width: none;
+    margin-top: var(--sp-1);
+  }
+
+  .sheet-bar {
+    display: flex;
+    gap: var(--sp-2);
+    position: sticky;
+    top: var(--header-h);
+    z-index: 20;
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sheet-tab {
+    flex: 1;
+    min-height: 40px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text-dim);
+    font-size: var(--fs-xs);
+    letter-spacing: .08em;
+    cursor: pointer;
+  }
+
+  .sheet-tab[aria-expanded="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* la laterale ne s'empile plus dans le flux : chaque panneau devient une feuille */
+  .sidebar {
+    position: static;
+    display: contents;
+  }
+
+  .side-panel {
+    display: none;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 60;
+    max-height: 78vh;
+    overflow-y: auto;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    border-bottom: none;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .5);
+  }
+
+  .side-panel.sheet-open { display: block; }
+
+  body.sheet-open::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, .5);
+  }
+
+  #leafletMap { height: 52vh; min-height: 260px; }
+
+  /* l'en-tete de mois colle sous la barre de feuilles, pas sous l'en-tete de page.
+     La hauteur de la barre passe par un jeton et non par un nombre en dur, sinon
+     tout changement de son padding desaligne silencieusement l'en-tete de mois. */
+  .agenda-month { top: calc(var(--header-h) + var(--sheet-bar-h)); }
+}
+
+/* repli de la carte de concert */
+@media (max-width: 560px) {
+  /* toujours une seule ligne : le retour a la ligne desaligneraient les decalages
+     collants qui derivent tous de --header-h. Padding vertical a 6px pour que les
+     boutons de 44px (56 - 2x6) tiennent sans faire bouger --header-h. */
+  .toolbar { padding: 6px var(--sp-3); gap: var(--sp-2); }
+  .logo-icon { height: 22px; }
+
+  .btn-icon { width: 44px; height: 44px; }
+
+  .concert-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+  }
+
+  .cc-actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: var(--sp-1);
+  }
+
+  /* Cibles tactiles. min-width autant que min-height: le coeur tire sa largeur de son
+     glyphe et ne faisait que 20px, donc il echouait au minimum de 24x24 de WCAG 2.5.8
+     sur l'axe horizontal malgre une hauteur genereuse. */
+  .cc-actions .btn-going,
+  .cc-actions .btn-ticket,
+  .cc-actions .btn-spotify,
+  .fc-cta .btn-ticket {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Dans une puce de plateau, le coeur est un controle en ligne a cote d'un nom, pas une
+     cible isolee. Les 24x24 de WCAG 2.5.8 suffisent et sont respectes; forcer 44 rendrait
+     chaque puce aussi haute et empilerait le plateau. */
+  .fc-chip .btn-going {
+    min-height: 24px;
+    min-width: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cc-day { font-size: var(--fs-xl); }
+  .agenda-month .month-name { font-size: var(--fs-2xl); }
+  /* 40px de haut sur environ 52px de large. La regle des 44px de cette tache vise les
+     boutons d'action des cartes, ou le doigt vise un controle isole; une case de
+     calendrier est dans une grille dense et depasse largement le minimum de 24px que
+     WCAG 2.5.8 demande en AA. La porter a 44px rendrait le calendrier a trois mois
+     empiles inutilement haut sur telephone. */
+  .calendar-day { min-height: 40px; }
+  .tour-slide { flex-basis: 200px; }
+  .picker-panel { min-width: 0; width: calc(100vw - var(--sp-6)); max-width: none; }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }

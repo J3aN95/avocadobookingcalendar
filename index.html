@@ -1,1182 +1,49 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Avocado Booking - Concert Calendar</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --surface: #1a1a1a;
-      --surface2: #252525;
-      --border: #333;
-      --text: #e8e8e8;
-      --text-muted: #888;
-      --accent: #6dbf4a;
-      --accent-hover: #5aa63d;
-      --accent-bg: rgba(109, 191, 74, 0.12);
-      --available: rgba(109, 191, 74, 0.25);
-      --available-border: #6dbf4a;
-      --concert-dot: #6dbf4a;
-      --sold-out: #e74c3c;
-      --today: rgba(255, 255, 255, 0.08);
-    }
-
-    [data-theme="light"] {
-      --bg: #f5f5f5;
-      --surface: #ffffff;
-      --surface2: #eaeaea;
-      --border: #ddd;
-      --text: #1a1a1a;
-      --text-muted: #666;
-      --accent: #4a9e2f;
-      --accent-hover: #3d8526;
-      --accent-bg: rgba(74, 158, 47, 0.1);
-      --available: rgba(74, 158, 47, 0.18);
-      --available-border: #4a9e2f;
-      --concert-dot: #4a9e2f;
-      --sold-out: #d32f2f;
-      --today: rgba(0, 0, 0, 0.05);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ===== TOOLBAR ===== */
-    .toolbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-shrink: 0;
-      z-index: 10;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-
-    .logo-icon {
-      height: 32px;
-    }
-
-    .logo-icon img {
-      height: 100%;
-      width: auto;
-    }
-
-    .logo h1 {
-      font-size: 16px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .logo h1 span { color: var(--accent); }
-
-    .toolbar-sep {
-      width: 1px;
-      height: 24px;
-      background: var(--border);
-      flex-shrink: 0;
-    }
-
-    .search-wrapper {
-      position: relative;
-      flex: 1;
-      max-width: 320px;
-      min-width: 160px;
-    }
-
-    .artist-select-btn {
-      width: 100%;
-      padding: 7px 12px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.2s;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      text-align: left;
-    }
-    .artist-select-btn:hover { border-color: var(--accent); }
-    .artist-select-btn .artist-select-arrow { font-size: 10px; color: var(--text-muted); transition: transform 0.2s; }
-    .artist-dropdown.open + .artist-select-btn .artist-select-arrow,
-    .artist-select-btn.open .artist-select-arrow { transform: rotate(180deg); }
-
-    .artist-dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--surface);
-      border: 1px solid var(--accent);
-      border-radius: 0 0 8px 8px;
-      z-index: 200;
-      display: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      margin-top: -1px;
-    }
-    .artist-dropdown.open { display: block; }
-
-    .artist-filter-input {
-      width: 100%;
-      padding: 8px 12px;
-      background: var(--surface2);
-      border: none;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-      font-size: 12px;
-      outline: none;
-      box-sizing: border-box;
-    }
-    .artist-filter-input::placeholder { color: var(--text-muted); }
-
-    .artist-dropdown-list {
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .artist-dropdown-item {
-      padding: 7px 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.1s;
-      font-size: 13px;
-    }
-    .artist-dropdown-item:last-child { border-bottom: none; }
-    .artist-dropdown-item:hover { background: var(--surface2); }
-    .artist-dropdown-item.checked { background: var(--accent-bg); }
-
-    .artist-dropdown-item input[type="checkbox"] {
-      width: 14px; height: 14px;
-      accent-color: var(--accent);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .artist-dropdown-item .artist-name { flex: 1; font-weight: 500; }
-    .artist-dropdown-item .artist-color-dot {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-    }
-    .artist-dropdown-item .artist-count {
-      background: var(--accent-bg);
-      color: var(--accent);
-      padding: 1px 6px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-
-    .toolbar-stats {
-      display: flex;
-      gap: 14px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-
-    .toolbar-stats strong { color: var(--accent); }
-
-    .toolbar-actions {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .btn-icon {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-    .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
-
-    .badge-countdown {
-      font-size: 9px;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 8px;
-      white-space: nowrap;
-    }
-    .badge-countdown.today { background: var(--accent); color: #000; }
-    .badge-countdown.tomorrow { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
-    .badge-countdown.soon { background: var(--surface2); color: var(--text-muted); }
-
-    .btn-spotify {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      background: #1db954;
-      color: #fff;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    .btn-spotify:hover { opacity: 0.85; }
-
-    .badge-new {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      background: var(--sold-out);
-      color: #fff;
-      font-size: 8px;
-      font-weight: 700;
-      padding: 2px 5px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .festival-card {
-      background: var(--surface2);
-      border: 1px solid var(--accent);
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-    }
-    .festival-card .festival-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .festival-card .festival-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-    .festival-card .festival-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    .festival-card .festival-lineup {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .festival-card .lineup-chip {
-      font-size: 11px;
-      padding: 2px 8px;
-      background: var(--accent-bg);
-      border: 1px solid var(--accent);
-      border-radius: 10px;
-      color: var(--text);
-    }
-
-    .stats-panel {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.3s ease;
-      flex-shrink: 0;
-    }
-    .stats-panel.open { max-height: 300px; }
-    .stats-inner {
-      padding: 12px 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
-    .stat-block h4 {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-    }
-    .stat-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 3px;
-      font-size: 11px;
-    }
-    .stat-bar-label {
-      width: 80px;
-      text-align: right;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-shrink: 0;
-    }
-    .stat-bar {
-      flex: 1;
-      height: 12px;
-      background: var(--surface2);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .stat-bar-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 3px;
-      transition: width 0.5s ease;
-    }
-    .stat-bar-value {
-      width: 24px;
-      font-size: 10px;
-      color: var(--text-muted);
-      flex-shrink: 0;
-    }
-
-    /* ===== COUNTRY RIBBON ===== */
-    .country-ribbon {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 6px 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-      overflow-x: auto;
-    }
-
-    .country-ribbon::-webkit-scrollbar { height: 0; }
-
-    .country-ribbon-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      flex-shrink: 0;
-      margin-right: 4px;
-    }
-
-    .country-tag {
-      padding: 3px 10px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-muted);
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    .country-tag:hover { border-color: var(--accent); color: var(--text); }
-    .country-tag.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
-
-    /* ===== ACTIVE FILTERS CHIPS ===== */
-    .active-filters {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 6px 20px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
-    .active-filters.visible { display: flex; }
-
-    .filter-chip {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      background: var(--accent-bg);
-      border: 1px solid var(--accent);
-      border-radius: 12px;
-      color: var(--accent);
-      font-size: 11px;
-    }
-
-    .filter-chip .chip-remove {
-      cursor: pointer;
-      font-weight: 700;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-
-    .filter-chip .chip-remove:hover { opacity: 1; }
-
-    /* ===== MAIN CONTENT ===== */
-    .main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* ===== TOUR CAROUSEL ===== */
-    .tour-carousel {
-      display: flex;
-      gap: 10px;
-      padding: 8px 20px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      flex-shrink: 0;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-    }
-    .tour-carousel::-webkit-scrollbar { height: 0; }
-
-    .tour-slide {
-      flex-shrink: 0;
-      width: 180px;
-      height: 100px;
-      border-radius: 6px;
-      overflow: hidden;
-      position: relative;
-      cursor: pointer;
-      scroll-snap-align: start;
-      border: 2px solid transparent;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .tour-slide:hover { transform: scale(1.03); border-color: var(--accent); }
-    .tour-slide.active { border-color: var(--accent); box-shadow: 0 0 10px rgba(109,191,74,0.4); }
-
-    .tour-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .tour-slide .slide-label {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 4px 8px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ===== MAP ===== */
-    .map-container {
-      position: relative;
-      flex-shrink: 0;
-      transition: height 0.3s ease, opacity 0.2s ease;
-      overflow: hidden;
-    }
-    .map-container.map-hidden {
-      height: 0 !important;
-      min-height: 0 !important;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .map-toggle-btn.active {
-      color: var(--accent);
-    }
-
-    #leafletMap {
-      width: 100%;
-      height: 38vh;
-      min-height: 220px;
-      z-index: 1;
-    }
-
-    .map-city-filter {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 500;
-      padding: 6px 16px;
-      background: rgba(26, 26, 26, 0.95);
-      border: 1px solid var(--accent);
-      border-radius: 20px;
-      font-size: 12px;
-      color: var(--accent);
-      display: none;
-      align-items: center;
-      gap: 8px;
-      backdrop-filter: blur(8px);
-    }
-
-    .map-city-filter.visible { display: flex; }
-
-    .map-city-filter .close-city {
-      cursor: pointer;
-      font-weight: 700;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-
-    .map-city-filter .close-city:hover { opacity: 1; }
-
-    .leaflet-popup-content-wrapper {
-      background: #252525 !important;
-      color: #e8e8e8 !important;
-      border: 1px solid #6dbf4a !important;
-      border-radius: 6px !important;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
-    }
-
-    .leaflet-popup-tip { background: #252525 !important; }
-
-    .leaflet-popup-content {
-      margin: 8px 12px !important;
-      font-size: 13px !important;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-    }
-
-    .leaflet-popup-content .popup-city { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
-    .leaflet-popup-content .popup-count { color: #6dbf4a; font-weight: 600; }
-    .leaflet-popup-content .popup-artists { font-size: 11px; color: #888; margin-top: 4px; line-height: 1.4; }
-    .leaflet-popup-close-button { color: #888 !important; }
-    .leaflet-popup-close-button:hover { color: #6dbf4a !important; }
-
-    /* ===== TOUR ROUTE STEPS ===== */
-    .route-step {
-      background: transparent;
-      color: #fff;
-      border-radius: 50%;
-      font-size: 10px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .route-step span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.8);
-    }
-
-    /* ===== ROAD TRIP PLANNER ===== */
-    .road-trip-summary {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      z-index: 500;
-      background: rgba(26, 26, 26, 0.95);
-      border: 1px solid #e67e22;
-      border-radius: 8px;
-      padding: 10px 14px;
-      max-width: 280px;
-      max-height: 200px;
-      overflow-y: auto;
-      backdrop-filter: blur(8px);
-    }
-    [data-theme="light"] .road-trip-summary { background: rgba(255,255,255,0.95); }
-    .road-trip-summary h5 { color: #e67e22; margin: 0 0 6px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
-    .road-trip-leg { font-size: 11px; color: var(--text-muted); padding: 2px 0; }
-    .road-trip-leg .leg-dist { color: #e67e22; font-weight: 600; }
-    .road-trip-total { font-size: 12px; color: var(--text); font-weight: 600; margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
-    .route-step-orange span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: #e67e22;
-      color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-      border: 2px solid rgba(255, 255, 255, 0.8);
-    }
-    .distance-label {
-      background: rgba(230, 126, 34, 0.9);
-      color: #fff;
-      font-size: 9px;
-      padding: 1px 5px;
-      border-radius: 3px;
-      white-space: nowrap;
-    }
-
-
-    /* ===== I'M GOING ===== */
-    .going-wrapper { position: relative; display: inline-flex; }
-    .going-panel {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      margin-top: 6px;
-      background: var(--surface);
-      border: 1px solid #e74c3c;
-      border-radius: 8px;
-      padding: 0;
-      z-index: 1000;
-      width: 320px;
-      max-height: 400px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      overflow: hidden;
-      display: none;
-    }
-    .going-panel.visible { display: flex; flex-direction: column; }
-    .going-panel-header {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .going-panel-header h4 { margin: 0; font-size: 13px; color: #e74c3c; }
-    .going-panel-actions { display: flex; gap: 6px; }
-    .going-panel-actions button {
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text);
-      cursor: pointer;
-    }
-    .going-panel-actions button.btn-filter-going {
-      background: #e74c3c;
-      color: #fff;
-      border-color: #e74c3c;
-    }
-    .going-panel-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 6px 0;
-    }
-    .going-panel-empty {
-      padding: 20px 14px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-    .going-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-    }
-    .going-item:last-child { border-bottom: none; }
-    .going-item:hover { background: var(--surface2); }
-    .going-item-date {
-      flex-shrink: 0;
-      text-align: center;
-      width: 40px;
-    }
-    .going-item-date .gi-month { font-size: 9px; text-transform: uppercase; color: #e74c3c; font-weight: 700; }
-    .going-item-date .gi-day { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.1; }
-    .going-item-info { flex: 1; min-width: 0; }
-    .going-item-info .gi-artist { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .going-item-info .gi-details { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .going-item-remove {
-      flex-shrink: 0;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 14px;
-      padding: 4px;
-      border-radius: 4px;
-      transition: all 0.15s;
-    }
-    .going-item-remove:hover { color: #e74c3c; background: rgba(231,76,60,0.1); }
-
-
-    .going-badge {
-      font-size: 9px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 50%;
-      min-width: 14px; height: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 2px;
-      padding: 0 3px;
-    }
-    .going-badge[data-count="0"] { display: none; }
-    .going-toggle-btn.active { color: #e74c3c !important; border-color: #e74c3c !important; }
-    .btn-going {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-      color: var(--text-muted);
-      transition: all 0.2s;
-      padding: 2px;
-      line-height: 1;
-    }
-    .btn-going:hover { color: #e74c3c; transform: scale(1.2); }
-    .btn-going.active { color: #e74c3c; }
-
-    /* ===== DISCLAIMER FOOTER ===== */
-    .disclaimer {
-      padding: 8px 20px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .disclaimer p {
-      font-size: 11px;
-      color: #666;
-      margin: 0;
-      line-height: 1.4;
-    }
-    .disclaimer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-    .disclaimer a:hover { text-decoration: underline; }
-
-    /* ===== BOTTOM PANEL: Calendar + Concert List ===== */
-    .bottom-panel {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      overflow: hidden;
-      border-top: 1px solid var(--border);
-    }
-
-    /* --- Calendar area --- */
-    .calendar-area {
-      overflow-y: auto;
-      padding: 12px 20px;
-    }
-
-    .calendar-nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .calendar-nav h2 {
-      font-size: 15px;
-      font-weight: 600;
-      min-width: 220px;
-      text-align: center;
-    }
-
-    .nav-btn {
-      width: 28px;
-      height: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    .calendar-3months {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .month-block h3 {
-      text-align: center;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 2px;
-    }
-
-    .calendar-grid .day-header {
-      text-align: center;
-      font-size: 9px;
-      font-weight: 600;
-      color: var(--text-muted);
-      padding: 3px 0;
-      text-transform: uppercase;
-    }
-
-    .calendar-day {
-      background: var(--surface);
-      border: 1px solid transparent;
-      border-radius: 3px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.12s;
-      padding: 3px 1px;
-      min-height: 28px;
-    }
-
-    .calendar-day:hover { border-color: var(--accent); background: var(--surface2); }
-    .calendar-day.empty { background: transparent; cursor: default; }
-    .calendar-day.empty:hover { background: transparent; border-color: transparent; }
-    .calendar-day.today { background: var(--today); border-color: var(--border); }
-
-    .calendar-day.available {
-      background: var(--available);
-      border-color: var(--available-border);
-    }
-
-    .calendar-day.has-concerts .day-number { font-weight: 700; color: var(--accent); }
-
-    .calendar-day.selected-day {
-      border-color: var(--accent);
-      background: var(--accent-bg);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-    .calendar-day.date-selected {
-      border-color: var(--accent);
-      background: var(--accent-bg);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-
-    .day-number { font-size: 11px; color: var(--text); }
-    .calendar-day.empty .day-number { color: var(--text-muted); opacity: 0.3; }
-    .calendar-day.past .day-number { opacity: 0.35; }
-    .calendar-day.past.has-concerts .day-number { opacity: 0.5; }
-
-    .concert-dots {
-      display: flex;
-      gap: 2px;
-      margin-top: 1px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .concert-dot {
-      width: 3px;
-      height: 3px;
-      background: var(--concert-dot);
-      border-radius: 50%;
-    }
-
-    .concert-dot.filtered { box-shadow: 0 0 3px var(--accent); }
-
-    .calendar-legend {
-      display: flex;
-      gap: 16px;
-      font-size: 10px;
-      color: var(--text-muted);
-      padding: 8px 0 0;
-      justify-content: center;
-    }
-
-    .calendar-legend > div {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* --- Concert list area --- */
-    .concert-area {
-      background: var(--surface);
-      border-left: 1px solid var(--border);
-      overflow-y: auto;
-      padding: 14px 16px;
-    }
-
-    .concerts-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .concerts-header h2 {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .concerts-header .count {
-      background: var(--accent);
-      color: #000;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .concert-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .date-separator {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent);
-      padding: 8px 0 3px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2px;
-    }
-
-    .concert-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px 12px;
-      transition: border-color 0.2s;
-      display: grid;
-      grid-template-columns: 50px 1fr auto;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .concert-card:hover { border-color: var(--accent); }
-    .concert-card.sold-out { opacity: 0.5; }
-
-    .concert-date {
-      text-align: center;
-    }
-
-    .concert-date .month {
-      font-size: 9px;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .concert-date .day {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.1;
-    }
-
-    .concert-date .weekday {
-      font-size: 9px;
-      color: var(--text-muted);
-    }
-
-    .concert-info h3 {
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 1px;
-    }
-
-    .concert-info .tour-name {
-      font-size: 10px;
-      color: var(--accent);
-      margin-bottom: 2px;
-    }
-
-    .concert-info .details {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .concert-info .support {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 2px;
-      font-style: italic;
-    }
-
-    .concert-actions {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
-    }
-
-    .badge-sold-out {
-      background: var(--sold-out);
-      color: #fff;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .btn-ticket {
-      padding: 5px 12px;
-      background: var(--accent);
-      color: #000;
-      border: none;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-
-    .btn-ticket:hover { background: var(--accent-hover); }
-
-    .no-results {
-      text-align: center;
-      padding: 30px 10px;
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    .no-results p { margin-bottom: 6px; }
-
-    /* ===== Responsive ===== */
-
-    /* Tablet landscape / small desktop */
-    @media (max-width: 1000px) {
-      body { height: auto; min-height: 100dvh; overflow-y: auto; }
-      .main-content { overflow: visible; }
-      .bottom-panel { grid-template-columns: 1fr; }
-      .concert-area { border-left: none; border-top: 1px solid var(--border); max-height: 50vh; }
-      .calendar-3months { grid-template-columns: 1fr; }
-      #leafletMap { height: 30vh; }
-      .toolbar { flex-wrap: wrap; }
-    }
-
-    /* Tablet portrait */
-    @media (max-width: 768px) {
-      .toolbar { padding: 8px 12px; gap: 10px; }
-      .toolbar-sep { display: none; }
-      .search-wrapper { max-width: 240px; min-width: 120px; }
-      .toolbar-stats { font-size: 11px; gap: 10px; }
-      #leafletMap { height: 25vh; min-height: 180px; }
-      .calendar-day { min-height: 36px; font-size: 12px; }
-      .day-header { font-size: 10px; }
-      .btn-ticket { padding: 7px 14px; font-size: 12px; }
-      .concert-date .day { font-size: 18px; }
-      .country-ribbon { padding: 5px 12px; }
-    }
-
-    /* Mobile dropdown fix */
-    @media (max-width: 768px) {
-      .artist-dropdown { min-width: 240px; }
-      .artist-select-btn { font-size: 12px; padding: 6px 10px; }
-    }
-
-    /* Mobile */
-    @media (max-width: 480px) {
-      .tour-carousel { padding: 8px; gap: 10px; }
-      .tour-slide { width: 200px; height: 110px; }
-      .tour-slide .slide-label { font-size: 12px; padding: 5px 8px; }
-
-      .map-container { display: none; }
-      .map-toggle-btn { display: none; }
-      .stats-inner { grid-template-columns: 1fr; padding: 10px 8px; }
-      .stat-bar-label { width: 60px; font-size: 10px; }
-      .festival-card { padding: 8px; }
-
-      .toolbar {
-        padding: 8px 10px;
-        gap: 8px;
-      }
-      .logo-icon { height: 28px; }
-      .search-wrapper {
-        flex: 1 1 100%;
-        max-width: none;
-        order: 10;
-      }
-      .toolbar-stats { display: none; }
-
-      .country-ribbon { padding: 4px 8px; gap: 4px; }
-      .country-tag { font-size: 10px; padding: 2px 7px; }
-
-      .active-filters { padding: 4px 8px; }
-
-      #leafletMap { height: 22vh; min-height: 150px; }
-      .map-city-filter { font-size: 11px; padding: 4px 10px; }
-
-      .calendar-area { padding: 8px; }
-      .calendar-3months { gap: 12px; }
-      .month-block h3 { font-size: 12px; }
-      .calendar-nav button { width: 26px; height: 26px; font-size: 14px; }
-      .calendar-day { min-height: 40px; font-size: 13px; padding: 4px 2px; }
-      .day-header { font-size: 10px; }
-      .day-dot { width: 4px; height: 4px; }
-
-      .concert-area { padding: 10px 8px; max-height: none; }
-      .concert-card { grid-template-columns: 42px 1fr; gap: 8px; }
-      .concert-actions {
-        grid-column: 1 / -1;
-        flex-direction: row;
-        justify-content: flex-end;
-        margin-top: 2px;
-      }
-      .concert-date .day { font-size: 17px; }
-      .concert-date .month, .concert-date .weekday { font-size: 9px; }
-      .concert-info h3 { font-size: 13px; }
-      .concert-info .details { font-size: 11px; }
-      .btn-ticket { padding: 8px 16px; font-size: 12px; }
-
-      .disclaimer { padding: 6px 8px; }
-      .disclaimer p { font-size: 10px; }
-    }
-
-    /* ===== Scrollbar ===== */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <!-- TOOLBAR -->
 <div class="toolbar">
-  <div class="logo">
+  <h1 class="logo">
     <div class="logo-icon"><img src="https://www.avocadobooking.com/avocms/images/designimages/avocado_logo_new_small.png" alt="Avocado Booking"></div>
-  </div>
+  </h1>
   <div class="toolbar-sep"></div>
-  <div class="search-wrapper" id="searchWrapper">
-    <button class="artist-select-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()">
-      <span id="artistSelectLabel">All artists</span>
-      <span class="artist-select-arrow">&#9662;</span>
-    </button>
-    <div class="artist-dropdown" id="artistDropdown">
-      <input type="text" class="artist-filter-input" id="artistFilterInput" placeholder="Filter..." oninput="buildArtistDropdown(this.value)">
-      <div class="artist-dropdown-list" id="artistDropdownList"></div>
+  <div class="filters-sheet" id="filtersSheet">
+    <div class="sheet-head">
+      <span class="u-mono">Filters</span>
+      <button class="sheet-close" onclick="toggleSheet('filtersSheet')" aria-label="Close filters">&times;</button>
+    </div>
+    <div class="search-wrapper" id="searchWrapper">
+      <button class="picker-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()" aria-expanded="false">
+        <span id="artistSelectLabel">All artists</span>
+        <span class="picker-caret" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="picker-panel" id="artistDropdown">
+        <input type="text" class="picker-filter" id="artistFilterInput" placeholder="Filter..." oninput="buildArtistDropdown(this.value)">
+        <div class="picker-list" id="artistDropdownList"></div>
+      </div>
+    </div>
+    <div class="picker-wrapper" id="countryWrapper">
+      <button class="picker-btn" id="countrySelectBtn" onclick="toggleCountryPicker()"
+              aria-expanded="false" aria-haspopup="listbox">
+        <span id="countrySelectLabel">All countries</span>
+        <span class="picker-caret" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="picker-panel" id="countryPanel" role="listbox">
+        <input type="text" class="picker-filter" id="countryFilterInput" placeholder="Filter countries…"
+               oninput="buildCountryPicker(this.value)" aria-label="Filter countries">
+        <div class="picker-list" id="countryPickerList"></div>
+      </div>
     </div>
   </div>
   <div class="toolbar-stats">
@@ -1185,80 +52,96 @@
     <span><strong id="totalCountries">0</strong> countries</span>
   </div>
   <div class="toolbar-actions">
-    <button class="btn-icon" onclick="toggleStats()" title="Statistics">&#128202;</button>
+    <button class="btn-icon btn-filters" onclick="toggleSheet('filtersSheet')"
+            aria-controls="filtersSheet" aria-expanded="false" aria-label="Filters">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 6h18M6 12h12M10 18h4"/>
+      </svg>
+    </button>
     <div class="going-wrapper">
-      <button class="btn-icon going-toggle-btn" id="btnGoingFilter" onclick="toggleGoingPanel()" title="My concerts">&#9829;<span id="goingCount" class="going-badge" data-count="0">0</span></button>
+      <button class="btn-icon going-toggle-btn" id="btnGoingFilter" onclick="toggleGoingPanel()"
+              aria-label="My concerts" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M12 20s-7-4.5-7-9.5A4 4 0 0 1 12 7a4 4 0 0 1 7 3.5c0 5-7 9.5-7 9.5z"/>
+        </svg>
+        <span id="goingCount" class="going-badge" data-count="0">0</span>
+      </button>
       <div class="going-panel" id="goingPanel">
         <div class="going-panel-header">
-          <h4>&#9829; My Concerts</h4>
+          <span class="u-mono">My concerts</span>
           <div class="going-panel-actions">
             <button class="btn-filter-going" onclick="toggleGoingFilter()">Filter view</button>
+            <button onclick="exportICS()">Export .ics</button>
             <button onclick="clearAllGoing()">Clear all</button>
           </div>
         </div>
         <div class="going-panel-list" id="goingPanelList"></div>
       </div>
     </div>
-    <button class="btn-icon" onclick="shareFilters()" title="Share filtered view">&#128279;</button>
-    <button class="btn-icon map-toggle-btn" id="btnMapToggle" onclick="toggleMap()" title="Show/hide map">&#127758;</button>
-    <button class="btn-icon" onclick="toggleTheme()" title="Toggle light/dark theme">&#9788;</button>
+
+    <button class="btn-icon" onclick="shareFilters()" aria-label="Copy link to this filtered view">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/>
+        <path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>
+      </svg>
+    </button>
+
+    <button class="btn-icon map-toggle-btn" id="btnMapToggle" onclick="toggleMap()" aria-label="Show or hide the map">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>
+      </svg>
+    </button>
+
+    <button class="btn-icon" onclick="toggleTheme()" aria-label="Switch between light and dark theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.5"/>
+        <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.4 5.4l1.4 1.4M17.2 17.2l1.4 1.4M18.6 5.4l-1.4 1.4M6.8 17.2l-1.4 1.4"/>
+      </svg>
+    </button>
   </div>
 </div>
 
-<!-- COUNTRY RIBBON -->
-<div class="country-ribbon">
-  <span class="country-ribbon-label">Countries</span>
-  <div id="countryFilters" style="display:contents;"></div>
-</div>
-
-<!-- STATS PANEL -->
-<div class="stats-panel" id="statsPanel">
-  <div class="stats-inner" id="statsInner"></div>
+<div class="sheet-bar">
+  <button class="sheet-tab" onclick="toggleSheet('mapPanel')" aria-controls="mapPanel" aria-expanded="false">Map</button>
+  <button class="sheet-tab" onclick="toggleSheet('calendarPanel')" aria-controls="calendarPanel" aria-expanded="false">Calendar</button>
 </div>
 
 <!-- ACTIVE FILTERS -->
 <div class="active-filters" id="activeFilters"></div>
 
-<!-- TOUR CAROUSEL -->
-<div class="tour-carousel" id="tourCarousel"></div>
+<main class="layout">
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
-  <!-- MAP -->
-  <div class="map-container">
-    <div id="leafletMap"></div>
-    <div class="map-city-filter" id="mapCityFilter">
-      <span id="mapCityLabel"></span>
-      <span class="close-city" onclick="selectedCity=null;render();">&times;</span>
+  <div class="agenda">
+    <div class="tour-rail" id="tourCarousel"></div>
+    <div class="agenda-head">
+      <h2 id="concertTitle">Concerts</h2>
+      <span class="agenda-count" id="concertCount" aria-live="polite">0</span>
     </div>
-    <div class="road-trip-summary" id="roadTripSummary" style="display:none;"></div>
+    <div class="agenda-list" id="agendaList"></div>
   </div>
 
-  <!-- BOTTOM: Calendar + Concert list -->
-  <div class="bottom-panel">
-    <div class="calendar-area">
+  <aside class="sidebar" id="sidebar">
+    <section class="side-panel" id="mapPanel">
+      <div id="leafletMap"></div>
+      <div class="map-city-filter" id="mapCityFilter">
+        <span id="mapCityLabel"></span>
+        <button onclick="selectedCity=null;render();" aria-label="Clear city filter">&times;</button>
+      </div>
+      <div class="road-trip-summary" id="roadTripSummary" hidden></div>
+    </section>
+
+    <section class="side-panel" id="calendarPanel">
       <div class="calendar-nav">
-        <button class="nav-btn" onclick="changeMonth(-1)">&#9664;</button>
-        <h2 id="currentMonth"></h2>
-        <button class="nav-btn" onclick="changeMonth(1)">&#9654;</button>
+        <button class="nav-btn" onclick="changeMonth(-1)" aria-label="Previous months">&#9664;</button>
+        <h3 id="currentMonth"></h3>
+        <button class="nav-btn" onclick="changeMonth(1)" aria-label="Next months">&#9654;</button>
       </div>
-      <div class="calendar-3months" id="calendar3months"></div>
-      <div class="calendar-legend">
-        <div><div style="width:5px;height:5px;background:var(--concert-dot);border-radius:50%;"></div> Concert</div>
-        <div><div style="width:12px;height:8px;background:var(--sold-out);border-radius:2px;"></div> Sold Out</div>
-      </div>
-    </div>
+      <div class="calendar-months" id="calendar3months"></div>
+      <div class="calendar-legend" id="calendarLegend"></div>
+    </section>
+  </aside>
 
-    <div class="concert-area">
-      <div class="concerts-header">
-        <h2 id="concertTitle">Concerts</h2>
-
-        <span class="count" id="concertCount">0</span>
-      </div>
-      <div class="concert-list" id="concertList"></div>
-    </div>
-  </div>
-</div>
+</main>
 
 <script src="concerts.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1267,12 +150,65 @@
   const DAYS_FR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const WEEKDAYS_FR = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
+  // ===== NORMALISATION DES DONNEES =====
+  // Le scraper laisse passer des villes dans le champ country, des variantes de casse
+  // et un doublon UK / United Kingdom. On corrige au chargement pour que filtres,
+  // carte et compteurs soient toujours d'accord entre eux. Corriger uniquement le
+  // scraper ne suffirait pas : les lignes deja commitees resteraient fausses.
+  const COUNTRY_FIX = {
+    'United Kingdom': 'UK', 'IRELAND': 'Ireland', 'IRELEND': 'Ireland',
+    'Dublin': 'Ireland', 'Glasgow': 'UK', 'Manchester': 'UK', 'London': 'UK',
+    'Tilburg': 'Netherlands', 'Paris': 'France', 'Cologne': 'Germany',
+    'Berlin': 'Germany', 'Munich': 'Germany', 'Warsaw': 'Poland',
+    'Prague': 'Czech Republic', 'Vienna': 'Austria', 'Milan': 'Italy',
+    'Cruise': 'At sea',
+  };
+
+  function normalizeCountry(name) {
+    return COUNTRY_FIX[name] || name;
+  }
+
+  function httpsUrl(u) {
+    return typeof u === 'string' ? u.replace(/^http:\/\//i, 'https://') : u;
+  }
+
+  // Les dates de concert sont des chaines YYYY-MM-DD. new Date() les parse en minuit UTC,
+  // donc getDate() et getDay() renvoient la veille pour tout fuseau a decalage negatif, et
+  // la comparaison avec une minuit locale echoue partout ou le decalage n'est pas nul.
+  // Toute conversion de chaine en Date passe par ici.
+  function parseDate(dateStr) {
+    return new Date(dateStr + 'T00:00:00');
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function normalizeData() {
+    CONCERTS_DATA.forEach(c => { c.country = normalizeCountry(c.country); });
+    if (typeof TOUR_IMAGES !== 'undefined') {
+      TOUR_IMAGES.forEach(t => { t.imageUrl = httpsUrl(t.imageUrl); });
+    }
+  }
+
+  function matchesArtistFilter(c) {
+    if (searchTerms.length === 0) return true;
+    const artist = c.artist.toLowerCase();
+    const support = (c.support || '').toLowerCase();
+    return searchTerms.some(t => artist.includes(t) || support.includes(t));
+  }
+
+  function matchesSingleArtist(c, term) {
+    return c.artist.toLowerCase().includes(term) || (c.support || '').toLowerCase().includes(term);
+  }
+
   const _now = new Date();
   let currentYear = _now.getFullYear();
   let currentMonth = _now.getMonth();
   let activeCountries = new Set();
-  let searchTerms = []; // [{ name: 'artist', color: '#6dbf4a' }]
-  const COMPARE_COLORS = ['#6dbf4a', '#e67e22', '#3498db', '#e74c3c', '#9b59b6'];
+  let searchTerms = []; // noms d'artistes en minuscules
   let selectedDay = null;
   let selectedCity = null;
   let goingSet = new Set();
@@ -1280,10 +216,12 @@
   let selectedDates = new Set();
 
   function init() {
+    normalizeData();
     loadTheme();
     loadMapPref();
     loadGoing();
     loadFiltersFromURL();
+    updateCountryLabel();
 
     const artists = new Set();
     CONCERTS_DATA.forEach(c => {
@@ -1295,29 +233,25 @@
     document.getElementById('totalArtists').textContent = artists.size;
     document.getElementById('totalCountries').textContent = countries.size;
 
-    // Country tags
-    const container = document.getElementById('countryFilters');
-    [...countries].sort().forEach(country => {
-      const tag = document.createElement('span');
-      tag.className = 'country-tag';
-      tag.textContent = country;
-      if (activeCountries.has(country)) tag.classList.add('active');
-      tag.onclick = () => {
-        if (activeCountries.has(country)) {
-          activeCountries.delete(country);
-          tag.classList.remove('active');
-        } else {
-          activeCountries.add(country);
-          tag.classList.add('active');
-        }
-        render();
-      };
-      container.appendChild(tag);
-    });
-
     document.addEventListener('click', (e) => {
       if (!e.target.closest('#searchWrapper')) closeArtistDropdown();
-      if (!e.target.closest('.going-wrapper')) document.getElementById('goingPanel').classList.remove('visible');
+      if (!e.target.closest('#countryWrapper')) closeCountryPicker();
+      if (!e.target.closest('.going-wrapper')) {
+        document.getElementById('goingPanel').classList.remove('visible');
+        document.getElementById('btnGoingFilter').setAttribute('aria-expanded', 'false');
+      }
+      if (!document.body.classList.contains('sheet-open')) return;
+      if (e.target.closest('.side-panel, .filters-sheet, .sheet-tab, .btn-filters')) return;
+      closeAllSheets();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      closeArtistDropdown();
+      closeCountryPicker();
+      document.getElementById('goingPanel').classList.remove('visible');
+      document.getElementById('btnGoingFilter').setAttribute('aria-expanded', 'false');
+      closeAllSheets();
     });
 
     // Start calendar on current month
@@ -1330,10 +264,26 @@
     initMap();
     render();
     setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 200);
+
+    document.getElementById('agendaList').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      if (btn.dataset.action === 'going') {
+        e.stopPropagation();
+        toggleGoing(btn.dataset.key);
+      }
+    });
+
+    document.getElementById('goingPanelList').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action="going"]');
+      if (!btn) return;
+      e.stopPropagation();
+      toggleGoing(btn.dataset.key);
+    });
   }
 
   function getMonthCount() {
-    return window.innerWidth <= 480 ? 1 : 3;
+    return window.innerWidth <= 560 ? 1 : 3;
   }
 
   function changeMonth(delta) {
@@ -1348,10 +298,7 @@
   function getFilteredConcerts() {
     return CONCERTS_DATA.filter(c => {
       if (showGoingOnly && !goingSet.has(getConcertKey(c))) return false;
-      if (searchTerms.length > 0) {
-        const match = searchTerms.some(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
-        if (!match) return false;
-      }
+      if (!matchesArtistFilter(c)) return false;
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
       if (selectedCity && c.city !== selectedCity) return false;
       if (selectedDates.size > 0 && !selectedDates.has(c.date)) return false;
@@ -1395,20 +342,27 @@
     const bar = document.getElementById('activeFilters');
     const chips = [];
     if (searchTerms.length > 0) {
-      searchTerms.forEach(s => {
-        chips.push({ label: `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${s.color};margin-right:4px;"></span>${s.name}`, clear: () => {
-          searchTerms = searchTerms.filter(x => x.name !== s.name);
+      searchTerms.forEach(name => {
+        chips.push({ label: name, clear: () => {
+          searchTerms = searchTerms.filter(x => x !== name);
           updateArtistSelectLabel();
           buildArtistDropdown(document.getElementById('artistFilterInput').value);
           render();
         }});
       });
     }
+    activeCountries.forEach(name => {
+      chips.push({ label: name, clear: () => {
+        activeCountries.delete(name);
+        updateCountryLabel();
+        render();
+      }});
+    });
     if (selectedCity) {
       chips.push({ label: selectedCity, clear: () => { selectedCity = null; render(); }});
     }
     if (selectedDay) {
-      const d = new Date(selectedDay);
+      const d = parseDate(selectedDay);
       chips.push({ label: `${d.getDate()} ${MONTHS_FR[d.getMonth()]}`, clear: () => { selectedDay = null; render(); }});
     }
     if (showGoingOnly) {
@@ -1419,7 +373,7 @@
     }
     if (chips.length === 0) { bar.classList.remove('visible'); return; }
     bar.classList.add('visible');
-    bar.innerHTML = '<span style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Filters</span>';
+    bar.innerHTML = '<span class="af-label">Filters</span>';
     chips.forEach(c => {
       const chip = document.createElement('span');
       chip.className = 'filter-chip';
@@ -1439,38 +393,37 @@
     if (!container || typeof TOUR_IMAGES === 'undefined' || !TOUR_IMAGES.length) return;
     container.innerHTML = '';
 
-    TOUR_IMAGES.forEach(t => {
-      const slide = document.createElement('div');
+    // Les nouveautes passent en tete : getNewTours() reecrit avocado_known_tours a chaque
+    // appel, donc un rail limite aux nouveautes serait vide des la deuxieme visite.
+    const ordered = [...TOUR_IMAGES].sort((a, b) =>
+      (newTours.has(b.artist) ? 1 : 0) - (newTours.has(a.artist) ? 1 : 0));
+
+    ordered.forEach(t => {
+      const slide = document.createElement('button');
+      slide.type = 'button';
       slide.className = 'tour-slide';
-      const artistMatch = searchTerms.find(s => t.artist.toLowerCase().includes(s.name));
-      if (artistMatch) {
-        slide.classList.add('active');
-        slide.style.borderColor = artistMatch.color;
-      }
+      const artistLower = t.artist.toLowerCase();
+      if (searchTerms.some(term => artistLower.includes(term))) slide.classList.add('active');
       slide.innerHTML = `
-        <img src="${t.imageUrl}" alt="${t.artist}" loading="lazy">
-        <div class="slide-label">${t.artist}</div>
-        ${newTours.has(t.artist) ? '<span class="badge-new">NEW</span>' : ''}
+        <img src="${escapeHtml(httpsUrl(t.imageUrl))}" alt="" loading="lazy">
+        <span class="slide-label">${escapeHtml(t.artist)}</span>
+        ${newTours.has(t.artist) ? '<span class="badge badge-new">New</span>' : ''}
       `;
       slide.onclick = () => {
-        const artistLower = t.artist.toLowerCase();
-        const existIdx = searchTerms.findIndex(s => s.name === artistLower);
+        const existIdx = searchTerms.indexOf(artistLower);
         if (existIdx >= 0) {
           // Remove this artist
           searchTerms.splice(existIdx, 1);
-        } else if (searchTerms.length < COMPARE_COLORS.length) {
-          // Add this artist with next available color
-          const usedColors = new Set(searchTerms.map(s => s.color));
-          const color = COMPARE_COLORS.find(c => !usedColors.has(c)) || COMPARE_COLORS[0];
-          searchTerms.push({ name: artistLower, color });
+        } else {
+          searchTerms.push(artistLower);
           // Navigate calendar to the nearest concert date
           const today = new Date(); today.setHours(0,0,0,0);
           const todayStr = today.toISOString().slice(0,10);
-          const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistLower) || c.support.toLowerCase().includes(artistLower));
+          const artistConcerts = CONCERTS_DATA.filter(c => matchesSingleArtist(c, artistLower));
           const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
           const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
           if (nearest) {
-            const d = new Date(nearest.date);
+            const d = parseDate(nearest.date);
             currentMonth = d.getMonth();
             currentYear = d.getFullYear();
           }
@@ -1485,32 +438,36 @@
 
     // Auto-scroll
     if (carouselInterval) clearInterval(carouselInterval);
-    carouselInterval = setInterval(() => {
-      if (container.matches(':hover')) return;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      if (container.scrollLeft >= maxScroll - 10) {
-        container.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        container.scrollBy({ left: 190, behavior: 'smooth' });
-      }
-    }, 3000);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      carouselInterval = setInterval(() => {
+        if (container.matches(':hover, :focus-within')) return;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        if (container.scrollLeft >= maxScroll - 10) container.scrollTo({ left: 0, behavior: 'smooth' });
+        else container.scrollBy({ left: 240, behavior: 'smooth' });
+      }, 4000);
+    }
   }
 
-  // ===== LEAFLET MAP =====
+  // ===== CARTE LEAFLET =====
   let leafletMap = null;
   let markersLayer = null;
   let routeLayer = null;
 
+  // Tuiles sans cle d'API. Le rendu sombre ou clair vient d'un filtre CSS, pas d'un
+  // second fournisseur. L'attribution est obligatoire au titre de la licence ODbL.
+  const OSM_TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const OSM_ATTRIB = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+
+  function accentColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8fd14f';
+  }
+
   function initMap() {
     leafletMap = L.map('leafletMap', {
       center: [50, 10], zoom: 4, minZoom: 3, maxZoom: 8,
-      zoomControl: false, attributionControl: false
+      zoomControl: false
     });
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    const tiles = theme === 'light'
-      ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-    L.tileLayer(tiles, { subdomains: 'abcd' }).addTo(leafletMap);
+    L.tileLayer(OSM_TILES, { attribution: OSM_ATTRIB, maxZoom: 8 }).addTo(leafletMap);
     L.control.zoom({ position: 'topright' }).addTo(leafletMap);
     markersLayer = L.layerGroup().addTo(leafletMap);
     routeLayer = L.layerGroup().addTo(leafletMap);
@@ -1522,10 +479,7 @@
     routeLayer.clearLayers();
 
     const concertsNoCity = CONCERTS_DATA.filter(c => {
-      if (searchTerms.length > 0) {
-        const match = searchTerms.some(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
-        if (!match) return false;
-      }
+      if (!matchesArtistFilter(c)) return false;
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
       return true;
     });
@@ -1547,20 +501,18 @@
       cityFilter.classList.remove('visible');
     }
 
-    const maxCount = Math.max(...Object.values(cityCounts), 1);
-
+    const acc = accentColor();
     Object.entries(cityCounts).forEach(([city, count]) => {
       const coords = CITY_COORDS[city];
       if (!coords) return;
-      const r = Math.max(5, Math.min(18, 5 + (count / maxCount) * 13));
-      const opacity = 0.55 + (count / maxCount) * 0.45;
+      const r = Math.max(6, Math.min(22, 5 + Math.sqrt(count) * 3.2));
       const isSelected = selectedCity === city;
 
       const circle = L.circleMarker([coords[0], coords[1]], {
         radius: isSelected ? r + 3 : r,
-        fillColor: isSelected ? '#ffffff' : '#6dbf4a',
-        fillOpacity: isSelected ? 1 : opacity,
-        color: isSelected ? '#6dbf4a' : 'rgba(109,191,74,0.4)',
+        fillColor: acc,
+        fillOpacity: isSelected ? 0.85 : 0.55,
+        color: acc,
         weight: isSelected ? 3 : 1.5
       });
 
@@ -1585,9 +537,9 @@
     const routeArtists = searchTerms;
 
     const allBounds = [];
-    routeArtists.forEach(artist => {
+    routeArtists.forEach(name => {
       const artistConcerts = concertsNoCity
-        .filter(c => c.artist.toLowerCase().includes(artist.name) || c.support.toLowerCase().includes(artist.name))
+        .filter(c => matchesSingleArtist(c, name))
         .sort((a, b) => a.date.localeCompare(b.date));
 
       const points = [];
@@ -1602,7 +554,7 @@
 
       if (uniquePoints.length >= 2) {
         const line = L.polyline(uniquePoints, {
-          color: artist.color, weight: 2.5, opacity: 0.6, dashArray: '8, 6'
+          color: acc, weight: 2.5, opacity: 0.6, dashArray: '8, 6'
         });
         line.addTo(routeLayer);
         allBounds.push(line.getBounds());
@@ -1611,7 +563,7 @@
           L.marker(p, {
             icon: L.divIcon({
               className: 'route-step',
-              html: `<span style="background:${artist.color}">${i + 1}</span>`,
+              html: `<span>${i + 1}</span>`,
               iconSize: [20, 20]
             })
           }).addTo(routeLayer);
@@ -1647,13 +599,13 @@
 
       if (tripPoints.length >= 2) {
         const tripLine = L.polyline(tripPoints, {
-          color: '#e67e22', weight: 3, opacity: 0.8
+          color: getComputedStyle(document.documentElement).getPropertyValue('--sold-out').trim(), weight: 3, opacity: 0.8
         });
         tripLine.addTo(routeLayer);
 
         tripPoints.forEach((p, i) => {
           L.marker(p, {
-            icon: L.divIcon({ className: 'route-step-orange', html: `<span>${i + 1}</span>`, iconSize: [22, 22] })
+            icon: L.divIcon({ className: 'route-step-orange', html: `<span>${i + 1}</span>`, iconSize: [20, 20] })
           }).addTo(routeLayer);
         });
 
@@ -1680,16 +632,16 @@
         });
         html += `<div class="road-trip-total">${tripPoints.length} stops &middot; ${Math.round(totalDist)} km total</div>`;
         tripPanel.innerHTML = html;
-        tripPanel.style.display = 'block';
+        tripPanel.hidden = false;
 
         if (allBounds.length === 0) {
           leafletMap.fitBounds(tripLine.getBounds(), { padding: [30, 30] });
         }
       } else {
-        tripPanel.style.display = 'none';
+        tripPanel.hidden = true;
       }
     } else {
-      tripPanel.style.display = 'none';
+      tripPanel.hidden = true;
     }
   }
 
@@ -1750,18 +702,18 @@
 
       for (let d = 1; d <= lastDay.getDate(); d++) {
         const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        const cell = document.createElement('div');
+        const cell = document.createElement('button');
+        cell.type = 'button';
         const allConcerts = getConcertsForDate(dateStr);
         const matchingFiltered = filtered.filter(c => c.date === dateStr);
-        const isToday = new Date(dateStr).getTime() === today.getTime();
-        const isPast = new Date(dateStr) < today;
+        const isToday = parseDate(dateStr).getTime() === today.getTime();
+        const isPast = parseDate(dateStr) < today;
         const hasFiltered = matchingFiltered.length > 0;
         const hasAnyConcerts = allConcerts.length > 0;
 
         let classes = ['calendar-day'];
         if (isToday) classes.push('today');
         if (isPast) classes.push('past');
-        if (hasFiltered) classes.push('has-concerts');
         if (selectedDay === dateStr) classes.push('selected-day');
         if (selectedDates.has(dateStr)) classes.push('date-selected');
         cell.className = classes.join(' ');
@@ -1776,36 +728,21 @@
           render();
         };
 
-        const num = document.createElement('div');
+        const num = document.createElement('span');
         num.className = 'day-number';
         num.textContent = d;
         cell.appendChild(num);
 
-        if (hasFiltered) {
-          const dots = document.createElement('div');
-          dots.className = 'concert-dots';
-          if (searchTerms.length > 0) {
-            // Show colored dots per artist
-            const artistsOnDay = new Set();
-            matchingFiltered.forEach(c => {
-              const match = searchTerms.find(s => c.artist.toLowerCase().includes(s.name) || c.support.toLowerCase().includes(s.name));
-              if (match && !artistsOnDay.has(match.name)) {
-                artistsOnDay.add(match.name);
-                const dot = document.createElement('div');
-                dot.className = 'concert-dot filtered';
-                dot.style.background = match.color;
-                dots.appendChild(dot);
-              }
-            });
-          } else {
-            const maxDots = Math.min(matchingFiltered.length, 4);
-            for (let i = 0; i < maxDots; i++) {
-              const dot = document.createElement('div');
-              dot.className = 'concert-dot filtered';
-              dots.appendChild(dot);
-            }
-          }
-          cell.appendChild(dots);
+        // Palier de densite : le nombre de dates se lit au fond de la case, pas en points.
+        const n = matchingFiltered.length;
+        if (n >= 4) cell.classList.add('d-3');
+        else if (n >= 2) cell.classList.add('d-2');
+        else if (n === 1) cell.classList.add('d-1');
+
+        if (matchingFiltered.some(x => x.soldOut)) cell.classList.add('has-sold-out');
+
+        if (n > 0) {
+          cell.setAttribute('aria-label', `${d} ${MONTHS_FR[m]}: ${n} date${n > 1 ? 's' : ''}`);
         }
         grid.appendChild(cell);
       }
@@ -1813,6 +750,13 @@
       block.appendChild(grid);
       container.appendChild(block);
     }
+
+    document.getElementById('calendarLegend').innerHTML = `
+      <span class="lg-item"><i class="lg-sw d-1"></i>1</span>
+      <span class="lg-item"><i class="lg-sw d-2"></i>2&ndash;3</span>
+      <span class="lg-item"><i class="lg-sw d-3"></i>4+</span>
+      <span class="lg-item"><i class="lg-sw lg-sold"></i>Sold out</span>
+    `;
   }
 
   // ===== CONCERT LIST =====
@@ -1820,14 +764,14 @@
     const displayed = getDisplayedConcerts();
     displayed.sort((a, b) => a.date.localeCompare(b.date));
 
-    const list = document.getElementById('concertList');
+    const list = document.getElementById('agendaList');
     list.innerHTML = '';
 
     let title = 'Concerts';
     if (selectedCity) title = selectedCity;
     else {
       if (selectedDay) {
-        const d = new Date(selectedDay);
+        const d = parseDate(selectedDay);
         title = `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
       } else {
         const mc = getMonthCount();
@@ -1844,7 +788,12 @@
     document.getElementById('concertCount').textContent = displayed.length;
 
     if (displayed.length === 0) {
-      list.innerHTML = `<div class="no-results"><p>No concerts for this selection.</p><p style="font-size:11px;">Change the period or adjust your filters.</p></div>`;
+      list.innerHTML = `
+        <div class="empty-state">
+          <p class="es-title">No dates match this selection</p>
+          <p class="es-hint">Try another month, or clear the active filters.</p>
+          <button class="btn-ticket" onclick="clearAllFilters()">Clear filters</button>
+        </div>`;
       return;
     }
 
@@ -1852,12 +801,29 @@
     const festivalGroups = detectFestivals(displayed);
     const renderedFestivals = new Set();
 
+    let currentMonthKey = '';
     let currentGroup = '';
+    const monthTotals = {};
+    displayed.forEach(c => { const k = c.date.slice(0, 7); monthTotals[k] = (monthTotals[k] || 0) + 1; });
+
     displayed.forEach(c => {
+      const monthKey = c.date.slice(0, 7);
+      if (monthKey !== currentMonthKey) {
+        currentMonthKey = monthKey;
+        const [my, mm] = monthKey.split('-');
+        const head = document.createElement('div');
+        head.className = 'agenda-month';
+        const n = monthTotals[monthKey];
+        head.innerHTML = `<span class="month-name">${MONTHS_FR[+mm - 1]} ${my}</span>` +
+                         `<span class="month-count">${n} date${n > 1 ? 's' : ''}</span>`;
+        list.appendChild(head);
+        currentGroup = '';
+      }
+
       const festKey = `${c.date}|${c.venue}`;
       const group = festivalGroups[festKey];
-      const d = new Date(c.date);
-      const dayStr = `${WEEKDAYS_FR[d.getDay()]} ${d.getDate()} ${MONTHS_FR[d.getMonth()]}`;
+      const d = parseDate(c.date);
+      const dayStr = `${WEEKDAYS_FR[d.getDay()]} ${d.getDate()}`;
 
       if (dayStr !== currentGroup) {
         currentGroup = dayStr;
@@ -1872,71 +838,86 @@
         renderedFestivals.add(festKey);
         const fCard = document.createElement('div');
         fCard.className = 'festival-card';
-        const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        const countdown = getCountdownBadge(c.date);
         fCard.innerHTML = `
-          <div class="festival-header">
-            <span class="festival-name">&#127926; ${c.venue}</span>
-            ${countdown}
+          <div class="fc-head">
+            <span class="badge badge-fest">Festival</span>
+            ${getCountdownBadge(c.date)}
           </div>
-          <div class="festival-meta">${c.city}, ${c.country} &middot; ${mn[d.getMonth()]} ${d.getDate()}</div>
-          <div class="festival-lineup">${group.map(g => {
-            const fKey = getConcertKey(g);
-            const fGoing = goingSet.has(fKey);
-            const fSafe = fKey.replace(/'/g, "\\'");
-            return `<span class="lineup-chip">${g.artist} <button class="btn-going ${fGoing ? 'active' : ''}" onclick="event.stopPropagation();toggleGoing('${fSafe}')" style="font-size:13px;">${fGoing ? '&#9829;' : '&#9825;'}</button></span>`;
+          <h3 class="fc-name">${escapeHtml(c.venue)}</h3>
+          <div class="fc-meta">${escapeHtml(c.city)}, ${escapeHtml(c.country)}</div>
+          <div class="fc-lineup">${group.map(g => {
+            const gk = getConcertKey(g);
+            const gGoing = goingSet.has(gk);
+            return `<span class="fc-chip${gGoing ? ' active' : ''}${g.soldOut ? ' is-sold-out' : ''}">${escapeHtml(g.artist)}` +
+                   `<button class="btn-going${gGoing ? ' active' : ''}" data-action="going" data-key="${escapeHtml(gk)}"` +
+                   ` aria-label="${gGoing ? 'Remove from my concerts' : 'Add to my concerts'}"` +
+                   ` aria-pressed="${gGoing}">${gGoing ? '&#9829;' : '&#9825;'}</button></span>`;
           }).join('')}</div>
+          ${group[0].ticketUrl ? `<div class="fc-cta"><a class="btn-ticket" href="${escapeHtml(group[0].ticketUrl)}" target="_blank" rel="noopener">Tickets</a></div>` : ''}
         `;
-        if (group[0].ticketUrl) {
-          fCard.innerHTML += `<div style="margin-top:6px;"><a href="${group[0].ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a></div>`;
-        }
         list.appendChild(fCard);
       } else if (!group || group.length < 2) {
         list.appendChild(createConcertCard(c));
       }
     });
-    list.scrollTop = 0;
+  }
+
+  function clearAllFilters() {
+    searchTerms = [];
+    activeCountries.clear();
+    selectedCity = null;
+    selectedDay = null;
+    selectedDates.clear();
+    showGoingOnly = false;
+    document.getElementById('btnGoingFilter').classList.remove('active');
+    updateArtistSelectLabel();
+    updateCountryLabel();
+    buildArtistDropdown('');
+    buildCountryPicker('');
+    render();
   }
 
   function getCountdownBadge(dateStr) {
-    const today = new Date(); today.setHours(0,0,0,0);
-    const concert = new Date(dateStr); concert.setHours(0,0,0,0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const concert = parseDate(dateStr);
     const diff = Math.round((concert - today) / 86400000);
     if (diff < 0) return '';
-    if (diff === 0) return '<span class="badge-countdown today">Today!</span>';
-    if (diff === 1) return '<span class="badge-countdown tomorrow">Tomorrow</span>';
-    if (diff <= 7) return `<span class="badge-countdown soon">In ${diff} days</span>`;
-    if (diff <= 30) return `<span class="badge-countdown soon">In ${diff} days</span>`;
+    if (diff === 0) return '<span class="badge badge-now">Today</span>';
+    if (diff === 1) return '<span class="badge badge-soon">Tomorrow</span>';
+    if (diff <= 30) return `<span class="badge badge-soon">In ${diff} days</span>`;
     return '';
   }
 
   function createConcertCard(c) {
-    const d = new Date(c.date);
-    const card = document.createElement('div');
-    card.className = 'concert-card' + (c.soldOut ? ' sold-out' : '');
-    const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const countdown = getCountdownBadge(c.date);
+    const d = parseDate(c.date);
+    const mn = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     const key = getConcertKey(c);
     const isGoing = goingSet.has(key);
-    const safeKey = key.replace(/'/g, "\\'");
+
+    const card = document.createElement('article');
+    card.className = 'concert-card' + (c.soldOut ? ' is-sold-out' : '') + (isGoing ? ' is-going' : '');
+
     card.innerHTML = `
-      <div class="concert-date">
-        <div class="month">${mn[d.getMonth()]}</div>
-        <div class="day">${d.getDate()}</div>
-        <div class="weekday">${WEEKDAYS_FR[d.getDay()]}</div>
+      <div class="cc-date">
+        <span class="cc-month">${mn[d.getMonth()]}</span>
+        <span class="cc-day">${d.getDate()}</span>
+        <span class="cc-weekday">${DAYS_FR[(d.getDay() + 6) % 7]}</span>
       </div>
-      <div class="concert-info">
-        <h3>${c.artist}</h3>
-        <div class="tour-name">${c.tour}</div>
-        <div class="details">${c.venue} - ${c.city}, ${c.country}</div>
-        ${c.support ? `<div class="support">w/ ${c.support}</div>` : ''}
+      <div class="cc-body">
+        <h3 class="cc-artist">${escapeHtml(c.artist)}</h3>
+        ${c.tour ? `<div class="cc-tour">${escapeHtml(c.tour)}</div>` : ''}
+        <div class="cc-venue">${escapeHtml(c.venue)} &middot; ${escapeHtml(c.city)}, ${escapeHtml(c.country)}</div>
+        ${c.support ? `<div class="cc-support">${c.support.split(',').map(s => `<span class="cc-chip">${escapeHtml(s.trim())}</span>`).join('')}</div>` : ''}
       </div>
-      <div class="concert-actions">
-        <button class="btn-going ${isGoing ? 'active' : ''}" onclick="toggleGoing('${safeKey}')" title="I'm going">${isGoing ? '&#9829;' : '&#9825;'}</button>
-        ${countdown}
-        <a href="https://open.spotify.com/search/${encodeURIComponent(c.artist)}" target="_blank" rel="noopener" class="btn-spotify">&#9654; Spotify</a>
-        ${c.soldOut ? '<span class="badge-sold-out">Sold Out</span>' : ''}
-        ${c.ticketUrl ? `<a href="${c.ticketUrl}" target="_blank" rel="noopener" class="btn-ticket">Tickets</a>` : ''}
+      <div class="cc-actions">
+        ${getCountdownBadge(c.date)}
+        ${c.soldOut ? '<span class="badge badge-sold">Sold out</span>' : ''}
+        <button class="btn-going${isGoing ? ' active' : ''}" data-action="going" data-key="${escapeHtml(key)}"
+                aria-label="${isGoing ? 'Remove from my concerts' : 'Add to my concerts'}"
+                aria-pressed="${isGoing}">${isGoing ? '&#9829;' : '&#9825;'}</button>
+        <a class="btn-spotify" href="https://open.spotify.com/search/${encodeURIComponent(c.artist)}"
+           target="_blank" rel="noopener">Spotify</a>
+        ${c.ticketUrl ? `<a class="btn-ticket" href="${escapeHtml(c.ticketUrl)}" target="_blank" rel="noopener">Tickets</a>` : ''}
       </div>
     `;
     return card;
@@ -1945,12 +926,11 @@
   // ===== ARTIST DROPDOWN =====
   function toggleArtistDropdown() {
     const dd = document.getElementById('artistDropdown');
-    const btn = document.getElementById('artistSelectBtn');
-    if (dd.classList.contains('open')) {
+    if (dd.classList.contains('visible')) {
       closeArtistDropdown();
     } else {
-      dd.classList.add('open');
-      btn.classList.add('open');
+      dd.classList.add('visible');
+      document.getElementById('artistSelectBtn').setAttribute('aria-expanded', 'true');
       buildArtistDropdown('');
       document.getElementById('artistFilterInput').value = '';
       setTimeout(() => document.getElementById('artistFilterInput').focus(), 50);
@@ -1958,8 +938,8 @@
   }
 
   function closeArtistDropdown() {
-    document.getElementById('artistDropdown').classList.remove('open');
-    document.getElementById('artistSelectBtn').classList.remove('open');
+    document.getElementById('artistDropdown').classList.remove('visible');
+    document.getElementById('artistSelectBtn').setAttribute('aria-expanded', 'false');
   }
 
   function buildArtistDropdown(filter) {
@@ -1985,14 +965,13 @@
 
     filtered.forEach(a => {
       const nameLower = a.name.toLowerCase();
-      const selected = searchTerms.find(s => s.name === nameLower);
+      const selected = searchTerms.includes(nameLower);
       const item = document.createElement('div');
-      item.className = 'artist-dropdown-item' + (selected ? ' checked' : '');
+      item.className = 'picker-item' + (selected ? ' selected' : '');
       item.innerHTML = `
         <input type="checkbox" ${selected ? 'checked' : ''} tabindex="-1">
-        <span class="artist-color-dot" style="background:${selected ? selected.color : 'transparent'}"></span>
-        <span class="artist-name">${a.name}</span>
-        <span class="artist-count">${a.count}</span>
+        <span class="picker-name">${escapeHtml(a.name)}</span>
+        <span class="picker-count">${a.count}</span>
       `;
       item.onclick = (e) => {
         e.stopPropagation();
@@ -2003,21 +982,19 @@
   }
 
   function toggleArtistSelection(artistName) {
-    const existIdx = searchTerms.findIndex(s => s.name === artistName);
+    const existIdx = searchTerms.indexOf(artistName);
     if (existIdx >= 0) {
       searchTerms.splice(existIdx, 1);
-    } else if (searchTerms.length < COMPARE_COLORS.length) {
-      const usedColors = new Set(searchTerms.map(s => s.color));
-      const color = COMPARE_COLORS.find(c => !usedColors.has(c)) || COMPARE_COLORS[0];
-      searchTerms.push({ name: artistName, color });
+    } else {
+      searchTerms.push(artistName);
       // Navigate calendar to nearest future concert
       const today = new Date(); today.setHours(0,0,0,0);
       const todayStr = today.toISOString().slice(0,10);
-      const artistConcerts = CONCERTS_DATA.filter(c => c.artist.toLowerCase().includes(artistName) || c.support.toLowerCase().includes(artistName));
+      const artistConcerts = CONCERTS_DATA.filter(c => matchesSingleArtist(c, artistName));
       const futureConcerts = artistConcerts.filter(c => c.date >= todayStr);
       const nearest = futureConcerts.length > 0 ? futureConcerts[0] : artistConcerts[0];
       if (nearest) {
-        const d = new Date(nearest.date);
+        const d = parseDate(nearest.date);
         currentMonth = d.getMonth();
         currentYear = d.getFullYear();
       }
@@ -2033,95 +1010,103 @@
     if (searchTerms.length === 0) {
       label.textContent = 'All artists';
     } else if (searchTerms.length === 1) {
-      label.textContent = searchTerms[0].name;
+      label.textContent = searchTerms[0];
     } else if (searchTerms.length === 2) {
-      label.textContent = searchTerms.map(s => s.name).join(', ');
+      label.textContent = searchTerms.join(', ');
     } else {
       label.textContent = `${searchTerms.length} artists`;
     }
   }
 
-  // ===== STATISTICS DASHBOARD =====
-  function toggleStats() {
-    document.getElementById('statsPanel').classList.toggle('open');
-    if (document.getElementById('statsPanel').classList.contains('open')) renderStats();
+  // ===== FILTRE PAYS =====
+  function countryCounts() {
+    const counts = {};
+    CONCERTS_DATA.forEach(c => { counts[c.country] = (counts[c.country] || 0) + 1; });
+    return counts;
   }
 
-  function renderStats() {
-    const inner = document.getElementById('statsInner');
-    inner.innerHTML = '';
+  function toggleCountryPicker() {
+    const panel = document.getElementById('countryPanel');
+    const open = !panel.classList.contains('visible');
+    closeArtistDropdown();
+    panel.classList.toggle('visible', open);
+    document.getElementById('countrySelectBtn').setAttribute('aria-expanded', String(open));
+    if (open) {
+      buildCountryPicker('');
+      document.getElementById('countryFilterInput').focus();
+    }
+  }
 
-    // Concerts per month
-    const monthCounts = {};
-    CONCERTS_DATA.forEach(c => {
-      const key = c.date.substring(0, 7);
-      monthCounts[key] = (monthCounts[key] || 0) + 1;
-    });
-    const sortedMonths = Object.entries(monthCounts).sort((a, b) => a[0].localeCompare(b[0]));
-    const maxMonth = Math.max(...sortedMonths.map(e => e[1]));
-    let monthHTML = '<div class="stat-block"><h4>Concerts per month</h4>';
-    sortedMonths.forEach(([m, count]) => {
-      const [yr, mo] = m.split('-');
-      const label = MONTHS_FR[parseInt(mo) - 1].substring(0, 3) + ' ' + yr;
-      const pct = (count / maxMonth * 100).toFixed(0);
-      monthHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${label}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    monthHTML += '</div>';
+  function closeCountryPicker() {
+    document.getElementById('countryPanel').classList.remove('visible');
+    document.getElementById('countrySelectBtn').setAttribute('aria-expanded', 'false');
+  }
 
-    // Top cities
-    const cityCounts = {};
-    CONCERTS_DATA.forEach(c => { cityCounts[c.city] = (cityCounts[c.city] || 0) + 1; });
-    const topCities = Object.entries(cityCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const maxCity = topCities[0]?.[1] || 1;
-    let cityHTML = '<div class="stat-block"><h4>Top cities</h4>';
-    topCities.forEach(([city, count]) => {
-      const pct = (count / maxCity * 100).toFixed(0);
-      cityHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${city}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    cityHTML += '</div>';
+  function buildCountryPicker(filter) {
+    const list = document.getElementById('countryPickerList');
+    const counts = countryCounts();
+    const needle = (filter || '').toLowerCase();
+    const names = Object.keys(counts).sort((a, b) => a.localeCompare(b))
+      .filter(n => n.toLowerCase().includes(needle));
 
-    // Most touring artists
-    const artistCounts = {};
-    CONCERTS_DATA.forEach(c => {
-      artistCounts[c.artist] = (artistCounts[c.artist] || 0) + 1;
-      if (c.support) c.support.split(',').map(s => s.trim()).filter(Boolean).forEach(name => {
-        artistCounts[name] = (artistCounts[name] || 0) + 1;
-      });
-    });
-    const topArtists = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const maxArtist = topArtists[0]?.[1] || 1;
-    let artistHTML = '<div class="stat-block"><h4>Most shows</h4>';
-    topArtists.forEach(([artist, count]) => {
-      const pct = (count / maxArtist * 100).toFixed(0);
-      artistHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${artist}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    artistHTML += '</div>';
+    if (names.length === 0) {
+      list.innerHTML = '<div class="picker-empty">No match</div>';
+      return;
+    }
 
-    // Country distribution
-    const countryCounts = {};
-    CONCERTS_DATA.forEach(c => { countryCounts[c.country] = (countryCounts[c.country] || 0) + 1; });
-    const topCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const maxCountry = topCountries[0]?.[1] || 1;
-    let countryHTML = '<div class="stat-block"><h4>By country</h4>';
-    topCountries.forEach(([country, count]) => {
-      const pct = (count / maxCountry * 100).toFixed(0);
-      countryHTML += `<div class="stat-bar-row"><span class="stat-bar-label">${country}</span><div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div><span class="stat-bar-value">${count}</span></div>`;
-    });
-    countryHTML += '</div>';
+    list.innerHTML = names.map(n => {
+      const on = activeCountries.has(n);
+      return `<div class="picker-item${on ? ' selected' : ''}" role="option" aria-selected="${on}"
+                   data-country="${escapeHtml(n)}">
+                <input type="checkbox" ${on ? 'checked' : ''} tabindex="-1" aria-hidden="true">
+                <span class="picker-name">${escapeHtml(n)}</span>
+                <span class="picker-count">${counts[n]}</span>
+              </div>`;
+    }).join('');
 
-    inner.innerHTML = monthHTML + cityHTML + artistHTML + countryHTML;
+    list.querySelectorAll('.picker-item').forEach(el => {
+      el.onclick = () => toggleCountrySelection(el.dataset.country);
+    });
+  }
+
+  function toggleCountrySelection(name) {
+    if (activeCountries.has(name)) activeCountries.delete(name);
+    else activeCountries.add(name);
+    updateCountryLabel();
+    buildCountryPicker(document.getElementById('countryFilterInput').value);
+    selectedDay = null;
+    render();
+  }
+
+  function updateCountryLabel() {
+    const label = document.getElementById('countrySelectLabel');
+    const n = activeCountries.size;
+    if (n === 0) label.textContent = 'All countries';
+    else if (n === 1) label.textContent = [...activeCountries][0];
+    else label.textContent = `${n} countries`;
   }
 
   // ===== NEW TOUR DETECTION =====
   function getNewTours() {
     if (typeof TOUR_IMAGES === 'undefined') return new Set();
     const key = 'avocado_known_tours';
-    const known = JSON.parse(localStorage.getItem(key) || '[]');
-    const knownSet = new Set(known);
+    const raw = localStorage.getItem(key);
     const currentTours = TOUR_IMAGES.map(t => t.artist);
-    const newTours = new Set(currentTours.filter(a => !knownSet.has(a)));
     localStorage.setItem(key, JSON.stringify(currentTours));
-    return newTours;
+
+    // Premiere visite: aucune reference enregistree, donc rien n'est "nouveau". Sans ce
+    // retour anticipe les 24 vignettes porteraient toutes le badge, qui n'informerait de
+    // rien. La detection ne devient utile qu'a partir de la deuxieme visite.
+    if (raw === null) return new Set();
+
+    // Une valeur corrompue ne doit pas faire lever init(), qui ne rendrait alors plus
+    // aucune carte.
+    let known;
+    try { known = JSON.parse(raw); } catch { known = []; }
+    if (!Array.isArray(known)) known = [];
+
+    const knownSet = new Set(known);
+    return new Set(currentTours.filter(a => !knownSet.has(a)));
   }
 
   // ===== FESTIVAL GROUPING =====
@@ -2137,19 +1122,11 @@
 
   // ===== THEME TOGGLE =====
   function toggleTheme() {
-    const html = document.documentElement;
-    const current = html.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', next);
+    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('avocado_theme', next);
-    // Update Leaflet tiles for light/dark
-    if (leafletMap) {
-      leafletMap.eachLayer(l => { if (l._url) leafletMap.removeLayer(l); });
-      const tiles = next === 'light'
-        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-      L.tileLayer(tiles, { subdomains: 'abcd' }).addTo(leafletMap);
-    }
+    renderMap();
   }
 
   function loadTheme() {
@@ -2157,26 +1134,52 @@
     if (saved) document.documentElement.setAttribute('data-theme', saved);
   }
 
-  // ===== MAP TOGGLE =====
-  function toggleMap() {
-    const container = document.querySelector('.map-container');
-    const btn = document.getElementById('btnMapToggle');
-    const hidden = container.classList.toggle('map-hidden');
-    btn.classList.toggle('active', !hidden);
-    localStorage.setItem('avocado_map_hidden', hidden ? '1' : '0');
-    if (!hidden && leafletMap) {
-      setTimeout(() => leafletMap.invalidateSize(), 350);
+  // ===== FEUILLES MOBILES =====
+  function toggleSheet(id) {
+    const target = document.getElementById(id);
+    const wasOpen = target.classList.contains('sheet-open');
+    document.querySelectorAll('.side-panel.sheet-open, .filters-sheet.sheet-open').forEach(p => {
+      p.classList.remove('sheet-open');
+      const tab = document.querySelector(`[aria-controls="${p.id}"]`);
+      if (tab) tab.setAttribute('aria-expanded', 'false');
+    });
+    document.body.classList.toggle('sheet-open', !wasOpen);
+    if (!wasOpen) {
+      target.classList.add('sheet-open');
+      const tab = document.querySelector(`[aria-controls="${id}"]`);
+      if (tab) tab.setAttribute('aria-expanded', 'true');
+      if (id === 'mapPanel' && leafletMap) setTimeout(() => leafletMap.invalidateSize(), 120);
     }
   }
 
+  function closeAllSheets() {
+    document.querySelectorAll('.side-panel.sheet-open, .filters-sheet.sheet-open')
+      .forEach(pnl => {
+        pnl.classList.remove('sheet-open');
+        const tab = document.querySelector(`[aria-controls="${pnl.id}"]`);
+        if (tab) tab.setAttribute('aria-expanded', 'false');
+      });
+    document.body.classList.remove('sheet-open');
+  }
+
+  // ===== MAP TOGGLE =====
+  function toggleMap() {
+    const panel = document.getElementById('mapPanel');
+    const btn = document.getElementById('btnMapToggle');
+    if (!panel || !btn) return;
+    const hidden = panel.classList.toggle('is-hidden');
+    btn.classList.toggle('active', !hidden);
+    localStorage.setItem('avocado_map_hidden', hidden ? '1' : '0');
+    if (!hidden && leafletMap) setTimeout(() => leafletMap.invalidateSize(), 120);
+  }
+
   function loadMapPref() {
+    const panel = document.getElementById('mapPanel');
+    const btn = document.getElementById('btnMapToggle');
+    if (!panel || !btn) return;
     const hidden = localStorage.getItem('avocado_map_hidden') === '1';
-    if (hidden) {
-      document.querySelector('.map-container').classList.add('map-hidden');
-      document.getElementById('btnMapToggle').classList.remove('active');
-    } else {
-      document.getElementById('btnMapToggle').classList.add('active');
-    }
+    panel.classList.toggle('is-hidden', hidden);
+    btn.classList.toggle('active', !hidden);
   }
 
   // ===== I'M GOING =====
@@ -2196,14 +1199,17 @@
 
   function toggleGoingPanel() {
     const panel = document.getElementById('goingPanel');
-    panel.classList.toggle('visible');
-    if (panel.classList.contains('visible')) renderGoingPanel();
+    const open = !panel.classList.contains('visible');
+    panel.classList.toggle('visible', open);
+    document.getElementById('btnGoingFilter').setAttribute('aria-expanded', String(open));
+    if (open) renderGoingPanel();
   }
 
   function toggleGoingFilter() {
     showGoingOnly = !showGoingOnly;
     document.getElementById('btnGoingFilter').classList.toggle('active', showGoingOnly);
     document.getElementById('goingPanel').classList.remove('visible');
+    document.getElementById('btnGoingFilter').setAttribute('aria-expanded', 'false');
     render();
   }
 
@@ -2220,8 +1226,8 @@
 
     list.innerHTML = '';
     concerts.forEach(c => {
-      const d = new Date(c.date + 'T00:00:00');
-      const key = getConcertKey(c).replace(/'/g, "\\'");
+      const d = parseDate(c.date);
+      const key = getConcertKey(c);
       const item = document.createElement('div');
       item.className = 'going-item';
       item.innerHTML = `
@@ -2230,14 +1236,20 @@
           <div class="gi-day">${d.getDate()}</div>
         </div>
         <div class="going-item-info">
-          <div class="gi-artist">${c.artist}</div>
-          <div class="gi-details">${c.venue} — ${c.city}, ${c.country}</div>
+          <div class="gi-artist">${escapeHtml(c.artist)}</div>
+          <div class="gi-details">${escapeHtml(c.venue)} — ${escapeHtml(c.city)}, ${escapeHtml(c.country)}</div>
         </div>
-        <button class="going-item-remove" onclick="event.stopPropagation();toggleGoing('${key}')" title="Remove">&#10005;</button>
+        <button class="going-item-remove" data-action="going" data-key="${escapeHtml(key)}"
+                aria-label="Remove ${escapeHtml(c.artist)} from my concerts">&times;</button>
       `;
-      item.onclick = () => {
+      item.onclick = (e) => {
+        // le bouton retrait est plus proche de la cible que #goingPanelList : son
+        // stopPropagation arrive trop tard pour empecher ce gestionnaire-ci de
+        // s'executer pendant la remontee, d'ou ce garde-fou sur la cible.
+        if (e.target.closest('[data-action="going"]')) return;
         document.getElementById('goingPanel').classList.remove('visible');
-        const dt = new Date(c.date + 'T00:00:00');
+        document.getElementById('btnGoingFilter').setAttribute('aria-expanded', 'false');
+        const dt = parseDate(c.date);
         currentMonth = dt.getMonth();
         currentYear = dt.getFullYear();
         selectedDay = c.date;
@@ -2253,6 +1265,7 @@
     showGoingOnly = false;
     document.getElementById('btnGoingFilter').classList.remove('active');
     document.getElementById('goingPanel').classList.remove('visible');
+    document.getElementById('btnGoingFilter').setAttribute('aria-expanded', 'false');
     render();
   }
 
@@ -2268,13 +1281,16 @@
   // ===== SHARE FILTERS VIA URL =====
   function shareFilters() {
     const params = new URLSearchParams();
-    if (searchTerms.length > 0) params.set('artists', searchTerms.map(s => s.name).join(','));
+    if (searchTerms.length > 0) params.set('artists', searchTerms.join(','));
     if (selectedCity) params.set('city', selectedCity);
     if (activeCountries.size > 0) params.set('countries', [...activeCountries].join(','));
     const url = window.location.origin + window.location.pathname + (params.toString() ? '?' + params.toString() : '');
     navigator.clipboard.writeText(url).then(() => {
-      const btn = document.querySelector('.toolbar-actions .btn-icon[title*="Share"]');
-      if (btn) { const orig = btn.innerHTML; btn.innerHTML = '&#10003;'; setTimeout(() => btn.innerHTML = orig, 1500); }
+      const btn = document.querySelector('.toolbar-actions .btn-icon[aria-label^="Copy link"]');
+      if (btn) {
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 1500);
+      }
     }).catch(() => {
       prompt('Copy this link:', url);
     });
@@ -2284,20 +1300,18 @@
     const params = new URLSearchParams(window.location.search);
     if (params.has('artists')) {
       const names = params.get('artists').split(',');
-      names.forEach((name, i) => {
-        searchTerms.push({ name: name.toLowerCase(), color: COMPARE_COLORS[i % COMPARE_COLORS.length] });
-      });
+      names.filter(Boolean).forEach(name => searchTerms.push(name.toLowerCase()));
       updateArtistSelectLabel();
     } else if (params.has('artist')) {
-      const name = params.get('artist').toLowerCase();
-      searchTerms.push({ name, color: COMPARE_COLORS[0] });
+      searchTerms.push(params.get('artist').toLowerCase());
       updateArtistSelectLabel();
     }
     if (params.has('city')) {
       selectedCity = params.get('city');
     }
     if (params.has('countries')) {
-      params.get('countries').split(',').forEach(c => activeCountries.add(c));
+      params.get('countries').split(',').filter(Boolean)
+        .forEach(c => activeCountries.add(normalizeCountry(c.trim())));
     }
   }
 
@@ -2330,8 +1344,8 @@
 </script>
 
 <footer class="disclaimer">
-  <p>This is a free, unofficial tool designed to help discover concerts. All concert data is sourced from <a href="http://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. This site is not affiliated with, endorsed by, or officially connected to Avocado Booking in any way. All trademarks, logos, and concert information remain the property of their respective owners. If you are a rights holder and wish to have content removed, please <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">open an issue</a>.</p>
-  <p style="margin-top:4px;font-size:10px;color:#555;">v1.5.0</p>
+  <p>This is a free, unofficial tool designed to help discover concerts. All concert data is sourced from <a href="https://www.avocadobooking.com" target="_blank" rel="noopener">avocadobooking.com</a>. This site is not affiliated with, endorsed by, or officially connected to Avocado Booking in any way. All trademarks, logos, and concert information remain the property of their respective owners. If you are a rights holder and wish to have content removed, please <a href="https://github.com/J3aN95/avocadobookingcalendar/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+  <p class="version">v2.0.0</p>
 </footer>
 
 </body>
