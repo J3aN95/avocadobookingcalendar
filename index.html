@@ -95,6 +95,13 @@
       </svg>
     </button>
 
+    <button class="btn-icon cal-toggle-btn" id="btnCalToggle" onclick="toggleCalendar()" aria-label="Show or hide the calendar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <rect x="3.5" y="5" width="17" height="15" rx="2"/>
+        <path d="M3.5 10h17M8 3.5v3M16 3.5v3"/>
+      </svg>
+    </button>
+
     <button class="btn-icon" onclick="toggleTheme()" aria-label="Switch between light and dark theme">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
         <circle cx="12" cy="12" r="4.5"/>
@@ -232,6 +239,8 @@
     normalizeData();
     loadTheme();
     loadMapPref();
+    loadCalPref();
+    updateLayoutWidth();
     loadGoing();
     loadFiltersFromURL();
     updateCountryLabel();
@@ -1197,6 +1206,7 @@
     const hidden = panel.classList.toggle('is-hidden');
     btn.classList.toggle('active', !hidden);
     localStorage.setItem('avocado_map_hidden', hidden ? '1' : '0');
+    updateLayoutWidth();
     if (!hidden && leafletMap) setTimeout(() => leafletMap.invalidateSize(), 120);
   }
 
@@ -1207,6 +1217,38 @@
     const hidden = localStorage.getItem('avocado_map_hidden') === '1';
     panel.classList.toggle('is-hidden', hidden);
     btn.classList.toggle('active', !hidden);
+  }
+
+  function toggleCalendar() {
+    const panel = document.getElementById('calendarPanel');
+    const btn = document.getElementById('btnCalToggle');
+    if (!panel || !btn) return;
+    const hidden = panel.classList.toggle('is-hidden');
+    btn.classList.toggle('active', !hidden);
+    localStorage.setItem('avocado_cal_hidden', hidden ? '1' : '0');
+    updateLayoutWidth();
+  }
+
+  function loadCalPref() {
+    const panel = document.getElementById('calendarPanel');
+    const btn = document.getElementById('btnCalToggle');
+    if (!panel || !btn) return;
+    const hidden = localStorage.getItem('avocado_cal_hidden') === '1';
+    panel.classList.toggle('is-hidden', hidden);
+    btn.classList.toggle('active', !hidden);
+  }
+
+  // Masquer les deux panneaux vidait la colonne laterale sans la retirer de la grille,
+  // laissant une gouttiere de 380px et un agenda inchange. C'est cette classe qui
+  // produit la liste large, pas le seul masquage.
+  function updateLayoutWidth() {
+    const layout = document.querySelector('.layout');
+    const map = document.getElementById('mapPanel');
+    const cal = document.getElementById('calendarPanel');
+    if (!layout || !map || !cal) return;
+    const vide = map.classList.contains('is-hidden') && cal.classList.contains('is-hidden');
+    layout.classList.toggle('is-wide', vide);
+    if (!vide && leafletMap) setTimeout(() => leafletMap.invalidateSize(), 120);
   }
 
   // ===== I'M GOING =====

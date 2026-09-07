@@ -975,6 +975,16 @@ body {
   align-items: start;
 }
 
+/* Les deux panneaux masques: la colonne laterale doit sortir de la grille, pas
+   seulement se vider. Sans cela elle garde ses 380px et l'agenda ne s'elargit pas,
+   ce qui est precisement l'inverse de ce que le bouton promet. */
+.layout.is-wide {
+  grid-template-columns: minmax(0, 1fr);
+  /* La laterale reste un element de grille et devient une seconde rangee de hauteur
+     nulle, donc le row-gap laissait 24px d'espace mort sous l'agenda. */
+  row-gap: 0;
+}
+
 .agenda {
   min-width: 0;
 }
@@ -1246,7 +1256,10 @@ body {
 
   /* l'onglet de feuille Map commande deja la meme carte : les deux etats se
      contrediraient sinon, et l'onglet gagne par ordre de declaration */
-  .map-toggle-btn { display: none; }
+  /* Sous 900px la carte et le calendrier vivent dans des feuilles fermees, donc les
+     masquer n'a aucun sens; et un cinquieme bouton a 44px ferait deborder l'en-tete a
+     390px. Les onglets de feuille remplacent les deux boutons. */
+  .map-toggle-btn, .cal-toggle-btn { display: none; }
 
   /* meme element du DOM, autre presentation : plus un enfant du flex de l'en-tete,
      mais une feuille par-dessus la page */
