@@ -1269,13 +1269,29 @@ body {
     margin-top: var(--sp-1);
   }
 
-  /* cibles tactiles */
+  /* Cibles tactiles. min-width autant que min-height: le coeur tire sa largeur de son
+     glyphe et ne faisait que 20px, donc il echouait au minimum de 24x24 de WCAG 2.5.8
+     sur l'axe horizontal malgre une hauteur genereuse. */
   .cc-actions .btn-going,
   .cc-actions .btn-ticket,
-  .cc-actions .btn-spotify {
+  .cc-actions .btn-spotify,
+  .fc-cta .btn-ticket {
     min-height: 44px;
+    min-width: 44px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+  }
+
+  /* Dans une puce de plateau, le coeur est un controle en ligne a cote d'un nom, pas une
+     cible isolee. Les 24x24 de WCAG 2.5.8 suffisent et sont respectes; forcer 44 rendrait
+     chaque puce aussi haute et empilerait le plateau. */
+  .fc-chip .btn-going {
+    min-height: 24px;
+    min-width: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .cc-day { font-size: var(--fs-xl); }
