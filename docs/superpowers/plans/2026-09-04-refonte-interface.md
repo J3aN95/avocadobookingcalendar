@@ -2744,6 +2744,51 @@ avec :
 .btn-icon.copied { border-color: var(--accent); color: var(--accent); }
 ```
 
+- [ ] **Step 1b: Consolider le bloc mono, sur le modèle du bloc de titre**
+
+Relevé après la tâche 7 : **onze** règles combinent `font-family: var(--font-mono)` et
+`text-transform: uppercase`, et la classe utilitaire `.u-mono` n'est employée **nulle part**
+dans le balisage. C'est la même duplication que celle qu'un bloc groupé a déjà résolue pour
+les titres, mais à plus grande échelle, et la tâche 7 l'a signalée.
+
+Les onze règles sont `.u-mono`, `.btn-spotify`, `.btn-ticket`, `.cc-tour`, `.badge`,
+`.agenda-month .month-count`, `.date-separator`, `.calendar-nav h3`, `.month-block h3`,
+`.day-header` et `.calendar-legend`.
+
+Attention : seules **deux** propriétés leur sont réellement communes. Le `letter-spacing`
+vaut `0.08em` pour la plupart mais `0.06em` pour `.day-header` et `.calendar-legend`, et les
+tailles et couleurs diffèrent partout. Ne mutualisez donc que ce qui est vraiment commun,
+sinon vous reproduisez la collision qui a coûté une ronde à la tâche 4.
+
+Transformer la déclaration de `.u-mono` en liste groupée, placée là où `.u-mono` se trouve
+déjà, et **retirer les deux propriétés mutualisées de chacune des dix autres règles** :
+
+```css
+/* Bloc mono partage. Seules les deux proprietes vraiment communes aux onze regles sont
+   ici: le tracking varie (0.08em ou 0.06em) et les tailles et couleurs sont propres a
+   chaque emploi, donc elles restent dans leur regle. Toute nouvelle etiquette en
+   capitales mono s'ajoute a cette liste plutot que de recopier ces deux lignes. */
+.u-mono,
+.btn-spotify,
+.btn-ticket,
+.cc-tour,
+.badge,
+.agenda-month .month-count,
+.date-separator,
+.calendar-nav h3,
+.month-block h3,
+.day-header,
+.calendar-legend {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+```
+
+Vérification : `grep -c "font-family: var(--font-mono)" styles.css` doit rendre **1**, et
+`grep -c "text-transform: uppercase" styles.css` doit rendre le nombre de blocs groupés,
+soit 2, celui des titres et celui-ci. Contrôler ensuite au navigateur que rien n'a perdu ses
+capitales ou son mono, puisque dix règles viennent d'être allégées.
+
 - [ ] **Step 2: Styliser les boutons d'icône**
 
 ```css
