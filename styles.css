@@ -279,19 +279,47 @@ body {
 .btn-spotify {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: #1db954;
-  color: #fff;
-  border-radius: 12px;
-  font-size: var(--fs-sm);
-  font-weight: 600;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-3);
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: opacity 0.2s;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
 }
-.btn-spotify:hover { opacity: 0.85; }
+
+.btn-spotify:hover { color: var(--text); border-color: var(--border-strong); }
 
 /* ===== CARTE DE CONCERT ===== */
+/* Appel a l'action principal de l'application. Sa regle de base avait disparu avec la
+   section retiree par la tache 5, ne laissant que deux surcharges orphelines dans les
+   media queries. */
+.btn-ticket {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--sp-1) var(--sp-3);
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.btn-ticket:hover { background: var(--accent-hover); }
+
 .concert-card {
   position: relative;
   display: grid;
@@ -457,6 +485,12 @@ body {
 }
 
 .fc-chip.active { border-color: var(--accent); }
+
+/* un artiste complet dans un plateau: le signal ne doit pas se perdre */
+.fc-chip.is-sold-out {
+  border-color: var(--sold-out);
+  color: var(--sold-out);
+}
 .fc-cta { margin-top: var(--sp-3); }
 
 /* ===== ACTIVE FILTERS CHIPS ===== */
@@ -683,7 +717,7 @@ body {
   right: 0;
   margin-top: 6px;
   background: var(--surface);
-  border: 1px solid #e74c3c;
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   padding: 0;
   z-index: 1000;
@@ -702,7 +736,7 @@ body {
   justify-content: space-between;
   flex-shrink: 0;
 }
-.going-panel-header h4 { margin: 0; font-size: var(--fs-md); color: #e74c3c; }
+.going-panel-header h4 { margin: 0; font-size: var(--fs-md); color: var(--text-dim); }
 .going-panel-actions { display: flex; gap: 6px; }
 .going-panel-actions button {
   font-size: var(--fs-sm);
@@ -714,9 +748,9 @@ body {
   cursor: pointer;
 }
 .going-panel-actions button.btn-filter-going {
-  background: #e74c3c;
-  color: #fff;
-  border-color: #e74c3c;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
 }
 .going-panel-list {
   flex: 1;
@@ -744,7 +778,7 @@ body {
   text-align: center;
   width: 40px;
 }
-.going-item-date .gi-month { font-size: var(--fs-xs); text-transform: uppercase; color: #e74c3c; font-weight: 700; }
+.going-item-date .gi-month { font-size: var(--fs-xs); text-transform: uppercase; color: var(--accent); font-weight: 700; }
 .going-item-date .gi-day { font-size: var(--fs-lg); font-weight: 700; color: var(--text); line-height: 1.1; }
 .going-item-info { flex: 1; min-width: 0; }
 .going-item-info .gi-artist { font-size: var(--fs-sm); font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -760,13 +794,13 @@ body {
   border-radius: 4px;
   transition: all 0.15s;
 }
-.going-item-remove:hover { color: #e74c3c; background: rgba(231,76,60,0.1); }
+.going-item-remove:hover { color: var(--sold-out); background: var(--accent-soft); }
 
 
 .going-badge {
   font-size: var(--fs-xs);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border-radius: 50%;
   min-width: 14px; height: 14px;
   display: inline-flex;
@@ -776,19 +810,19 @@ body {
   padding: 0 3px;
 }
 .going-badge[data-count="0"] { display: none; }
-.going-toggle-btn.active { color: #e74c3c !important; border-color: #e74c3c !important; }
+.going-toggle-btn.active { color: var(--accent) !important; border-color: var(--accent) !important; }
 .btn-going {
   background: none;
   border: none;
   cursor: pointer;
   font-size: var(--fs-lg);
-  color: var(--text-dim);
+  color: var(--text-faint);
   transition: all 0.2s;
   padding: 2px;
   line-height: 1;
 }
-.btn-going:hover { color: #e74c3c; transform: scale(1.2); }
-.btn-going.active { color: #e74c3c; }
+.btn-going:hover { color: var(--accent); transform: scale(1.2); }
+.btn-going.active { color: var(--accent); }
 
 /* ===== DISCLAIMER FOOTER ===== */
 .disclaimer {
@@ -833,11 +867,7 @@ body {
 }
 
 .agenda-head h2 {
-  font-stretch: 75%;
-  font-weight: 700;
   font-size: var(--fs-xl);
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
 }
 
 .agenda-count {
@@ -865,11 +895,12 @@ body {
   margin-top: 0;
 }
 
+/* Surcharge VOLONTAIRE de deux axes du bloc de titre partage: cet en-tete est le plus
+   grand du document et se veut plus etroit et plus serre que les autres titres. Le poids
+   et la casse viennent du bloc partage. */
 .agenda-month .month-name {
   font-stretch: 62%;
-  font-weight: 700;
   font-size: var(--fs-3xl);
-  text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 1;
 }

@@ -745,7 +745,7 @@
           <div class="fc-lineup">${group.map(g => {
             const gk = getConcertKey(g);
             const gGoing = goingSet.has(gk);
-            return `<span class="fc-chip${gGoing ? ' active' : ''}">${escapeHtml(g.artist)}` +
+            return `<span class="fc-chip${gGoing ? ' active' : ''}${g.soldOut ? ' is-sold-out' : ''}">${escapeHtml(g.artist)}` +
                    `<button class="btn-going${gGoing ? ' active' : ''}" data-action="going" data-key="${escapeHtml(gk)}"` +
                    ` aria-label="${gGoing ? 'Remove from my concerts' : 'Add to my concerts'}"` +
                    ` aria-pressed="${gGoing}">${gGoing ? '&#9829;' : '&#9825;'}</button></span>`;
@@ -905,12 +905,23 @@
   function getNewTours() {
     if (typeof TOUR_IMAGES === 'undefined') return new Set();
     const key = 'avocado_known_tours';
-    const known = JSON.parse(localStorage.getItem(key) || '[]');
-    const knownSet = new Set(known);
+    const raw = localStorage.getItem(key);
     const currentTours = TOUR_IMAGES.map(t => t.artist);
-    const newTours = new Set(currentTours.filter(a => !knownSet.has(a)));
     localStorage.setItem(key, JSON.stringify(currentTours));
-    return newTours;
+
+    // Premiere visite: aucune reference enregistree, donc rien n'est "nouveau". Sans ce
+    // retour anticipe les 24 vignettes porteraient toutes le badge, qui n'informerait de
+    // rien. La detection ne devient utile qu'a partir de la deuxieme visite.
+    if (raw === null) return new Set();
+
+    // Une valeur corrompue ne doit pas faire lever init(), qui ne rendrait alors plus
+    // aucune carte.
+    let known;
+    try { known = JSON.parse(raw); } catch { known = []; }
+    if (!Array.isArray(known)) known = [];
+
+    const knownSet = new Set(known);
+    return new Set(currentTours.filter(a => !knownSet.has(a)));
   }
 
   // ===== FESTIVAL GROUPING =====
