@@ -927,6 +927,13 @@ body {
   text-decoration: none;
 }
 .disclaimer a:hover { text-decoration: underline; }
+.disclaimer .version {
+  margin-top: var(--sp-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  color: var(--text-faint);
+}
 
 /* ===== OSSATURE ===== */
 .layout {
