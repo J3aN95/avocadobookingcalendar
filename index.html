@@ -19,13 +19,25 @@
   </h1>
   <div class="toolbar-sep"></div>
   <div class="search-wrapper" id="searchWrapper">
-    <button class="artist-select-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()">
+    <button class="picker-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()">
       <span id="artistSelectLabel">All artists</span>
-      <span class="artist-select-arrow">&#9662;</span>
+      <span class="picker-caret" aria-hidden="true">&#9662;</span>
     </button>
-    <div class="artist-dropdown" id="artistDropdown">
-      <input type="text" class="artist-filter-input" id="artistFilterInput" placeholder="Filter..." oninput="buildArtistDropdown(this.value)">
-      <div class="artist-dropdown-list" id="artistDropdownList"></div>
+    <div class="picker-panel" id="artistDropdown">
+      <input type="text" class="picker-filter" id="artistFilterInput" placeholder="Filter..." oninput="buildArtistDropdown(this.value)">
+      <div class="picker-list" id="artistDropdownList"></div>
+    </div>
+  </div>
+  <div class="picker-wrapper" id="countryWrapper">
+    <button class="picker-btn" id="countrySelectBtn" onclick="toggleCountryPicker()"
+            aria-expanded="false" aria-haspopup="listbox">
+      <span id="countrySelectLabel">All countries</span>
+      <span class="picker-caret" aria-hidden="true">&#9662;</span>
+    </button>
+    <div class="picker-panel" id="countryPanel" role="listbox">
+      <input type="text" class="picker-filter" id="countryFilterInput" placeholder="Filter countries…"
+             oninput="buildCountryPicker(this.value)" aria-label="Filter countries">
+      <div class="picker-list" id="countryPickerList"></div>
     </div>
   </div>
   <div class="toolbar-stats">
@@ -168,6 +180,7 @@
     loadMapPref();
     loadGoing();
     loadFiltersFromURL();
+    updateCountryLabel();
 
     const artists = new Set();
     CONCERTS_DATA.forEach(c => {
@@ -181,7 +194,15 @@
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('#searchWrapper')) closeArtistDropdown();
+      if (!e.target.closest('#countryWrapper')) closeCountryPicker();
       if (!e.target.closest('.going-wrapper')) document.getElementById('goingPanel').classList.remove('visible');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      closeArtistDropdown();
+      closeCountryPicker();
+      document.getElementById('goingPanel').classList.remove('visible');
     });
 
     // Start calendar on current month
@@ -274,6 +295,13 @@
         }});
       });
     }
+    activeCountries.forEach(name => {
+      chips.push({ label: name, clear: () => {
+        activeCountries.delete(name);
+        updateCountryLabel();
+        render();
+      }});
+    });
     if (selectedCity) {
       chips.push({ label: selectedCity, clear: () => { selectedCity = null; render(); }});
     }
@@ -289,7 +317,7 @@
     }
     if (chips.length === 0) { bar.classList.remove('visible'); return; }
     bar.classList.add('visible');
-    bar.innerHTML = '<span style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;">Filters</span>';
+    bar.innerHTML = '<span class="af-label">Filters</span>';
     chips.forEach(c => {
       const chip = document.createElement('span');
       chip.className = 'filter-chip';
@@ -822,12 +850,10 @@
   // ===== ARTIST DROPDOWN =====
   function toggleArtistDropdown() {
     const dd = document.getElementById('artistDropdown');
-    const btn = document.getElementById('artistSelectBtn');
-    if (dd.classList.contains('open')) {
+    if (dd.classList.contains('visible')) {
       closeArtistDropdown();
     } else {
-      dd.classList.add('open');
-      btn.classList.add('open');
+      dd.classList.add('visible');
       buildArtistDropdown('');
       document.getElementById('artistFilterInput').value = '';
       setTimeout(() => document.getElementById('artistFilterInput').focus(), 50);
@@ -835,8 +861,7 @@
   }
 
   function closeArtistDropdown() {
-    document.getElementById('artistDropdown').classList.remove('open');
-    document.getElementById('artistSelectBtn').classList.remove('open');
+    document.getElementById('artistDropdown').classList.remove('visible');
   }
 
   function buildArtistDropdown(filter) {
@@ -864,11 +889,11 @@
       const nameLower = a.name.toLowerCase();
       const selected = searchTerms.includes(nameLower);
       const item = document.createElement('div');
-      item.className = 'artist-dropdown-item' + (selected ? ' checked' : '');
+      item.className = 'picker-item' + (selected ? ' selected' : '');
       item.innerHTML = `
         <input type="checkbox" ${selected ? 'checked' : ''} tabindex="-1">
-        <span class="artist-name">${a.name}</span>
-        <span class="artist-count">${a.count}</span>
+        <span class="picker-name">${a.name}</span>
+        <span class="picker-count">${a.count}</span>
       `;
       item.onclick = (e) => {
         e.stopPropagation();
@@ -913,6 +938,74 @@
     } else {
       label.textContent = `${searchTerms.length} artists`;
     }
+  }
+
+  // ===== FILTRE PAYS =====
+  function countryCounts() {
+    const counts = {};
+    CONCERTS_DATA.forEach(c => { counts[c.country] = (counts[c.country] || 0) + 1; });
+    return counts;
+  }
+
+  function toggleCountryPicker() {
+    const panel = document.getElementById('countryPanel');
+    const open = !panel.classList.contains('visible');
+    closeArtistDropdown();
+    panel.classList.toggle('visible', open);
+    document.getElementById('countrySelectBtn').setAttribute('aria-expanded', String(open));
+    if (open) {
+      buildCountryPicker('');
+      document.getElementById('countryFilterInput').focus();
+    }
+  }
+
+  function closeCountryPicker() {
+    document.getElementById('countryPanel').classList.remove('visible');
+    document.getElementById('countrySelectBtn').setAttribute('aria-expanded', 'false');
+  }
+
+  function buildCountryPicker(filter) {
+    const list = document.getElementById('countryPickerList');
+    const counts = countryCounts();
+    const needle = (filter || '').toLowerCase();
+    const names = Object.keys(counts).sort((a, b) => a.localeCompare(b))
+      .filter(n => n.toLowerCase().includes(needle));
+
+    if (names.length === 0) {
+      list.innerHTML = '<div class="picker-empty">No match</div>';
+      return;
+    }
+
+    list.innerHTML = names.map(n => {
+      const on = activeCountries.has(n);
+      return `<div class="picker-item${on ? ' selected' : ''}" role="option" aria-selected="${on}"
+                   data-country="${escapeHtml(n)}">
+                <input type="checkbox" ${on ? 'checked' : ''} tabindex="-1" aria-hidden="true">
+                <span class="picker-name">${escapeHtml(n)}</span>
+                <span class="picker-count">${counts[n]}</span>
+              </div>`;
+    }).join('');
+
+    list.querySelectorAll('.picker-item').forEach(el => {
+      el.onclick = () => toggleCountrySelection(el.dataset.country);
+    });
+  }
+
+  function toggleCountrySelection(name) {
+    if (activeCountries.has(name)) activeCountries.delete(name);
+    else activeCountries.add(name);
+    updateCountryLabel();
+    buildCountryPicker(document.getElementById('countryFilterInput').value);
+    selectedDay = null;
+    render();
+  }
+
+  function updateCountryLabel() {
+    const label = document.getElementById('countrySelectLabel');
+    const n = activeCountries.size;
+    if (n === 0) label.textContent = 'All countries';
+    else if (n === 1) label.textContent = [...activeCountries][0];
+    else label.textContent = `${n} countries`;
   }
 
   // ===== NEW TOUR DETECTION =====
@@ -1099,7 +1192,8 @@
       selectedCity = params.get('city');
     }
     if (params.has('countries')) {
-      params.get('countries').split(',').forEach(c => activeCountries.add(c));
+      params.get('countries').split(',').filter(Boolean)
+        .forEach(c => activeCountries.add(normalizeCountry(c.trim())));
     }
   }
 
