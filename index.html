@@ -45,6 +45,9 @@
         <div class="picker-list" id="countryPickerList"></div>
       </div>
     </div>
+
+    <button class="btn-toggle" id="btnWeekend" onclick="toggleWeekendFilter()"
+            aria-pressed="false" title="Fri, Sat and Sun only">Weekend</button>
   </div>
   <div class="toolbar-stats">
     <span><strong id="totalConcerts">0</strong> concerts</span>
@@ -180,6 +183,15 @@
     return new Date(dateStr + 'T00:00:00');
   }
 
+  // Vendredi, samedi, dimanche. Passe par parseDate et non par new Date(dateStr): ce
+  // dernier parse en minuit UTC, donc getDay() renverrait la veille pour tout fuseau a
+  // decalage negatif et classerait les vendredis en jeudis, ecartant silencieusement ces
+  // dates du filtre pour les visiteurs des Ameriques.
+  function isWeekend(dateStr) {
+    const j = parseDate(dateStr).getDay();
+    return j === 5 || j === 6 || j === 0;
+  }
+
   function escapeHtml(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -213,6 +225,7 @@
   let selectedCity = null;
   let goingSet = new Set();
   let showGoingOnly = false;
+  let weekendOnly = false;
   let selectedDates = new Set();
 
   function init() {
@@ -222,6 +235,7 @@
     loadGoing();
     loadFiltersFromURL();
     updateCountryLabel();
+    updateWeekendButton();
 
     const artists = new Set();
     CONCERTS_DATA.forEach(c => {
@@ -283,12 +297,15 @@
   }
 
   function getMonthCount() {
-    return window.innerWidth <= 560 ? 1 : 3;
+    return window.innerWidth <= 560 ? 1 : 2;
   }
 
   function changeMonth(delta) {
-    const step = delta > 0 ? getMonthCount() : -getMonthCount();
-    currentMonth += step;
+    // Fenetre GLISSANTE: on avance d'un seul mois, pas du bloc entier. Avancer du bloc
+    // rendait inatteignable toute paire de mois a cheval sur une frontiere de bloc, donc
+    // impossible de comparer le 30 novembre et le 1er decembre dans la meme vue. C'est
+    // precisement ce qui genait la selection de dates a la main.
+    currentMonth += delta > 0 ? 1 : -1;
     while (currentMonth > 11) { currentMonth -= 12; currentYear++; }
     while (currentMonth < 0) { currentMonth += 12; currentYear--; }
     selectedDay = null;
@@ -298,6 +315,7 @@
   function getFilteredConcerts() {
     return CONCERTS_DATA.filter(c => {
       if (showGoingOnly && !goingSet.has(getConcertKey(c))) return false;
+      if (weekendOnly && !isWeekend(c.date)) return false;
       if (!matchesArtistFilter(c)) return false;
       if (activeCountries.size > 0 && !activeCountries.has(c.country)) return false;
       if (selectedCity && c.city !== selectedCity) return false;
@@ -368,6 +386,9 @@
     if (showGoingOnly) {
       chips.push({ label: `My concerts (${goingSet.size})`, clear: () => { showGoingOnly = false; document.getElementById('btnGoingFilter').classList.remove('active'); render(); }});
     }
+    if (weekendOnly) {
+      chips.push({ label: 'Weekend', clear: () => { weekendOnly = false; updateWeekendButton(); render(); }});
+    }
     if (selectedDates.size > 0) {
       chips.push({ label: `${selectedDates.size} date${selectedDates.size > 1 ? 's' : ''} selected`, clear: () => { selectedDates.clear(); render(); }});
     }
@@ -377,7 +398,11 @@
     chips.forEach(c => {
       const chip = document.createElement('span');
       chip.className = 'filter-chip';
-      chip.innerHTML = `${c.label} <span class="chip-remove">&times;</span>`;
+      // XSS reflechie: les libelles viennent de ?artists= et ?countries=, donc d'une URL
+      // que l'utilisateur partage et qu'un tiers peut forger. normalizeCountry laisse
+      // passer telle quelle une valeur inconnue, donc la casse d'une charge est meme
+      // preservee. Tout libelle est echappe.
+      chip.innerHTML = `${escapeHtml(c.label)} <span class="chip-remove">&times;</span>`;
       chip.querySelector('.chip-remove').onclick = c.clear;
       bar.appendChild(chip);
     });
@@ -519,9 +544,9 @@
       const artists = [...(cityArtists[city] || [])].slice(0, 5);
       const moreCount = (cityArtists[city] || new Set()).size - 5;
       circle.bindPopup(`
-        <div class="popup-city">${city}</div>
+        <div class="popup-city">${escapeHtml(city)}</div>
         <div class="popup-count">${count} concert${count > 1 ? 's' : ''}</div>
-        <div class="popup-artists">${artists.join(', ')}${moreCount > 0 ? ` +${moreCount}` : ''}</div>
+        <div class="popup-artists">${artists.map(escapeHtml).join(', ')}${moreCount > 0 ? ` +${moreCount}` : ''}</div>
       `, { closeButton: false, offset: [0, -4] });
 
       circle.on('mouseover', function() { this.openPopup(); });
@@ -628,7 +653,7 @@
         // Summary panel
         let html = `<h5>&#128663; Road Trip</h5>`;
         legs.forEach((leg, i) => {
-          html += `<div class="road-trip-leg">${i + 1}. ${leg.from.city} → ${leg.to.city} <span class="leg-dist">${leg.dist} km</span></div>`;
+          html += `<div class="road-trip-leg">${i + 1}. ${escapeHtml(leg.from.city)} → ${escapeHtml(leg.to.city)} <span class="leg-dist">${leg.dist} km</span></div>`;
         });
         html += `<div class="road-trip-total">${tripPoints.length} stops &middot; ${Math.round(totalDist)} km total</div>`;
         tripPanel.innerHTML = html;
@@ -869,7 +894,9 @@
     selectedDay = null;
     selectedDates.clear();
     showGoingOnly = false;
+    weekendOnly = false;
     document.getElementById('btnGoingFilter').classList.remove('active');
+    updateWeekendButton();
     updateArtistSelectLabel();
     updateCountryLabel();
     buildArtistDropdown('');
@@ -1205,6 +1232,21 @@
     if (open) renderGoingPanel();
   }
 
+  // ===== FILTRE WEEK-END =====
+  function toggleWeekendFilter() {
+    weekendOnly = !weekendOnly;
+    updateWeekendButton();
+    selectedDay = null;
+    render();
+  }
+
+  function updateWeekendButton() {
+    const btn = document.getElementById('btnWeekend');
+    if (!btn) return;
+    btn.classList.toggle('active', weekendOnly);
+    btn.setAttribute('aria-pressed', String(weekendOnly));
+  }
+
   function toggleGoingFilter() {
     showGoingOnly = !showGoingOnly;
     document.getElementById('btnGoingFilter').classList.toggle('active', showGoingOnly);
@@ -1284,6 +1326,7 @@
     if (searchTerms.length > 0) params.set('artists', searchTerms.join(','));
     if (selectedCity) params.set('city', selectedCity);
     if (activeCountries.size > 0) params.set('countries', [...activeCountries].join(','));
+    if (weekendOnly) params.set('weekend', '1');
     const url = window.location.origin + window.location.pathname + (params.toString() ? '?' + params.toString() : '');
     navigator.clipboard.writeText(url).then(() => {
       const btn = document.querySelector('.toolbar-actions .btn-icon[aria-label^="Copy link"]');
@@ -1313,6 +1356,7 @@
       params.get('countries').split(',').filter(Boolean)
         .forEach(c => activeCountries.add(normalizeCountry(c.trim())));
     }
+    if (params.get('weekend') === '1') weekendOnly = true;
   }
 
   // ===== EXPORT ICS =====
