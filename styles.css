@@ -874,16 +874,23 @@ body {
 .going-item-remove:hover { color: var(--sold-out); background: var(--accent-soft); }
 
 
+/* Le bouton parent est en display:grid a une seule colonne implicite, donc un second
+   enfant tombe dans une deuxieme ligne et la pastille s'empilait sous l'icone au lieu
+   de la marquer. Elle est epinglee au coin, ce a quoi servait le position:relative
+   de .btn-icon, jusqu'ici inutilise. */
 .going-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
   font-size: var(--fs-xs);
   background: var(--accent);
   color: var(--on-accent);
   border-radius: 50%;
-  min-width: 14px; height: 14px;
+  min-width: 14px;
+  height: 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: 2px;
   padding: 0 3px;
 }
 .going-badge[data-count="0"] { display: none; }
