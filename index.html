@@ -417,10 +417,10 @@
       cityFilter.classList.remove('visible');
     }
 
+    const acc = accentColor();
     Object.entries(cityCounts).forEach(([city, count]) => {
       const coords = CITY_COORDS[city];
       if (!coords) return;
-      const acc = accentColor();
       const r = Math.max(6, Math.min(22, 5 + Math.sqrt(count) * 3.2));
       const isSelected = selectedCity === city;
 
@@ -451,7 +451,6 @@
 
     // Draw tour routes when filtering by artist(s)
     const routeArtists = searchTerms;
-    const acc = accentColor();
 
     const allBounds = [];
     routeArtists.forEach(name => {
@@ -522,7 +521,7 @@
 
         tripPoints.forEach((p, i) => {
           L.marker(p, {
-            icon: L.divIcon({ className: 'route-step-orange', html: `<span>${i + 1}</span>`, iconSize: [22, 22] })
+            icon: L.divIcon({ className: 'route-step-orange', html: `<span>${i + 1}</span>`, iconSize: [20, 20] })
           }).addTo(routeLayer);
         });
 

@@ -670,15 +670,6 @@ body {
 .leaflet-popup-close-button:hover { color: #6dbf4a !important; }
 
 /* ===== TOUR ROUTE STEPS ===== */
-.route-step {
-  background: transparent;
-  border-radius: 50%;
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .route-step span,
 .route-step-orange span {
   display: grid;
