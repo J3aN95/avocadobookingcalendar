@@ -131,9 +131,11 @@ body {
   text-transform: uppercase;
 }
 
-/* Bloc mono partage. La police est commune aux vingt regles ci-dessous ; parmi
-   elles, les quatorze premieres passent aussi en majuscules (les six dernieres sont
-   des compteurs ou decors chiffres qui n'en prennent pas). Tracking, tailles et
+/* Bloc mono partage. La police est commune a toutes les regles de la premiere liste ;
+   celles de la seconde passent aussi en majuscules (les autres sont des compteurs ou
+   des decors chiffres qui n'en prennent pas). Les listes sont volontairement enumerees
+   plutot que comptees: un chiffre dans ce commentaire se perime des qu'on ajoute une
+   etiquette, ce qui est deja arrive. Tracking, tailles et
    couleurs restent propres a chaque emploi (le tracking vaut 0.08em pour la plupart,
    0.06em pour .day-header et .calendar-legend), donc ils restent dans chaque regle.
    Toute nouvelle etiquette mono s'ajoute a la liste qui correspond a son cas plutot
@@ -158,7 +160,9 @@ body {
 .route-step span,
 .route-step-orange span,
 .distance-label,
-.agenda-count {
+.agenda-count,
+.btn-toggle,
+.disclaimer .version {
   font-family: var(--font-mono);
 }
 
@@ -175,7 +179,8 @@ body {
 .day-header,
 .calendar-legend,
 .popup-count,
-.sheet-tab {
+.sheet-tab,
+.btn-toggle {
   text-transform: uppercase;
 }
 
@@ -247,6 +252,31 @@ body {
 }
 
 .picker-btn:hover { border-color: var(--border-strong); }
+
+/* Interrupteur de filtre. Meme grammaire visuelle que .picker-btn, mais il porte un
+   etat au lieu d'ouvrir un panneau, d'ou l'accent quand il est actif. */
+.btn-toggle {
+  flex-shrink: 0;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+  letter-spacing: .08em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+
+.btn-toggle:hover { color: var(--text); border-color: var(--border-strong); }
+
+.btn-toggle.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .picker-caret { color: var(--text-faint); flex-shrink: 0; transition: transform .15s; }
 .picker-btn[aria-expanded="true"] .picker-caret { transform: rotate(180deg); }
 
@@ -929,7 +959,6 @@ body {
 .disclaimer a:hover { text-decoration: underline; }
 .disclaimer .version {
   margin-top: var(--sp-1);
-  font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: .08em;
   color: var(--text-faint);
@@ -1350,6 +1379,8 @@ body {
   /* Cibles tactiles. min-width autant que min-height: le coeur tire sa largeur de son
      glyphe et ne faisait que 20px, donc il echouait au minimum de 24x24 de WCAG 2.5.8
      sur l'axe horizontal malgre une hauteur genereuse. */
+  .btn-toggle { min-height: 44px; }
+
   .cc-actions .btn-going,
   .cc-actions .btn-ticket,
   .cc-actions .btn-spotify,
