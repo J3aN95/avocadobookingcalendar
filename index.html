@@ -377,7 +377,11 @@
     chips.forEach(c => {
       const chip = document.createElement('span');
       chip.className = 'filter-chip';
-      chip.innerHTML = `${c.label} <span class="chip-remove">&times;</span>`;
+      // XSS reflechie: les libelles viennent de ?artists= et ?countries=, donc d'une URL
+      // que l'utilisateur partage et qu'un tiers peut forger. normalizeCountry laisse
+      // passer telle quelle une valeur inconnue, donc la casse d'une charge est meme
+      // preservee. Tout libelle est echappe.
+      chip.innerHTML = `${escapeHtml(c.label)} <span class="chip-remove">&times;</span>`;
       chip.querySelector('.chip-remove').onclick = c.clear;
       bar.appendChild(chip);
     });
@@ -519,9 +523,9 @@
       const artists = [...(cityArtists[city] || [])].slice(0, 5);
       const moreCount = (cityArtists[city] || new Set()).size - 5;
       circle.bindPopup(`
-        <div class="popup-city">${city}</div>
+        <div class="popup-city">${escapeHtml(city)}</div>
         <div class="popup-count">${count} concert${count > 1 ? 's' : ''}</div>
-        <div class="popup-artists">${artists.join(', ')}${moreCount > 0 ? ` +${moreCount}` : ''}</div>
+        <div class="popup-artists">${artists.map(escapeHtml).join(', ')}${moreCount > 0 ? ` +${moreCount}` : ''}</div>
       `, { closeButton: false, offset: [0, -4] });
 
       circle.on('mouseover', function() { this.openPopup(); });
@@ -628,7 +632,7 @@
         // Summary panel
         let html = `<h5>&#128663; Road Trip</h5>`;
         legs.forEach((leg, i) => {
-          html += `<div class="road-trip-leg">${i + 1}. ${leg.from.city} → ${leg.to.city} <span class="leg-dist">${leg.dist} km</span></div>`;
+          html += `<div class="road-trip-leg">${i + 1}. ${escapeHtml(leg.from.city)} → ${escapeHtml(leg.to.city)} <span class="leg-dist">${leg.dist} km</span></div>`;
         });
         html += `<div class="road-trip-total">${tripPoints.length} stops &middot; ${Math.round(totalDist)} km total</div>`;
         tripPanel.innerHTML = html;
