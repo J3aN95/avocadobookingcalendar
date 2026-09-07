@@ -611,7 +611,8 @@
 
       for (let d = 1; d <= lastDay.getDate(); d++) {
         const dateStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        const cell = document.createElement('div');
+        const cell = document.createElement('button');
+        cell.type = 'button';
         const allConcerts = getConcertsForDate(dateStr);
         const matchingFiltered = filtered.filter(c => c.date === dateStr);
         const isToday = parseDate(dateStr).getTime() === today.getTime();
@@ -622,7 +623,6 @@
         let classes = ['calendar-day'];
         if (isToday) classes.push('today');
         if (isPast) classes.push('past');
-        if (hasFiltered) classes.push('has-concerts');
         if (selectedDay === dateStr) classes.push('selected-day');
         if (selectedDates.has(dateStr)) classes.push('date-selected');
         cell.className = classes.join(' ');
@@ -637,21 +637,21 @@
           render();
         };
 
-        const num = document.createElement('div');
+        const num = document.createElement('span');
         num.className = 'day-number';
         num.textContent = d;
         cell.appendChild(num);
 
-        if (hasFiltered) {
-          const dots = document.createElement('div');
-          dots.className = 'concert-dots';
-          const maxDots = Math.min(matchingFiltered.length, 4);
-          for (let i = 0; i < maxDots; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'concert-dot filtered';
-            dots.appendChild(dot);
-          }
-          cell.appendChild(dots);
+        // Palier de densite : le nombre de dates se lit au fond de la case, pas en points.
+        const n = matchingFiltered.length;
+        if (n >= 4) cell.classList.add('d-3');
+        else if (n >= 2) cell.classList.add('d-2');
+        else if (n === 1) cell.classList.add('d-1');
+
+        if (matchingFiltered.some(x => x.soldOut)) cell.classList.add('has-sold-out');
+
+        if (n > 0) {
+          cell.setAttribute('aria-label', `${d} ${MONTHS_FR[m]}: ${n} date${n > 1 ? 's' : ''}`);
         }
         grid.appendChild(cell);
       }
@@ -659,6 +659,13 @@
       block.appendChild(grid);
       container.appendChild(block);
     }
+
+    document.getElementById('calendarLegend').innerHTML = `
+      <span class="lg-item"><i class="lg-sw d-1"></i>1</span>
+      <span class="lg-item"><i class="lg-sw d-2"></i>2&ndash;3</span>
+      <span class="lg-item"><i class="lg-sw d-3"></i>4+</span>
+      <span class="lg-item"><i class="lg-sw lg-sold"></i>Sold out</span>
+    `;
   }
 
   // ===== CONCERT LIST =====
