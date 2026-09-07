@@ -2466,9 +2466,10 @@ Remplacer intégralement la section `/* ===== Responsive ===== */` par :
     margin-bottom: var(--sp-3);
   }
 
-  /* le panneau d'un selecteur n'est plus flottant dans la feuille : il s'ouvre en place */
-  .filters-sheet .picker-panel,
-  .filters-sheet .artist-dropdown {
+  /* le panneau d'un selecteur n'est plus flottant dans la feuille : il s'ouvre en place.
+     Une seule classe suffit: la tache 9 a renomme .artist-dropdown en .picker-panel, donc
+     les deux selecteurs partagent desormais la meme. */
+  .filters-sheet .picker-panel {
     position: static;
     box-shadow: none;
     min-width: 0;
