@@ -2744,6 +2744,33 @@ avec :
 .btn-icon.copied { border-color: var(--accent); color: var(--accent); }
 ```
 
+- [ ] **Step 1a: Retokeniser les sept dernières couleurs littérales sans propriétaire**
+
+La porte absolue sur les couleurs littérales est celle de la tâche 12, qui est une tâche de
+**vérification** et n'a rien pour corriger ce qu'elle trouve. Sept déclarations n'ont
+aujourd'hui aucun propriétaire, donc elles y échoueraient sans recours. Elles sont à vous.
+
+Relevé après la tâche 8, hors bloc de jetons, ombres et dégradés :
+
+| Ligne | Règle | Devient | Pourquoi |
+|---|---|---|---|
+| ~623 | `.map-city-filter` → `background: rgba(26, 26, 26, 0.95)` | `color-mix(in srgb, var(--surface) 92%, transparent)` | étiquette flottante sur la carte ; le sombre en dur reste sombre en thème clair |
+| ~669 | `.leaflet-popup-close-button` → `color: #888 !important` | `var(--text-faint)`, `!important` conservé | gris de l'ancienne palette |
+| ~670 | `:hover` → `color: #6dbf4a !important` | `var(--accent)`, `!important` conservé | ancien vert accent, figé |
+| ~702 | `.road-trip-summary` → `background: rgba(26, 26, 26, 0.95)` | `color-mix(in srgb, var(--surface) 95%, transparent)` | même défaut que la ligne 623 |
+| ~703 | `.road-trip-summary` → `border: 1px solid #e67e22` | `var(--sold-out)` | l'orange était l'identité road trip ; `--sold-out` est la couleur distincte que la spec lui accorde |
+| ~712 | `.road-trip-summary h5` → `color: #e67e22` | `var(--sold-out)` | idem |
+| ~714 | `.road-trip-leg .leg-dist` → `color: #e67e22` | `var(--sold-out)` | idem |
+| ~861 | `.disclaimer p` → `color: #666` | `var(--text-faint)` | `#666` sur le fond sombre ne donne que ~3.6:1 ; le jeton donne 4.87:1 en sombre et 5.46:1 en clair, donc c'est aussi un gain de contraste |
+
+**Supprimez aussi la règle `[data-theme="light"] .road-trip-summary` de la ligne ~711**, qui
+n'existait que pour rattraper le fond sombre codé en dur. Une fois le fond passé en
+`color-mix` sur `--surface`, le jeton bascule tout seul et cette surcharge devient morte.
+
+Ne touchez ni `.tour-slide .slide-label { color: #f2efe6 }` ni
+`.route-step-orange span { color: #fff }`, qui sont les deux exceptions décidées et
+documentées.
+
 - [ ] **Step 1b: Consolider le bloc mono, sur le modèle du bloc de titre**
 
 Relevé après la tâche 7 : **onze** règles combinent `font-family: var(--font-mono)` et
@@ -2751,9 +2778,12 @@ Relevé après la tâche 7 : **onze** règles combinent `font-family: var(--font
 dans le balisage. C'est la même duplication que celle qu'un bloc groupé a déjà résolue pour
 les titres, mais à plus grande échelle, et la tâche 7 l'a signalée.
 
-Les onze règles sont `.u-mono`, `.btn-spotify`, `.btn-ticket`, `.cc-tour`, `.badge`,
+Les règles concernées sont `.u-mono`, `.btn-spotify`, `.btn-ticket`, `.cc-tour`, `.badge`,
 `.agenda-month .month-count`, `.date-separator`, `.calendar-nav h3`, `.month-block h3`,
-`.day-header` et `.calendar-legend`.
+`.day-header` et `.calendar-legend`, **plus celles que la tâche 8 a ajoutées** :
+`.popup-count`, `.route-step span` et `.distance-label`. Relevez la liste réelle par
+`grep -n "font-family: var(--font-mono)" styles.css` avant d'écrire, plutôt que de vous
+fier à cette énumération : la tâche 9 peut en ajouter d'autres avant vous.
 
 Attention : seules **deux** propriétés leur sont réellement communes. Le `letter-spacing`
 vaut `0.08em` pour la plupart mais `0.06em` pour `.day-header` et `.calendar-legend`, et les
@@ -2778,7 +2808,10 @@ déjà, et **retirer les deux propriétés mutualisées de chacune des dix autre
 .calendar-nav h3,
 .month-block h3,
 .day-header,
-.calendar-legend {
+.calendar-legend,
+.popup-count,
+.route-step span,
+.distance-label {
   font-family: var(--font-mono);
   text-transform: uppercase;
 }
