@@ -2884,7 +2884,17 @@ vous qui le remplacez.
 
 Vérifier que `toggleGoingFilter` et `clearAllGoing`, qui referment le panneau, remettent aussi l'attribut à `false`.
 
-Dans `renderGoingPanel`, remplacer le `onclick` inline du bouton de retrait par la même délégation qu'à la tâche 6, en ajoutant l'écouteur sur `#goingPanelList` dans `init()` :
+**L'état de départ n'est plus celui que ce plan supposait.** La tâche 6 a déjà remplacé le
+`onclick` inline du bouton de retrait par un gestionnaire assigné en propriété
+(`item.onclick = ...` / `btn.onclick = ...`), parce que la porte de vérification que le
+contrôleur lui avait donnée était plus large que celle de son brief et couvrait cet
+attribut. Ne transcrivez donc pas le « avant » ci-dessous à l'aveugle : lisez d'abord ce que
+`renderGoingPanel` contient réellement.
+
+Le travail restant est le même sur le fond, passer d'un gestionnaire par élément à une
+délégation unique, ce qui reste un gain : un seul écouteur au lieu d'un par ligne de la
+liste. Ajouter l'écouteur sur `#goingPanelList` dans `init()` et remplacer l'assignation de
+propriété par les attributs de données :
 
 ```js
     document.getElementById('goingPanelList').addEventListener('click', (e) => {
