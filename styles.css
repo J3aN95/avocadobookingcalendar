@@ -51,6 +51,9 @@
   /* gabarit */
   --header-h: 56px;
   --sidebar-w: 380px;
+  /* hauteur de la barre d'onglets mobile : 40px de bouton + 2 x 8px de padding + 1px
+     de bordure. L'en-tete de mois collant s'en sert pour son decalage. */
+  --sheet-bar-h: 57px;
 
   color-scheme: dark;
 }
@@ -1110,77 +1113,181 @@ body {
 .lg-sw.d-3 { background: var(--cal-3); }
 .lg-sw.lg-sold { background: var(--sold-out); border-color: var(--sold-out); }
 
-/* ===== Responsive ===== */
+/* ===== RUPTURES ===== */
 
-/* Tablet landscape / small desktop */
-@media (max-width: 1000px) {
-  body { height: auto; min-height: 100dvh; overflow-y: auto; }
-  .main-content { overflow: visible; }
-  .bottom-panel { grid-template-columns: 1fr; }
-  .concert-area { border-left: none; border-top: 1px solid var(--border); max-height: 50vh; }
-  .calendar-3months { grid-template-columns: 1fr; }
-  #leafletMap { height: 30vh; }
-  .toolbar { flex-wrap: wrap; }
+/* Au-dessus de 900px, la feuille de filtres n'existe pas comme boite : ses enfants
+   participent directement au flex de l'en-tete. Le bouton Filters et l'en-tete de
+   feuille sont masques. */
+.filters-sheet { display: contents; }
+.filters-sheet .sheet-head { display: none; }
+.btn-filters { display: none; }
+
+.sheet-bar { display: none; }
+
+/* colonne laterale resserree */
+@media (max-width: 1240px) {
+  :root { --sidebar-w: 320px; }
+  .layout { gap: var(--sp-4); padding: var(--sp-4) var(--sp-4) var(--sp-12); }
 }
 
-/* Tablet portrait */
-@media (max-width: 768px) {
-  .toolbar { padding: 8px 12px; gap: 10px; }
-  .toolbar-sep { display: none; }
-  .search-wrapper { max-width: 240px; min-width: 120px; }
-  .toolbar-stats { font-size: var(--fs-sm); gap: 10px; }
-  #leafletMap { height: 25vh; min-height: 180px; }
-  .calendar-day { min-height: 36px; font-size: var(--fs-sm); }
-  .day-header { font-size: var(--fs-xs); }
-  .btn-ticket { padding: 7px 14px; font-size: var(--fs-sm); }
-}
-
-/* Mobile dropdown fix */
-@media (max-width: 768px) {
-  .picker-panel { min-width: 240px; }
-  .picker-btn { font-size: var(--fs-sm); padding: 6px 10px; }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .tour-carousel { padding: 8px; gap: 10px; }
-  .tour-slide { width: 200px; height: 110px; }
-  .tour-slide .slide-label { font-size: var(--fs-sm); padding: 5px 8px; }
-
-  .map-toggle-btn { display: none; }
-  .festival-card { padding: 8px; }
-
-  .toolbar {
-    padding: 8px 10px;
-    gap: 8px;
+/* colonne unique : la laterale devient deux feuilles escamotables, et l'en-tete se
+   reduit au logo plus les boutons, les selecteurs passant en feuille */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--sp-3) var(--sp-3) var(--sp-12);
   }
-  .logo-icon { height: 28px; }
-  .search-wrapper {
-    flex: 1 1 100%;
+
+  /* l'en-tete reste sur UNE ligne et --header-h ne bouge jamais */
+  .toolbar-stats, .toolbar-sep { display: none; }
+  .btn-filters { display: grid; }
+
+  /* meme element du DOM, autre presentation : plus un enfant du flex de l'en-tete,
+     mais une feuille par-dessus la page */
+  .filters-sheet {
+    display: none;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 60;
+    max-height: 78vh;
+    overflow-y: auto;
+    padding: var(--sp-3);
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .5);
+  }
+
+  .filters-sheet.sheet-open { display: block; }
+  .filters-sheet .sheet-head { display: flex; }
+
+  /* en feuille, les selecteurs prennent toute la largeur et s'empilent */
+  .filters-sheet .search-wrapper,
+  .filters-sheet .picker-wrapper {
     max-width: none;
-    order: 10;
+    min-width: 0;
+    margin-bottom: var(--sp-3);
   }
-  .toolbar-stats { display: none; }
 
-  .active-filters { padding: 4px 8px; }
+  /* le panneau d'un selecteur n'est plus flottant dans la feuille : il s'ouvre en place.
+     Une seule classe suffit: la tache 9 a renomme .artist-dropdown en .picker-panel, donc
+     les deux selecteurs partagent desormais la meme. */
+  .filters-sheet .picker-panel {
+    position: static;
+    box-shadow: none;
+    min-width: 0;
+    max-width: none;
+    margin-top: var(--sp-1);
+  }
 
-  #leafletMap { height: 22vh; min-height: 150px; }
-  .map-city-filter { font-size: var(--fs-sm); padding: 4px 10px; }
+  .sheet-bar {
+    display: flex;
+    gap: var(--sp-2);
+    position: sticky;
+    top: var(--header-h);
+    z-index: 20;
+    padding: var(--sp-2) var(--sp-3);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
 
-  .calendar-area { padding: 8px; }
-  .calendar-3months { gap: 12px; }
-  .month-block h3 { font-size: var(--fs-sm); }
-  .calendar-nav button { width: 26px; height: 26px; font-size: var(--fs-md); }
-  .calendar-day { min-height: 40px; font-size: var(--fs-md); padding: 4px 2px; }
-  .day-header { font-size: var(--fs-xs); }
-  .day-dot { width: 4px; height: 4px; }
+  .sheet-tab {
+    flex: 1;
+    min-height: 40px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
 
-  .concert-area { padding: 10px 8px; max-height: none; }
-  .concert-card { grid-template-columns: 42px 1fr; gap: 8px; }
-  .btn-ticket { padding: 8px 16px; font-size: var(--fs-sm); }
+  .sheet-tab[aria-expanded="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
 
-  .disclaimer { padding: 6px 8px; }
-  .disclaimer p { font-size: var(--fs-sm); }
+  /* la laterale ne s'empile plus dans le flux : chaque panneau devient une feuille */
+  .sidebar {
+    position: static;
+    display: contents;
+  }
+
+  .side-panel {
+    display: none;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 60;
+    max-height: 78vh;
+    overflow-y: auto;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    border-bottom: none;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .5);
+  }
+
+  .side-panel.sheet-open { display: block; }
+
+  body.sheet-open::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, .5);
+  }
+
+  #leafletMap { height: 52vh; min-height: 260px; }
+
+  /* l'en-tete de mois colle sous la barre de feuilles, pas sous l'en-tete de page.
+     La hauteur de la barre passe par un jeton et non par un nombre en dur, sinon
+     tout changement de son padding desaligne silencieusement l'en-tete de mois. */
+  .agenda-month { top: calc(var(--header-h) + var(--sheet-bar-h)); }
+}
+
+/* repli de la carte de concert */
+@media (max-width: 560px) {
+  /* toujours une seule ligne : le retour a la ligne desaligneraient les decalages
+     collants qui derivent tous de --header-h */
+  .toolbar { padding: var(--sp-2) var(--sp-3); gap: var(--sp-2); }
+  .logo-icon { height: 22px; }
+
+  .concert-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+  }
+
+  .cc-actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: var(--sp-1);
+  }
+
+  /* cibles tactiles */
+  .cc-actions .btn-going,
+  .cc-actions .btn-ticket,
+  .cc-actions .btn-spotify {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .cc-day { font-size: var(--fs-xl); }
+  .agenda-month .month-name { font-size: var(--fs-2xl); }
+  /* 40px de haut sur environ 52px de large. La regle des 44px de cette tache vise les
+     boutons d'action des cartes, ou le doigt vise un controle isole; une case de
+     calendrier est dans une grille dense et depasse largement le minimum de 24px que
+     WCAG 2.5.8 demande en AA. La porter a 44px rendrait le calendrier a trois mois
+     empiles inutilement haut sur telephone. */
+  .calendar-day { min-height: 40px; }
+  .tour-slide { flex-basis: 200px; }
+  .picker-panel { min-width: 0; width: calc(100vw - var(--sp-6)); max-width: none; }
 }
 
 /* ===== Scrollbar ===== */

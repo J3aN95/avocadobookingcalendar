@@ -18,26 +18,32 @@
     <div class="logo-icon"><img src="https://www.avocadobooking.com/avocms/images/designimages/avocado_logo_new_small.png" alt="Avocado Booking"></div>
   </h1>
   <div class="toolbar-sep"></div>
-  <div class="search-wrapper" id="searchWrapper">
-    <button class="picker-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()">
-      <span id="artistSelectLabel">All artists</span>
-      <span class="picker-caret" aria-hidden="true">&#9662;</span>
-    </button>
-    <div class="picker-panel" id="artistDropdown">
-      <input type="text" class="picker-filter" id="artistFilterInput" placeholder="Filter..." oninput="buildArtistDropdown(this.value)">
-      <div class="picker-list" id="artistDropdownList"></div>
+  <div class="filters-sheet" id="filtersSheet">
+    <div class="sheet-head">
+      <span class="u-mono">Filters</span>
+      <button class="sheet-close" onclick="toggleSheet('filtersSheet')" aria-label="Close filters">&times;</button>
     </div>
-  </div>
-  <div class="picker-wrapper" id="countryWrapper">
-    <button class="picker-btn" id="countrySelectBtn" onclick="toggleCountryPicker()"
-            aria-expanded="false" aria-haspopup="listbox">
-      <span id="countrySelectLabel">All countries</span>
-      <span class="picker-caret" aria-hidden="true">&#9662;</span>
-    </button>
-    <div class="picker-panel" id="countryPanel" role="listbox">
-      <input type="text" class="picker-filter" id="countryFilterInput" placeholder="Filter countries…"
-             oninput="buildCountryPicker(this.value)" aria-label="Filter countries">
-      <div class="picker-list" id="countryPickerList"></div>
+    <div class="search-wrapper" id="searchWrapper">
+      <button class="picker-btn" id="artistSelectBtn" onclick="toggleArtistDropdown()">
+        <span id="artistSelectLabel">All artists</span>
+        <span class="picker-caret" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="picker-panel" id="artistDropdown">
+        <input type="text" class="picker-filter" id="artistFilterInput" placeholder="Filter..." oninput="buildArtistDropdown(this.value)">
+        <div class="picker-list" id="artistDropdownList"></div>
+      </div>
+    </div>
+    <div class="picker-wrapper" id="countryWrapper">
+      <button class="picker-btn" id="countrySelectBtn" onclick="toggleCountryPicker()"
+              aria-expanded="false" aria-haspopup="listbox">
+        <span id="countrySelectLabel">All countries</span>
+        <span class="picker-caret" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="picker-panel" id="countryPanel" role="listbox">
+        <input type="text" class="picker-filter" id="countryFilterInput" placeholder="Filter countries…"
+               oninput="buildCountryPicker(this.value)" aria-label="Filter countries">
+        <div class="picker-list" id="countryPickerList"></div>
+      </div>
     </div>
   </div>
   <div class="toolbar-stats">
@@ -46,6 +52,12 @@
     <span><strong id="totalCountries">0</strong> countries</span>
   </div>
   <div class="toolbar-actions">
+    <button class="btn-icon btn-filters" onclick="toggleSheet('filtersSheet')"
+            aria-controls="filtersSheet" aria-expanded="false" aria-label="Filters">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 6h18M6 12h12M10 18h4"/>
+      </svg>
+    </button>
     <div class="going-wrapper">
       <button class="btn-icon going-toggle-btn" id="btnGoingFilter" onclick="toggleGoingPanel()" title="My concerts">&#9829;<span id="goingCount" class="going-badge" data-count="0">0</span></button>
       <div class="going-panel" id="goingPanel">
@@ -63,6 +75,11 @@
     <button class="btn-icon map-toggle-btn" id="btnMapToggle" onclick="toggleMap()" title="Show/hide map">&#127758;</button>
     <button class="btn-icon" onclick="toggleTheme()" title="Toggle light/dark theme">&#9788;</button>
   </div>
+</div>
+
+<div class="sheet-bar">
+  <button class="sheet-tab" onclick="toggleSheet('mapPanel')" aria-controls="mapPanel" aria-expanded="false">Map</button>
+  <button class="sheet-tab" onclick="toggleSheet('calendarPanel')" aria-controls="calendarPanel" aria-expanded="false">Calendar</button>
 </div>
 
 <!-- ACTIVE FILTERS -->
@@ -196,6 +213,9 @@
       if (!e.target.closest('#searchWrapper')) closeArtistDropdown();
       if (!e.target.closest('#countryWrapper')) closeCountryPicker();
       if (!e.target.closest('.going-wrapper')) document.getElementById('goingPanel').classList.remove('visible');
+      if (!document.body.classList.contains('sheet-open')) return;
+      if (e.target.closest('.side-panel, .filters-sheet, .sheet-tab, .btn-filters')) return;
+      closeAllSheets();
     });
 
     document.addEventListener('keydown', (e) => {
@@ -203,6 +223,7 @@
       closeArtistDropdown();
       closeCountryPicker();
       document.getElementById('goingPanel').classList.remove('visible');
+      closeAllSheets();
     });
 
     // Start calendar on current month
@@ -227,7 +248,7 @@
   }
 
   function getMonthCount() {
-    return window.innerWidth <= 480 ? 1 : 3;
+    return window.innerWidth <= 560 ? 1 : 3;
   }
 
   function changeMonth(delta) {
@@ -1054,6 +1075,34 @@
   function loadTheme() {
     const saved = localStorage.getItem('avocado_theme');
     if (saved) document.documentElement.setAttribute('data-theme', saved);
+  }
+
+  // ===== FEUILLES MOBILES =====
+  function toggleSheet(id) {
+    const target = document.getElementById(id);
+    const wasOpen = target.classList.contains('sheet-open');
+    document.querySelectorAll('.side-panel.sheet-open, .filters-sheet.sheet-open').forEach(p => {
+      p.classList.remove('sheet-open');
+      const tab = document.querySelector(`[aria-controls="${p.id}"]`);
+      if (tab) tab.setAttribute('aria-expanded', 'false');
+    });
+    document.body.classList.toggle('sheet-open', !wasOpen);
+    if (!wasOpen) {
+      target.classList.add('sheet-open');
+      const tab = document.querySelector(`[aria-controls="${id}"]`);
+      if (tab) tab.setAttribute('aria-expanded', 'true');
+      if (id === 'mapPanel' && leafletMap) setTimeout(() => leafletMap.invalidateSize(), 120);
+    }
+  }
+
+  function closeAllSheets() {
+    document.querySelectorAll('.side-panel.sheet-open, .filters-sheet.sheet-open')
+      .forEach(pnl => {
+        pnl.classList.remove('sheet-open');
+        const tab = document.querySelector(`[aria-controls="${pnl.id}"]`);
+        if (tab) tab.setAttribute('aria-expanded', 'false');
+      });
+    document.body.classList.remove('sheet-open');
   }
 
   // ===== MAP TOGGLE =====
