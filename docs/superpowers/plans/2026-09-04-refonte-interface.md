@@ -2855,6 +2855,37 @@ Vérification : `grep -c "font-family: var(--font-mono)" styles.css` doit rendre
 soit 2, celui des titres et celui-ci. Contrôler ensuite au navigateur que rien n'a perdu ses
 capitales ou son mono, puisque dix règles viennent d'être allégées.
 
+- [ ] **Step 1c: L'en-tête mobile, deux corrections liées**
+
+**Masquer la bascule de carte sous 900 px.** Cette décision a été prise tôt puis jamais
+propagée dans ce plan, ce qui est une faute de tenue de registre de ma part : à 390 px la
+bascule de carte et l'onglet de feuille `Map` commandent tous deux la même carte, avec deux
+états qui se contredisent, et l'un gagne par ordre de déclaration. L'onglet remplace le
+bouton :
+
+```css
+/* dans la rupture 900 */
+  .map-toggle-btn { display: none; }
+```
+
+**Porter les boutons d'icône à 44 × 44 sous 560 px, et c'est l'arithmétique qui l'impose.**
+Mesuré à 390 px avec cinq boutons à 44 px : logo 118 px, plus 5 × 44, plus cinq gouttières
+de 8, plus 24 de padding, soit **402 px** dans une fenêtre de 390. L'en-tête déborde. Une
+fois la bascule de carte masquée il reste quatre boutons, soit **350 px**, qui tiennent.
+
+Les 44 px ne rentrent que si le padding vertical de l'en-tête descend à 6 px, puisque
+`--header-h` vaut 56 et **ne doit pas changer** : 56 − 2 × 6 = 44 exactement.
+
+```css
+/* dans la rupture 560 */
+  .toolbar { padding: 6px var(--sp-3); gap: var(--sp-2); }
+  .btn-icon { width: 44px; height: 44px; }
+```
+
+Cela remplace la déclaration `.toolbar { padding: var(--sp-2) var(--sp-3); … }` que la tâche
+10 a écrite dans cette même rupture. Ne touchez pas `--header-h`, et vérifiez après coup que
+l'en-tête mesure toujours 56 px de haut : tous les décalages collants du projet en dérivent.
+
 - [ ] **Step 2: Styliser les boutons d'icône**
 
 ```css
