@@ -414,7 +414,7 @@ const CONCERTS_DATA = [
   {"date":"2027-01-28","artist":"Contention","support":"","city":"Manchester","country":"UK","venue":"Star and Garter","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-MANCHESTER27"},
   {"date":"2027-01-29","artist":"Contention","support":"","city":"Glasgow","country":"UK","venue":"Mono","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-GLASGOW27"},
   {"date":"2027-01-30","artist":"Contention","support":"","city":"Leeds","country":"UK","venue":"Boom","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-LEEDS27"},
-  {"date":"2027-01-31","artist":"Contention","support":"","city":"Norwich","country":"UK","venue":"Deadwax","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-NORWICH27"},
+  {"date":"2027-01-31","artist":"Contention","support":"","city":"Norwich","country":"UK","venue":"Deadwax","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-NORWICH27","soldOut":true},
 
   // === SPITE | EMMURE - NEW WORLD KILLER EU/UK TOUR ===
   {"date":"2027-01-23","artist":"Spite | Emmure","support":"Distant, Mauled","city":"Antwerp","country":"Belgium","venue":"Zappa","tour":"New World Killer EU/UK Tour","ticketUrl":"https://lnk.to/NWK-ANTWERP27"},
