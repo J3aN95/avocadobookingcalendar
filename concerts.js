@@ -674,5 +674,5 @@ const TOUR_IMAGES = [
   {"artist":"Ministry","tour":"HATE TO GO - GOODBYE EUROPE 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Ministry Euro27_Banner_604d0ecd6e2ee7a36bc07c4a685f062b.jpg"},
   {"artist":"Queensryche","tour":"Europe 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/QueensrycheFB_Banner_b468594b405e2c83e1e402e149f93bfe.jpg"},
   {"artist":"Spite | Emmure","tour":"New World Killer EU/UK Tour","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SpiteEmmure-Banner_ee4d51c3dc2812ab39a0c1c86d54333e.jpg"},
-  {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK-HL-Banner_4ead8e25c9f043aebd3558547bc9b036.jpg"},
+  {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK HL-Banner-2601008_9a917b3160fe51efeeb823978135314f.jpg"},
 ];
