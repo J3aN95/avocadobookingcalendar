@@ -27,28 +27,6 @@ const CONCERTS_DATA = [
   {"date":"2026-10-08","artist":"Havok","support":"Blood Red Throne, Xonor, Eradikated","city":"Stockholm","country":"Sweden","venue":"Kollektivet Livet","tour":"Europe 2026","ticketUrl":"https://lnk.to/HAVOK-STOCKHOLM26"},
   {"date":"2026-10-10","artist":"Havok","support":"Blood Red Throne, Xonor, Eradikated","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"Europe 2026","ticketUrl":"https://lnk.to/HAVOK-HELSINKI26"},
 
-  // === THE AMITY AFFLICTION - EUROPE 2026 ===
-  {"date":"2026-09-18","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Wiesbaden","country":"Germany","venue":"Schlachthof","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-WIESBADEN26"},
-  {"date":"2026-09-19","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Cologne","country":"Germany","venue":"Palladium","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-COLOGNE26"},
-  {"date":"2026-09-20","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Hamburg","country":"Germany","venue":"Grosse Freiheit 36","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-HAMBURG26"},
-  {"date":"2026-09-22","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Stockholm","country":"Sweden","venue":"Fållan","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-STOCKHOLM26"},
-  {"date":"2026-09-24","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-HELSINKI26","soldOut":true},
-  {"date":"2026-09-26","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Oslo","country":"Norway","venue":"Rockefeller","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-OSLO26"},
-  {"date":"2026-09-27","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Copenhagen","country":"Denmark","venue":"Vega","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-COPENHAGEN26"},
-  {"date":"2026-09-28","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Berlin","country":"Germany","venue":"Huxleys","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-BERLIN26"},
-  {"date":"2026-09-29","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Warsaw","country":"Poland","venue":"Progresja","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-WARSAW26"},
-  {"date":"2026-10-01","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Prague","country":"Czech Republic","venue":"Meet Factory (venue change)","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-PRAGUE26"},
-  {"date":"2026-10-02","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Vienna","country":"Austria","venue":"Gasometer","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-VIENNA26"},
-  {"date":"2026-10-03","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Munich","country":"Germany","venue":"Tonhalle","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-MUNICH26"},
-  {"date":"2026-10-05","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Zurich","country":"Switzerland","venue":"Komplex 457","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-ZURICH26"},
-  {"date":"2026-10-06","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Paris","country":"France","venue":"Elysée Montmartre","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-PARIS26"},
-  {"date":"2026-10-07","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Antwerp","country":"Belgium","venue":"Zappa","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-ANTWERP26"},
-  {"date":"2026-10-08","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Tilburg","country":"Netherlands","venue":"0 1 3","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-TILBURG26"},
-  {"date":"2026-10-10","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Manchester","country":"UK","venue":"o2 Ritz","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-MANCHESTER26","soldOut":true},
-  {"date":"2026-10-11","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"London","country":"UK","venue":"o2 Forum Kentish Town","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-LONDON26"},
-  {"date":"2026-10-12","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Nottingham","country":"UK","venue":"Rock City","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-NOTTINGHAM26"},
-  {"date":"2026-10-13","artist":"The Amity Affliction","support":"Silent Planet, Varials, Orthodox","city":"Bristol","country":"UK","venue":"O2 Academy","tour":"Europe 2026","ticketUrl":"https://lnk.to/TAA-BRISTOL26"},
-
   // === HUMANITY'S LAST BREATH - EUROPEAN TOUR 2026 ===
   {"date":"2026-09-25","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Berlin","country":"Germany","venue":"Hole44","tour":"European Tour 2026","ticketUrl":"http://lnk.to/HLB2026-Berlin"},
   {"date":"2026-09-26","artist":"Humanity's Last Breath","support":"Vildhjarta, Enterprise Earth, Karmanjakah","city":"Cologne","country":"Germany","venue":"Euroblast","tour":"European Tour 2026","ticketUrl":"","soldOut":true},
@@ -631,7 +609,6 @@ const TOUR_IMAGES = [
   {"artist":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","tour":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/ImpericonFestivalpresents_DespisedIcone_Carnifex_Suffocation-Header_DI_16725a3f135616940c0df38a2d49ab1f.jpg"},
   {"artist":"PeelingFlesh","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/PeelingFlesh-27_header_7d36d1fbdc9ce7ecfbc6d9a518786fcd.jpg"},
   {"artist":"Spite | Emmure","tour":"New World Killer EU/UK Tour","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SpiteEmmure-Banner_ee4d51c3dc2812ab39a0c1c86d54333e.jpg"},
-  {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK HL-Banner-2601008_9a917b3160fe51efeeb823978135314f.jpg"},
   {"artist":"Acres","tour":"\"The Host\" UK/EU Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Acres26_Header_0cee54619dafed1a1344b2e931974547.jpg"},
   {"artist":"Comeback Kid","tour":"Chosen Hell Euro Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/CBK_ChosenHell-EU2027_Header_d242e57fada037ea0f59a29d5dfbea46.jpg"},
   {"artist":"Erra, Currents","tour":"THE SILENCE FOLLOWS TOUR EU/UK 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/ERRA-header981_b2bd7acb7ad2e28355685a8782730bb9.jpg"},
@@ -646,4 +623,5 @@ const TOUR_IMAGES = [
   {"artist":"Humanity's Last Breath","tour":"European Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/HLB-2026-HEADER_21c12e15ee80bf2c551b27b45e9c0c7e.jpg"},
   {"artist":"Lost Society | Hokka","tour":"Miseria Is A State Of Mind 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/LostSociety-HOKKA_Banner_72e42a750dc251bd1d21839ac30cd208.jpg"},
   {"artist":"Signs Of The Swarm","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SOTS-EU27-Header_3ec0136abe692c3015a4bfa80f7591c7.jpg"},
+  {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK HL-Banner-2601008_9a917b3160fe51efeeb823978135314f.jpg"},
 ];
