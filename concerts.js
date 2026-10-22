@@ -392,7 +392,7 @@ const CONCERTS_DATA = [
   {"date":"2027-02-09","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Oslo","country":"Norway","venue":"John Dee","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Oslo"},
   {"date":"2027-02-10","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Stockholm","country":"Sweden","venue":"Kollektivet Livet","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Stockholm"},
   {"date":"2027-02-12","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Helsinki","country":"Finland","venue":"Tavastia","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Helsinki"},
-  {"date":"2027-02-13","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Tampere","country":"Finland","venue":"Olympia-Kortteli","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Tampere"},
+  {"date":"2027-02-13","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Tampere","country":"Finland","venue":"Fame","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Tampere"},
   {"date":"2027-02-15","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Warsaw","country":"Poland","venue":"Proxima","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Warsaw"},
   {"date":"2027-02-16","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Berlin","country":"Germany","venue":"Hole44","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Berlin"},
   {"date":"2027-02-17","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Prague","country":"Czech Republic","venue":"Rock Cafe","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Prague"},
@@ -649,6 +649,6 @@ const TOUR_IMAGES = [
   {"artist":"Everegrey","tour":"“ARCHITECTS OF A NEW WEAVE” EUROPEAN TOUR 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Evergrey-Europe-2026-HEADER_185c865666ec7e3cb9ff9b447c3b6a18.jpg"},
   {"artist":"Humanity's Last Breath","tour":"European Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/HLB-2026-HEADER_21c12e15ee80bf2c551b27b45e9c0c7e.jpg"},
   {"artist":"Lost Society | Hokka","tour":"Miseria Is A State Of Mind 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/LostSociety-HOKKA_Banner_72e42a750dc251bd1d21839ac30cd208.jpg"},
-  {"artist":"Signs Of The Swarm","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SOTS-EU27-Header_3ec0136abe692c3015a4bfa80f7591c7.jpg"},
+  {"artist":"Signs Of The Swarm","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SOTS-EU27-Header-261022_5688210c70980b04366eab1704a65ddb.jpeg"},
   {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK HL-Banner-2601008_9a917b3160fe51efeeb823978135314f.jpg"},
 ];
