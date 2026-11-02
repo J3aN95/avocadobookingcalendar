@@ -27,25 +27,6 @@ const CONCERTS_DATA = [
   {"date":"2026-10-08","artist":"Havok","support":"Blood Red Throne, Xonor, Eradikated","city":"Stockholm","country":"Sweden","venue":"Kollektivet Livet","tour":"Europe 2026","ticketUrl":"https://lnk.to/HAVOK-STOCKHOLM26"},
   {"date":"2026-10-10","artist":"Havok","support":"Blood Red Throne, Xonor, Eradikated","city":"Helsinki","country":"Finland","venue":"Ääniwalli","tour":"Europe 2026","ticketUrl":"https://lnk.to/HAVOK-HELSINKI26"},
 
-  // === ACRES - "THE HOST" UK/EU TOUR 2026 ===
-  {"date":"2026-10-14","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Bristol","country":"UK","venue":"The Exchange","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Bristol"},
-  {"date":"2026-10-15","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Leeds","country":"UK","venue":"The Key Club","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Leeds"},
-  {"date":"2026-10-16","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Manchester","country":"UK","venue":"Rebellion","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Manchester"},
-  {"date":"2026-10-17","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"London","country":"UK","venue":"Downstairs At The Dome","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-London"},
-  {"date":"2026-10-18","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Southampton","country":"UK","venue":"The Joiners","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Southampton"},
-  {"date":"2026-10-20","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Antwerp","country":"Belgium","venue":"Kavka","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Antwerp"},
-  {"date":"2026-10-21","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Utrecht","country":"Netherlands","venue":"De Helling","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Utrecht"},
-  {"date":"2026-10-22","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Hamburg","country":"Germany","venue":"Hafenklang (venue change)","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Hamburg"},
-  {"date":"2026-10-23","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Berlin","country":"Germany","venue":"Cassiopeia","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Berlin"},
-  {"date":"2026-10-24","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Leipzig","country":"Germany","venue":"Naumanns","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Leipzig"},
-  {"date":"2026-10-25","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Poznan","country":"Poland","venue":"Pod Minoga","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Poznan"},
-  {"date":"2026-10-27","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Prague","country":"Czech Republic","venue":"Bike Jesus","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Prague"},
-  {"date":"2026-10-28","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Vienna","country":"Austria","venue":"Viper Room","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Vienna"},
-  {"date":"2026-10-29","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Munich","country":"Germany","venue":"Feierwerk","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Munich"},
-  {"date":"2026-10-30","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Aarau","country":"Switzerland","venue":"KiFF","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Aarau"},
-  {"date":"2026-10-31","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Cologne","country":"Germany","venue":"Helios37","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Cologne"},
-  {"date":"2026-11-01","artist":"Acres","support":"Wayside, What Lies Below, Lifespark","city":"Wiesbaden","country":"Germany","venue":"Schlachthof","tour":"\"The Host\" UK/EU Tour 2026","ticketUrl":"https://lnk.to/Acres26-Wiesbaden"},
-
   // === ARCHSPIRE - EUROPEAN VACATION 2026 ===
   {"date":"2026-10-23","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Cologne","country":"Germany","venue":"Essigfabrik","tour":"European Vacation 2026","ticketUrl":"https://lnk.to/ARCHSPIRE-COLOGNE26"},
   {"date":"2026-10-24","artist":"Archspire","support":"Crown Magnetar, The Zenith Passage, Analepsy","city":"Nijmegen","country":"Netherlands","venue":"Doornroosje","tour":"European Vacation 2026","ticketUrl":"","soldOut":true},
@@ -529,7 +510,6 @@ const CITY_COORDS = {
   "Oslo": [59.91, 10.75],
   "Paris": [48.86, 2.35],
   "Poland": [52.23, 21.01],
-  "Poznan": [52.41, 16.93],
   "Prague": [50.08, 14.44],
   "Pratteln": [47.52, 7.69],
   "Rotterdam": [51.92, 4.48],
@@ -555,13 +535,6 @@ const CITY_COORDS = {
 };
 
 const TOUR_IMAGES = [
-  {"artist":"Acres","tour":"\"The Host\" UK/EU Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Acres26_Header_0cee54619dafed1a1344b2e931974547.jpg"},
-  {"artist":"Comeback Kid","tour":"Chosen Hell Euro Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/CBK_ChosenHell-EU2027_Header_d242e57fada037ea0f59a29d5dfbea46.jpg"},
-  {"artist":"Erra, Currents","tour":"THE SILENCE FOLLOWS TOUR EU/UK 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/ERRA-header981_b2bd7acb7ad2e28355685a8782730bb9.jpg"},
-  {"artist":"Havok","tour":"Europe 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Havok_Banner_67ab60d81ffa8501f8f108896c8e3884.jpg"},
-  {"artist":"Lost Society | Hokka","tour":"Miseria Is A State Of Mind 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/LostSociety-HOKKA_Banner_72e42a750dc251bd1d21839ac30cd208.jpg"},
-  {"artist":"Signs Of The Swarm","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SOTS-EU27-Header-261022_5688210c70980b04366eab1704a65ddb.jpeg"},
-  {"artist":"UnityTX & Diamond Construct support to Ocean Grove","tour":"Ocean Grove UK/EU Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/OceanGrove_EUxUK_OSD_Header_NoDates_19c41b3ec4accc0f0e82a0e758469c38.jpeg"},
   {"artist":"Archspire","tour":"European Vacation 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Archspire26_Banner_a048bc9a8cc06e78a493df25f8eab552.jpg"},
   {"artist":"Contention","tour":"Nuclear Winter UK/IRELAND 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Contention2027Header_8f16f052de6adf743fad0dfa856ca4c2.jpg"},
   {"artist":"Evergrey","tour":"“ARCHITECTS OF A NEW WEAVE” EUROPEAN TOUR 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Evergrey-Europe2026-HEADER_supp_546201e73cc26ad925792e497dfbc284.jpg"},
@@ -575,4 +548,10 @@ const TOUR_IMAGES = [
   {"artist":"Ministry","tour":"HATE TO GO - GOODBYE EUROPE 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Ministry Euro27_Banner_604d0ecd6e2ee7a36bc07c4a685f062b.jpg"},
   {"artist":"Queensryche","tour":"Europe 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/QueensrycheFB_Banner_b468594b405e2c83e1e402e149f93bfe.jpg"},
   {"artist":"Thrown","tour":"EU/UK Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/thrown-EU-UK HL-Banner-2601008_9a917b3160fe51efeeb823978135314f.jpg"},
+  {"artist":"Comeback Kid","tour":"Chosen Hell Euro Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/CBK_ChosenHell-EU2027_Header_d242e57fada037ea0f59a29d5dfbea46.jpg"},
+  {"artist":"Erra, Currents","tour":"THE SILENCE FOLLOWS TOUR EU/UK 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/ERRA-header981_b2bd7acb7ad2e28355685a8782730bb9.jpg"},
+  {"artist":"Havok","tour":"Europe 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Havok_Banner_67ab60d81ffa8501f8f108896c8e3884.jpg"},
+  {"artist":"Lost Society | Hokka","tour":"Miseria Is A State Of Mind 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/LostSociety-HOKKA_Banner_72e42a750dc251bd1d21839ac30cd208.jpg"},
+  {"artist":"Signs Of The Swarm","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SOTS-EU27-Header-261022_5688210c70980b04366eab1704a65ddb.jpeg"},
+  {"artist":"UnityTX & Diamond Construct support to Ocean Grove","tour":"Ocean Grove UK/EU Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/OceanGrove_EUxUK_OSD_Header_NoDates_19c41b3ec4accc0f0e82a0e758469c38.jpeg"},
 ];
