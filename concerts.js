@@ -338,6 +338,24 @@ const CONCERTS_DATA = [
   {"date":"2027-03-06","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Southampton","country":"UK","venue":"The Brook","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Southampton"},
   {"date":"2027-03-07","artist":"Signs Of The Swarm","support":"Ten 56, Oceans Ate Alaska, Face Yourself","city":"Antwerp","country":"Belgium","venue":"Trix Club","tour":"European Tour 2027","ticketUrl":"https://lnk.to/SOTS2027-Antwerp"},
 
+  // === THY ART IS MURDER - SQUEEZE UK/EU TOUR 2027 ===
+  {"date":"2027-02-10","artist":"Thy Art Is Murder","support":"","city":"Antwerp","country":"Belgium","venue":"Trix Club","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-ANTWERP27"},
+  {"date":"2027-02-11","artist":"Thy Art Is Murder","support":"","city":"Jena","country":"Germany","venue":"F-Haus","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-JENA27"},
+  {"date":"2027-02-12","artist":"Thy Art Is Murder","support":"","city":"Augsburg","country":"Germany","venue":"Kantine","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-AUGSBURG27"},
+  {"date":"2027-02-13","artist":"Thy Art Is Murder","support":"","city":"Graz","country":"Austria","venue":"PPC","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-GRAZ27"},
+  {"date":"2027-02-14","artist":"Thy Art Is Murder","support":"","city":"Salzburg","country":"Austria","venue":"Rockhouse","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-SALZBURG27"},
+  {"date":"2027-02-15","artist":"Thy Art Is Murder","support":"","city":"Nuremberg","country":"Germany","venue":"Hirsch","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-NUREMBERG27"},
+  {"date":"2027-02-17","artist":"Thy Art Is Murder","support":"","city":"Southampton","country":"UK","venue":"Engine Rooms","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-SOUTHAMPTON27"},
+  {"date":"2027-02-18","artist":"Thy Art Is Murder","support":"","city":"Edinburgh","country":"UK","venue":"Liquid Room","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-EDINBURGH27"},
+  {"date":"2027-02-19","artist":"Thy Art Is Murder","support":"","city":"Newcastle","country":"UK","venue":"Digital","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-NEWCASTLE27"},
+  {"date":"2027-02-20","artist":"Thy Art Is Murder","support":"","city":"Leeds","country":"UK","venue":"Key Club","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-LEEDS27"},
+  {"date":"2027-02-21","artist":"Thy Art Is Murder","support":"","city":"London","country":"UK","venue":"Underworld","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-LONDON27"},
+  {"date":"2027-02-23","artist":"Thy Art Is Murder","support":"","city":"Eindhoven","country":"Netherlands","venue":"Dynamo","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-EINDHOVEN27"},
+  {"date":"2027-02-24","artist":"Thy Art Is Murder","support":"","city":"Cologne","country":"Germany","venue":"Club Volta","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-COLOGNE27"},
+  {"date":"2027-02-25","artist":"Thy Art Is Murder","support":"","city":"Hannover","country":"Germany","venue":"Musik Zentrum","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-HANNOVER27"},
+  {"date":"2027-02-26","artist":"Thy Art Is Murder","support":"","city":"Wiesbaden","country":"Germany","venue":"Kesselhaus","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-WIESBADEN27"},
+  {"date":"2027-02-27","artist":"Thy Art Is Murder","support":"","city":"Saarbrücken","country":"Germany","venue":"Garage","tour":"Squeeze UK/EU Tour 2027","ticketUrl":"https://lnk.to/TAIM-SAARBRUECKEN27"},
+
   // === LOST SOCIETY | HOKKA - MISERIA IS A STATE OF MIND 2027 ===
   {"date":"2027-02-13","artist":"Lost Society | Hokka","support":"","city":"Hamburg","country":"Germany","venue":"Betty","tour":"Miseria Is A State Of Mind 2027","ticketUrl":"https://lnk.to/LSHOKKA-HAMBURG27"},
   {"date":"2027-02-14","artist":"Lost Society | Hokka","support":"","city":"Dordrecht","country":"Netherlands","venue":"Bibelot","tour":"Miseria Is A State Of Mind 2027","ticketUrl":"https://lnk.to/LSHOKKA-DORDRECHT27"},
@@ -416,7 +434,7 @@ const CONCERTS_DATA = [
   {"date":"2027-04-30","artist":"Boundaries","support":"","city":"Stockholm","country":"Sweden","venue":"Kollektivet Livet","tour":"Yearning The Unbeautiful After Tour Europe 2027","ticketUrl":"https://lnk.to/BOUNDARIES-STOCKHOLM27"},
 
   // === MINISTRY - HATE TO GO - GOODBYE EUROPE 2027 ===
-  {"date":"2027-04-02","artist":"Ministry","support":"Die Krupps","city":"Utrecht","country":"Netherlands","venue":"Ronda","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-UTRECHT27"},
+  {"date":"2027-04-02","artist":"Ministry","support":"Die Krupps","city":"Utrecht","country":"Netherlands","venue":"Ronda","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"","soldOut":true},
   {"date":"2027-04-03","artist":"Ministry","support":"Die Krupps","city":"Saarbrücken","country":"Germany","venue":"Garage","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-SAAR27"},
   {"date":"2027-04-04","artist":"Ministry","support":"Die Krupps","city":"Brussels","country":"Belgium","venue":"Ancienne Belgique","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-BRUSSELS27"},
   {"date":"2027-04-06","artist":"Ministry","support":"Die Krupps","city":"Manchester","country":"UK","venue":"o2 Victoria Warehouse","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-MANC27"},
@@ -436,7 +454,7 @@ const CONCERTS_DATA = [
   {"date":"2027-04-26","artist":"Ministry","support":"Die Krupps","city":"Copenhagen","country":"Denmark","venue":"Amager Bio","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-COPENHAGEN27"},
   {"date":"2027-04-28","artist":"Ministry","support":"Die Krupps","city":"Oslo","country":"Norway","venue":"Rockefeller","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-OSLO27"},
   {"date":"2027-04-29","artist":"Ministry","support":"Die Krupps","city":"Stockholm","country":"Sweden","venue":"Fållan","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-STOCKHOLM27"},
-  {"date":"2027-05-01","artist":"Ministry","support":"Die Krupps","city":"Helsinki","country":"Finland","venue":"House of Culture","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"https://lnk.to/MINISTRY-HELSINKI27"},
+  {"date":"2027-05-01","artist":"Ministry","support":"Die Krupps","city":"Helsinki","country":"Finland","venue":"House of Culture","tour":"HATE TO GO - GOODBYE EUROPE 2027","ticketUrl":"","soldOut":true},
 
 ];
 
@@ -463,6 +481,7 @@ const CITY_COORDS = {
   "Dordrecht": [51.81, 4.67],
   "Dortmund": [51.51, 7.47],
   "Dublin": [53.35, -6.26],
+  "Edinburgh": [55.95, -3.19],
   "Eindhoven": [51.44, 5.47],
   "Essen": [51.46, 7.02],
   "Exeter": [50.73, -3.53],
@@ -472,6 +491,7 @@ const CITY_COORDS = {
   "Germany": [50.94, 6.96],
   "Glasgow": [55.86, -4.25],
   "Gothenburg": [57.71, 11.97],
+  "Graz": [47.07, 15.44],
   "Grenoble": [45.19, 5.74],
   "Haarlem": [52.38, 4.64],
   "Hamburg": [53.55, 9.99],
@@ -514,6 +534,7 @@ const CITY_COORDS = {
   "Pratteln": [47.52, 7.69],
   "Rotterdam": [51.92, 4.48],
   "Saarbrücken": [49.23, 7],
+  "Salzburg": [47.8, 13.05],
   "Schweinfurt": [50.04, 10.23],
   "Sheffield": [53.38, -1.47],
   "Southampton": [50.9, -1.4],
@@ -541,6 +562,7 @@ const TOUR_IMAGES = [
   {"artist":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","tour":"IMPERICON FESTIVAL presents DEATH DOMINION EU 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/NewArt_Carnifex_DI_Suffo_Header_3d37256596d14795a449c412af245be0.jpeg"},
   {"artist":"PeelingFlesh","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/PF-EU-Banner_261026_9161c2df188e33a505e1566321d48bb8.jpg"},
   {"artist":"Spite | Emmure","tour":"New World Killer EU/UK Tour","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SpiteEmmure-Banner_ee4d51c3dc2812ab39a0c1c86d54333e.jpg"},
+  {"artist":"UnityTX & Diamond Construct support to Ocean Grove","tour":"Ocean Grove UK/EU Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/OceanGrove_EUxUK_OSD_Header_NoDates_19c41b3ec4accc0f0e82a0e758469c38.jpeg"},
   {"artist":"Boundaries","tour":"Yearning The Unbeautiful After Tour Europe 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Boundaries27_header_3ea269e1be7e72a6291ca312c1148bac.jpg"},
   {"artist":"Converge","tour":"EU/UK Tour 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Converge_Fall26_Header2_e322da87e08f700111300c089028118b.jpg"},
   {"artist":"Frozen Soul","tour":"NO PLACE OF WARMTH EU/UK 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/FrozenSoul-27_Header2_5e30f0433cb0d2a9efdf319958ad3aed.jpg"},
@@ -553,5 +575,5 @@ const TOUR_IMAGES = [
   {"artist":"Havok","tour":"Europe 2026","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/Havok_Banner_67ab60d81ffa8501f8f108896c8e3884.jpg"},
   {"artist":"Lost Society | Hokka","tour":"Miseria Is A State Of Mind 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/LostSociety-HOKKA_Banner_72e42a750dc251bd1d21839ac30cd208.jpg"},
   {"artist":"Signs Of The Swarm","tour":"European Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/SOTS-EU27-Header-261022_5688210c70980b04366eab1704a65ddb.jpeg"},
-  {"artist":"UnityTX & Diamond Construct support to Ocean Grove","tour":"Ocean Grove UK/EU Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/OceanGrove_EUxUK_OSD_Header_NoDates_19c41b3ec4accc0f0e82a0e758469c38.jpeg"},
+  {"artist":"Thy Art Is Murder","tour":"Squeeze UK/EU Tour 2027","imageUrl":"https://www.avocadobooking.com/avocms/cache/com_zoo/images/TAIM_SqeezeEU_header_cb3a0da91fad2ccfbdc981ed6b3838ca.jpg"},
 ];
