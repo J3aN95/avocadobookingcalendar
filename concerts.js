@@ -565,6 +565,7 @@ const CITY_COORDS = {
   "Brussels": [50.85, 4.35],
   "Budapest": [47.5, 19.04],
   "Cambridge": [52.2, 0.14],
+  "Cardiff": [51.48, -3.18],
   "Cologne": [50.94, 6.96],
   "Copenhagen": [55.68, 12.57],
   "Cork": [51.9, -8.47],
