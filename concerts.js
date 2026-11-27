@@ -170,7 +170,7 @@ const CONCERTS_DATA = [
   {"date":"2027-01-23","artist":"Contention","support":"","city":"London","country":"UK","venue":"Reality Unfolds @ New Cross Inn","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://www.instagram.com/realityunfoldsfest/"},
   {"date":"2027-01-24","artist":"Contention","support":"","city":"Swansea","country":"UK","venue":"Bunkhouse","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-SWANSEA27"},
   {"date":"2027-01-25","artist":"Contention","support":"","city":"Dublin","country":"Ireland","venue":"Grand Social","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-DUBLIN27"},
-  {"date":"2027-01-26","artist":"Contention","support":"","city":"Cork","country":"Ireland","venue":"Dali","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-CORK27"},
+  {"date":"2027-01-26","artist":"Contention","support":"","city":"Cork","country":"Ireland","venue":"The Kino","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-CORK27"},
   {"date":"2027-01-27","artist":"Contention","support":"","city":"Belfast","country":"UK","venue":"Oh Yeah Centre","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-MANCHESTER27"},
   {"date":"2027-01-28","artist":"Contention","support":"","city":"Manchester","country":"UK","venue":"Star and Garter","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-MANCHESTER27","soldOut":true},
   {"date":"2027-01-29","artist":"Contention","support":"","city":"Glasgow","country":"UK","venue":"Mono","tour":"Nuclear Winter UK/IRELAND 2027","ticketUrl":"https://lnk.to/CONTENTION-GLASGOW27"},
